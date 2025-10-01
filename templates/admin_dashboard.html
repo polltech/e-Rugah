@@ -3,39 +3,38 @@
 {% block title %}Admin Dashboard - e-Rugah{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Admin Dashboard</h2>
+<div class="page-header">
+    <h2 class="mb-0"><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+    <p class="mb-0 mt-2" style="opacity: 0.9;">Manage chefs, menus, and monitor platform performance</p>
+</div>
 
 <div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h5 class="card-title">Total Bookings</h5>
-                <h2>{{ total_bookings }}</h2>
-            </div>
+    <div class="col-md-3 mb-3">
+        <div class="stats-card">
+            <i class="bi bi-calendar-check" style="font-size: 2.5rem; opacity: 0.8;"></i>
+            <h2>{{ total_bookings }}</h2>
+            <h5>Total Bookings</h5>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-success">
-            <div class="card-body">
-                <h5 class="card-title">Confirmed Bookings</h5>
-                <h2>{{ confirmed_bookings }}</h2>
-            </div>
+    <div class="col-md-3 mb-3">
+        <div class="stats-card" style="background: linear-gradient(135deg, var(--food-green), #4cd137);">
+            <i class="bi bi-check-circle" style="font-size: 2.5rem; opacity: 0.8;"></i>
+            <h2>{{ confirmed_bookings }}</h2>
+            <h5>Confirmed Bookings</h5>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-warning">
-            <div class="card-body">
-                <h5 class="card-title">Pending Chefs</h5>
-                <h2>{{ pending_chefs|length }}</h2>
-            </div>
+    <div class="col-md-3 mb-3">
+        <div class="stats-card" style="background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));">
+            <i class="bi bi-hourglass-split" style="font-size: 2.5rem; opacity: 0.8;"></i>
+            <h2>{{ pending_chefs|length }}</h2>
+            <h5>Pending Approvals</h5>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-info">
-            <div class="card-body">
-                <h5 class="card-title">Approved Chefs</h5>
-                <h2>{{ approved_chefs|length }}</h2>
-            </div>
+    <div class="col-md-3 mb-3">
+        <div class="stats-card" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+            <i class="bi bi-people" style="font-size: 2.5rem; opacity: 0.8;"></i>
+            <h2>{{ approved_chefs|length }}</h2>
+            <h5>Active Chefs</h5>
         </div>
     </div>
 </div>

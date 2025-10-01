@@ -5,45 +5,52 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-body p-4 text-center">
-                <h2 class="card-title mb-4">Payment Status</h2>
+        <div class="card">
+            <div class="card-body p-5 text-center">
+                <h2 class="card-title section-title mb-4">Payment Status</h2>
                 
                 {% if payment and payment.status == 'success' %}
-                    <div class="text-success mb-4">
-                        <i class="bi bi-check-circle" style="font-size: 4rem;"></i>
+                    <div class="payment-icon mb-4">
+                        <i class="bi bi-check-circle" style="font-size: 3rem;"></i>
                     </div>
-                    <h3 class="text-success">Payment Successful!</h3>
-                    <p class="lead">Your booking has been confirmed.</p>
-                    <div class="alert alert-success text-start mt-4">
-                        <p><strong>Receipt Number:</strong> {{ payment.mpesa_receipt_number }}</p>
-                        <p><strong>Amount Paid:</strong> KES {{ "%.2f"|format(payment.amount) }}</p>
-                        <p><strong>Booking Status:</strong> {{ booking.status.title() }}</p>
+                    <h3 style="color: var(--food-green); font-weight: 700;">Payment Successful!</h3>
+                    <p class="lead mb-4">Your booking has been confirmed.</p>
+                    <div class="info-card text-start">
+                        <p class="mb-2"><strong><i class="bi bi-receipt"></i> Receipt Number:</strong></p>
+                        <p class="text-muted mb-3">{{ payment.mpesa_receipt_number }}</p>
+                        <p class="mb-2"><strong><i class="bi bi-cash-stack"></i> Amount Paid:</strong></p>
+                        <p style="color: var(--food-green); font-size: 1.5rem; font-weight: 700;" class="mb-3">KES {{ "%.2f"|format(payment.amount) }}</p>
+                        <p class="mb-2"><strong><i class="bi bi-bookmark-check"></i> Booking Status:</strong></p>
+                        <span class="badge bg-success">{{ booking.status.title() }}</span>
                     </div>
                 {% elif payment and payment.status == 'pending' %}
-                    <div class="text-warning mb-4">
-                        <i class="bi bi-hourglass-split" style="font-size: 4rem;"></i>
+                    <div class="payment-icon pending mb-4">
+                        <i class="bi bi-hourglass-split" style="font-size: 3rem;"></i>
                     </div>
-                    <h3 class="text-warning">Payment Pending</h3>
-                    <p class="lead">Please check your phone for the M-PESA prompt and complete the payment.</p>
+                    <h3 style="color: var(--secondary-color); font-weight: 700;">Payment Pending</h3>
+                    <p class="lead mb-4">Please check your phone for the M-PESA prompt and complete the payment.</p>
                     <div class="mt-4">
-                        <a href="{{ url_for('payment_status', booking_id=booking.id) }}" class="btn btn-primary">
+                        <a href="{{ url_for('payment_status', booking_id=booking.id) }}" class="btn btn-primary btn-lg">
                             <i class="bi bi-arrow-clockwise"></i> Refresh Status
                         </a>
                     </div>
                 {% else %}
-                    <div class="text-danger mb-4">
-                        <i class="bi bi-x-circle" style="font-size: 4rem;"></i>
+                    <div class="payment-icon failed mb-4">
+                        <i class="bi bi-x-circle" style="font-size: 3rem;"></i>
                     </div>
-                    <h3 class="text-danger">Payment Failed</h3>
-                    <p class="lead">Your payment could not be processed.</p>
+                    <h3 style="color: var(--danger-color); font-weight: 700;">Payment Failed</h3>
+                    <p class="lead mb-4">Your payment could not be processed.</p>
                     <div class="mt-4">
-                        <a href="{{ url_for('pay_booking', booking_id=booking.id) }}" class="btn btn-primary">Try Again</a>
+                        <a href="{{ url_for('pay_booking', booking_id=booking.id) }}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-arrow-repeat"></i> Try Again
+                        </a>
                     </div>
                 {% endif %}
                 
                 <div class="mt-4">
-                    <a href="{{ url_for('customer_dashboard') }}" class="btn btn-outline-primary">Back to Dashboard</a>
+                    <a href="{{ url_for('customer_dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-house"></i> Back to Dashboard
+                    </a>
                 </div>
             </div>
         </div>

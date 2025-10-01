@@ -3,12 +3,16 @@
 {% block title %}Customer Dashboard - e-Rugah{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">My Events</h2>
-
-<div class="mb-3">
-    <a href="{{ url_for('create_event') }}" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Create New Event
-    </a>
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="mb-0"><i class="bi bi-calendar-event"></i> My Events</h2>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Manage and track all your culinary events</p>
+        </div>
+        <a href="{{ url_for('create_event') }}" class="btn btn-light btn-lg">
+            <i class="bi bi-plus-circle"></i> Create New Event
+        </a>
+    </div>
 </div>
 
 {% if events %}

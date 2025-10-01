@@ -3,15 +3,29 @@
 {% block title %}Match Chefs - e-Rugah{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Available Chefs for Your Event</h2>
+<div class="page-header">
+    <h2 class="mb-0"><i class="bi bi-people"></i> Available Chefs for Your Event</h2>
+</div>
 
-<div class="card mb-4">
-    <div class="card-body">
-        <h5>Event Details</h5>
-        <p><strong>Location:</strong> {{ event.county }}, {{ event.sub_county }}, {{ event.town }}</p>
-        <p><strong>Date:</strong> {{ event.event_date.strftime('%Y-%m-%d') }}</p>
-        <p><strong>Guests:</strong> {{ event.adult_guests + event.child_guests }} ({{ event.adult_guests }} adults, {{ event.child_guests }} children)</p>
-        <p><strong>Estimated Cost:</strong> KES {{ "%.2f"|format(event.total_cost) }}</p>
+<div class="info-card mb-4">
+    <h5 class="mb-3"><i class="bi bi-info-circle"></i> Event Details</h5>
+    <div class="row">
+        <div class="col-md-3">
+            <p class="mb-2"><strong><i class="bi bi-geo-alt"></i> Location:</strong></p>
+            <p class="text-muted">{{ event.county }}, {{ event.sub_county }}, {{ event.town }}</p>
+        </div>
+        <div class="col-md-3">
+            <p class="mb-2"><strong><i class="bi bi-calendar"></i> Date:</strong></p>
+            <p class="text-muted">{{ event.event_date.strftime('%Y-%m-%d') }}</p>
+        </div>
+        <div class="col-md-3">
+            <p class="mb-2"><strong><i class="bi bi-people"></i> Guests:</strong></p>
+            <p class="text-muted">{{ event.adult_guests + event.child_guests }} ({{ event.adult_guests }} adults, {{ event.child_guests }} children)</p>
+        </div>
+        <div class="col-md-3">
+            <p class="mb-2"><strong><i class="bi bi-cash-stack"></i> Estimated Cost:</strong></p>
+            <p class="text-muted" style="font-size: 1.2rem; font-weight: 600; color: var(--primary-color) !important;">KES {{ "%.2f"|format(event.total_cost) }}</p>
+        </div>
     </div>
 </div>
 
@@ -19,19 +33,29 @@
 <div class="row">
     {% for chef in chefs %}
     <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
+        <div class="chef-card h-100">
             <div class="card-body">
-                <h5 class="card-title">{{ chef.name }}</h5>
+                <div class="d-flex align-items-start mb-3">
+                    <div class="feature-icon me-3" style="width: 50px; height: 50px;">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title mb-1">{{ chef.name }}</h5>
+                        <span class="badge bg-success"><i class="bi bi-patch-check"></i> Verified</span>
+                    </div>
+                </div>
                 <p class="card-text">
-                    <i class="bi bi-geo-alt"></i> {{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}<br>
-                    <i class="bi bi-telephone"></i> {{ chef.phone }}<br>
-                    <i class="bi bi-info-circle"></i> {{ chef.about }}
+                    <i class="bi bi-geo-alt" style="color: var(--primary-color);"></i> {{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}<br>
+                    <i class="bi bi-telephone" style="color: var(--primary-color);"></i> {{ chef.phone }}<br>
+                    <i class="bi bi-chat-left-quote" style="color: var(--primary-color);"></i> {{ chef.about }}
                 </p>
-                <h6>Meals Offered:</h6>
+                <h6 style="color: var(--primary-color);"><i class="bi bi-egg-fried"></i> Specialties:</h6>
                 <p class="text-muted">{{ chef.meals_offered.replace(',', ', ') }}</p>
             </div>
             <div class="card-footer">
-                <a href="{{ url_for('book_chef', event_id=event.id, chef_id=chef.id) }}" class="btn btn-primary w-100">Select This Chef</a>
+                <a href="{{ url_for('book_chef', event_id=event.id, chef_id=chef.id) }}" class="btn btn-primary w-100">
+                    <i class="bi bi-check-circle"></i> Select This Chef
+                </a>
             </div>
         </div>
     </div>
