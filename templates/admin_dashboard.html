@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - e-Rugah{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Bookings</h5>
+                <h2>{{ total_bookings }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Confirmed Bookings</h5>
+                <h2>{{ confirmed_bookings }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Pending Chefs</h5>
+                <h2>{{ pending_chefs|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Approved Chefs</h5>
+                <h2>{{ approved_chefs|length }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-3">Pending Chef Approvals</h4>
+{% if pending_chefs %}
+<div class="table-responsive mb-5">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Location</th>
+                <th>Verified</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chef in pending_chefs %}
+            <tr>
+                <td>{{ chef.id }}</td>
+                <td>{{ chef.name }}</td>
+                <td>{{ chef.user.email }}</td>
+                <td>{{ chef.phone }}</td>
+                <td>{{ chef.county }}, {{ chef.town }}</td>
+                <td>
+                    {% if chef.is_verified %}
+                        <span class="badge bg-success">Yes</span>
+                    {% else %}
+                        <span class="badge bg-warning">No</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('approve_chef', chef_id=chef.id) }}" class="btn btn-sm btn-success">Approve</a>
+                    <a href="{{ url_for('reject_chef', chef_id=chef.id) }}" class="btn btn-sm btn-danger">Reject</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info mb-5">
+    <i class="bi bi-info-circle"></i> No pending chef approvals.
+</div>
+{% endif %}
+
+<h4 class="mb-3">Approved Chefs</h4>
+{% if approved_chefs %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Meals Offered</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chef in approved_chefs %}
+            <tr>
+                <td>{{ chef.id }}</td>
+                <td>{{ chef.name }}</td>
+                <td>{{ chef.county }}, {{ chef.town }}</td>
+                <td>{{ chef.meals_offered.replace(',', ', ') }}</td>
+                <td><span class="badge bg-success">Approved</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

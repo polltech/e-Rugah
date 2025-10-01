@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Configuration - e-Rugah{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-4">System Configuration</h2>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="deposit_percentage" class="form-label">Deposit Percentage</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="deposit_percentage" name="deposit_percentage" value="{{ deposit_percentage }}" min="0" max="100" required>
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <div class="form-text">Percentage of total event cost required as deposit</div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Save Configuration</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

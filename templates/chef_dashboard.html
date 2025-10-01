@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Chef Dashboard - e-Rugah{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Chef Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5>Profile Status</h5>
+                {% if chef.is_verified %}
+                    <span class="badge bg-success">Email Verified</span>
+                {% else %}
+                    <span class="badge bg-warning">Email Not Verified</span>
+                {% endif %}
+                
+                {% if chef.is_approved %}
+                    <span class="badge bg-success">Approved</span>
+                {% else %}
+                    <span class="badge bg-warning">Pending Admin Approval</span>
+                {% endif %}
+                
+                <hr>
+                <p><strong>Name:</strong> {{ chef.name }}</p>
+                <p><strong>Phone:</strong> {{ chef.phone }}</p>
+                <p><strong>Location:</strong> {{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}</p>
+                <p><strong>Meals Offered:</strong> {{ chef.meals_offered.replace(',', ', ') }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-3">My Bookings</h4>
+{% if bookings %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Event Date</th>
+                <th>Location</th>
+                <th>Deposit</th>
+                <th>Status</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.event.event_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ booking.event.county }}, {{ booking.event.town }}</td>
+                <td>KES {{ "%.2f"|format(booking.deposit_amount) }}</td>
+                <td>
+                    {% if booking.status == 'confirmed' %}
+                        <span class="badge bg-success">{{ booking.status.title() }}</span>
+                    {% else %}
+                        <span class="badge bg-warning">{{ booking.status.title() }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ booking.created_at.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> No bookings yet. Customers will find you when you're approved.
+</div>
+{% endif %}
+{% endblock %}

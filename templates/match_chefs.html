@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Match Chefs - e-Rugah{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Available Chefs for Your Event</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>Event Details</h5>
+        <p><strong>Location:</strong> {{ event.county }}, {{ event.sub_county }}, {{ event.town }}</p>
+        <p><strong>Date:</strong> {{ event.event_date.strftime('%Y-%m-%d') }}</p>
+        <p><strong>Guests:</strong> {{ event.adult_guests + event.child_guests }} ({{ event.adult_guests }} adults, {{ event.child_guests }} children)</p>
+        <p><strong>Estimated Cost:</strong> KES {{ "%.2f"|format(event.total_cost) }}</p>
+    </div>
+</div>
+
+{% if chefs %}
+<div class="row">
+    {% for chef in chefs %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ chef.name }}</h5>
+                <p class="card-text">
+                    <i class="bi bi-geo-alt"></i> {{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}<br>
+                    <i class="bi bi-telephone"></i> {{ chef.phone }}<br>
+                    <i class="bi bi-info-circle"></i> {{ chef.about }}
+                </p>
+                <h6>Meals Offered:</h6>
+                <p class="text-muted">{{ chef.meals_offered.replace(',', ', ') }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('book_chef', event_id=event.id, chef_id=chef.id) }}" class="btn btn-primary w-100">Select This Chef</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle"></i> No approved chefs found in your area. Please check back later or contact support.
+</div>
+{% endif %}
+{% endblock %}

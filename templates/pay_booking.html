@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Payment - e-Rugah{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-4">Pay Deposit</h2>
+                
+                <div class="alert alert-info mb-4">
+                    <h5>Booking Summary</h5>
+                    <p><strong>Event Date:</strong> {{ event.event_date.strftime('%Y-%m-%d') }}</p>
+                    <p><strong>Total Cost:</strong> KES {{ "%.2f"|format(event.total_cost) }}</p>
+                    <p><strong>Deposit Amount:</strong> KES {{ "%.2f"|format(booking.deposit_amount) }}</p>
+                </div>
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">M-PESA Phone Number</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="254712345678" required>
+                        <div class="form-text">Enter your M-PESA registered phone number (format: 254XXXXXXXXX)</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-phone"></i> Pay via M-PESA
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

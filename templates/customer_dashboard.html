@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Dashboard - e-Rugah{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">My Events</h2>
+
+<div class="mb-3">
+    <a href="{{ url_for('create_event') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Create New Event
+    </a>
+</div>
+
+{% if events %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Event Date</th>
+                <th>Location</th>
+                <th>Guests</th>
+                <th>Total Cost</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td>{{ event.id }}</td>
+                <td>{{ event.event_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ event.county }}, {{ event.sub_county }}, {{ event.town }}</td>
+                <td>{{ event.adult_guests + event.child_guests }}</td>
+                <td>KES {{ "%.2f"|format(event.total_cost) }}</td>
+                <td>{{ event.created_at.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    {% if not event.bookings %}
+                    <a href="{{ url_for('match_chefs', event_id=event.id) }}" class="btn btn-sm btn-primary">Match Chefs</a>
+                    {% else %}
+                    <span class="badge bg-success">Booked</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> You haven't created any events yet. <a href="{{ url_for('create_event') }}">Create your first event</a>
+</div>
+{% endif %}
+{% endblock %}

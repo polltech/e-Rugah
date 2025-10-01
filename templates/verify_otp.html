@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Verify OTP - e-Rugah{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body p-5 text-center">
+                <i class="bi bi-envelope-check text-primary" style="font-size: 4rem;"></i>
+                <h2 class="card-title my-4">Verify Your Email</h2>
+                <p class="mb-4">We've sent a 6-digit verification code to <strong>{{ email }}</strong></p>
+                <p class="text-muted mb-4">Check your console output for the OTP code.</p>
+                
+                <form method="POST">
+                    <input type="hidden" name="email" value="{{ email }}">
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Enter OTP Code</label>
+                        <input type="text" class="form-control form-control-lg text-center" id="code" name="code" maxlength="6" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Verify</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

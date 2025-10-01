@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - e-Rugah{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Booking Reports</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Filter Reports</h5>
+        <form method="GET">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="start_date" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date or '' }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="end_date" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date or '' }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="chef_id" class="form-label">Chef</label>
+                    <select class="form-control" id="chef_id" name="chef_id">
+                        <option value="">All Chefs</option>
+                        {% for chef in chefs %}
+                        <option value="{{ chef.id }}" {% if chef_id and chef.id == chef_id|int %}selected{% endif %}>{{ chef.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="county" class="form-label">County</label>
+                    <input type="text" class="form-control" id="county" name="county" value="{{ county or '' }}">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+            <a href="{{ url_for('reports') }}" class="btn btn-secondary">Clear Filters</a>
+        </form>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>Total Deposits Collected: <span class="text-success">KES {{ "%.2f"|format(total_deposits) }}</span></h5>
+        <div class="mt-3">
+            <a href="{{ url_for('export_csv') }}?{{ request.query_string.decode() }}" class="btn btn-success">
+                <i class="bi bi-file-earmark-spreadsheet"></i> Export CSV
+            </a>
+            <a href="{{ url_for('export_pdf') }}?{{ request.query_string.decode() }}" class="btn btn-danger">
+                <i class="bi bi-file-earmark-pdf"></i> Export PDF
+            </a>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-3">Booking Details</h4>
+{% if results %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Event Date</th>
+                <th>Chef</th>
+                <th>Location</th>
+                <th>Guests</th>
+                <th>Total Cost</th>
+                <th>Deposit</th>
+                <th>Status</th>
+                <th>Payment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking, event, chef, payment in results %}
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ event.event_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ chef.name }}</td>
+                <td>{{ event.county }}, {{ event.town }}</td>
+                <td>{{ event.adult_guests + event.child_guests }}</td>
+                <td>KES {{ "%.2f"|format(event.total_cost) }}</td>
+                <td>KES {{ "%.2f"|format(booking.deposit_amount) }}</td>
+                <td>
+                    {% if booking.status == 'confirmed' %}
+                        <span class="badge bg-success">{{ booking.status.title() }}</span>
+                    {% else %}
+                        <span class="badge bg-warning">{{ booking.status.title() }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if payment %}
+                        {% if payment.status == 'success' %}
+                            <span class="badge bg-success">Paid</span>
+                        {% else %}
+                            <span class="badge bg-warning">{{ payment.status.title() }}</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge bg-secondary">N/A</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> No bookings found for the selected filters.
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Chef Registration - e-Rugah{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-4">Chef Registration</h2>
+                <form method="POST">
+                    <h5 class="mb-3">Account Information</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+
+                    <h5 class="mb-3 mt-4">Personal Information</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="254712345678" required>
+                        </div>
+                    </div>
+
+                    <h5 class="mb-3 mt-4">Location</h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="county" class="form-label">County</label>
+                            <input type="text" class="form-control" id="county" name="county" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="sub_county" class="form-label">Sub-County</label>
+                            <input type="text" class="form-control" id="sub_county" name="sub_county" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="town" class="form-label">Town</label>
+                            <input type="text" class="form-control" id="town" name="town" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="about" class="form-label">About You</label>
+                        <textarea class="form-control" id="about" name="about" rows="3" required></textarea>
+                    </div>
+
+                    <h5 class="mb-3 mt-4">Meals Offered (Maximum 5)</h5>
+                    <div id="meals-container">
+                        <div class="mb-2">
+                            <input type="text" class="form-control" name="meals" placeholder="e.g., Beef Stew" required>
+                        </div>
+                        <div class="mb-2">
+                            <input type="text" class="form-control" name="meals" placeholder="e.g., Chicken Curry">
+                        </div>
+                        <div class="mb-2">
+                            <input type="text" class="form-control" name="meals" placeholder="e.g., Vegetable Pilau">
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Register as Chef</button>
+                    </div>
+                </form>
+                <div class="text-center mt-3">
+                    <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
