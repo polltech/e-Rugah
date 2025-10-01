@@ -808,7 +808,8 @@ footer p {
     }
     
     .hero-section {
-        padding: 3rem 0;
+        padding: 3rem 1.5rem;
+        border-radius: 25px;
     }
     
     .stats-card h2 {
@@ -823,6 +824,77 @@ footer p {
     
     .navbar-brand {
         font-size: 1.5rem;
+    }
+    
+    .feature-image-card {
+        height: 250px;
+    }
+    
+    .food-gallery {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .food-gallery-item {
+        height: 220px;
+    }
+    
+    .auth-card {
+        padding: 2rem;
+    }
+    
+    .auth-page {
+        padding: 1rem 0;
+    }
+    
+    .page-header {
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+    
+    .dashboard-card {
+        padding: 1.5rem;
+    }
+    
+    .btn-lg {
+        padding: 0.7rem 1.8rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        padding: 2rem 1rem;
+        margin: 1rem 0;
+    }
+    
+    .feature-image-card {
+        height: 200px;
+        margin-bottom: 2rem;
+    }
+    
+    .food-gallery {
+        grid-template-columns: 1fr;
+    }
+    
+    .food-gallery-item {
+        height: 250px;
+    }
+    
+    .stats-card {
+        padding: 2rem;
+    }
+    
+    .stats-card h2 {
+        font-size: 2rem;
+    }
+    
+    .table {
+        font-size: 0.85rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.3rem;
     }
 }
 
