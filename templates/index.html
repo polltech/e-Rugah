@@ -1,56 +1,113 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row align-items-center" style="min-height: 60vh;">
-    <div class="col-lg-6">
-        <h1 class="display-4 fw-bold mb-4">Welcome to e-Rugah</h1>
-        <p class="lead mb-4">Electronic Cooking Platform - Connecting Your Events with Professional Chefs</p>
-        <p class="mb-4">Plan your event, select your menu, and let us match you with the best professional chefs in your area.</p>
-        <div class="d-grid gap-2 d-md-flex">
-            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg px-4">Get Started</a>
-            <a href="{{ url_for('chef_register') }}" class="btn btn-outline-secondary btn-lg px-4">Join as Chef</a>
+<div class="hero-section">
+    <div class="row align-items-center">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-4">
+                <i class="bi bi-fire" style="color: var(--primary-color);"></i>
+                Taste the Magic of<br>Professional Cooking
+            </h1>
+            <p class="lead mb-4">Connect with expert chefs who bring culinary excellence to your events. From intimate gatherings to grand celebrations.</p>
+            <p class="mb-4" style="font-size: 1.1rem;">Plan your event, choose from mouth-watering menus, and let us match you with the perfect chef in your area.</p>
+            <div class="d-grid gap-3 d-md-flex">
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-rocket-takeoff"></i> Start Planning
+                </a>
+                <a href="{{ url_for('chef_register') }}" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-award"></i> Become a Chef
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-6 mt-4 mt-lg-0">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h3 class="card-title section-title mb-4"><i class="bi bi-lightbulb"></i> How It Works</h3>
+                    
+                    <div class="how-it-works-item">
+                        <div class="d-flex align-items-center">
+                            <div class="feature-icon">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">Create Your Event</h5>
+                                <p class="text-muted mb-0">Share event details, location, and guest count</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="how-it-works-item">
+                        <div class="d-flex align-items-center">
+                            <div class="feature-icon">
+                                <i class="bi bi-card-checklist"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">Select Delicious Menus</h5>
+                                <p class="text-muted mb-0">Pick from a variety of cuisines and dishes</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="how-it-works-item">
+                        <div class="d-flex align-items-center">
+                            <div class="feature-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">Match with Top Chefs</h5>
+                                <p class="text-muted mb-0">We find verified professionals near you</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="how-it-works-item">
+                        <div class="d-flex align-items-center">
+                            <div class="feature-icon">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">Secure Payment & Enjoy</h5>
+                                <p class="text-muted mb-0">Pay deposit via M-PESA and relax</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="col-lg-6">
-        <div class="card shadow">
-            <div class="card-body p-5">
-                <h3 class="card-title mb-4">How It Works</h3>
-                <div class="d-flex mb-3">
-                    <div class="flex-shrink-0">
-                        <i class="bi bi-calendar-event fs-3 text-primary"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h5>Create Your Event</h5>
-                        <p class="text-muted">Tell us about your event details, location, and guest count.</p>
-                    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="feature-icon mx-auto">
+                    <i class="bi bi-award"></i>
                 </div>
-                <div class="d-flex mb-3">
-                    <div class="flex-shrink-0">
-                        <i class="bi bi-card-checklist fs-3 text-primary"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h5>Select Your Menu</h5>
-                        <p class="text-muted">Choose from our variety of delicious menu options.</p>
-                    </div>
+                <h4>Verified Chefs</h4>
+                <p class="text-muted">All our chefs are verified professionals with proven expertise in culinary arts.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="feature-icon mx-auto">
+                    <i class="bi bi-geo-alt"></i>
                 </div>
-                <div class="d-flex mb-3">
-                    <div class="flex-shrink-0">
-                        <i class="bi bi-person-badge fs-3 text-primary"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h5>Match with Chefs</h5>
-                        <p class="text-muted">We find the best professional chefs near you.</p>
-                    </div>
+                <h4>Local Matching</h4>
+                <p class="text-muted">Find chefs in your exact area for fresh, timely, and convenient service.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="feature-icon mx-auto">
+                    <i class="bi bi-shield-check"></i>
                 </div>
-                <div class="d-flex">
-                    <div class="flex-shrink-0">
-                        <i class="bi bi-cash-coin fs-3 text-primary"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h5>Pay & Confirm</h5>
-                        <p class="text-muted">Secure deposit payment via M-PESA and confirm your booking.</p>
-                    </div>
-                </div>
+                <h4>Secure Payments</h4>
+                <p class="text-muted">Safe and reliable M-PESA integration for hassle-free transactions.</p>
             </div>
         </div>
     </div>
