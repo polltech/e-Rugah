@@ -5,18 +5,24 @@
     <div class="row align-items-center">
         <div class="col-lg-6">
             <h1 class="display-4 fw-bold mb-4">
-                <i class="bi bi-fire" style="color: var(--primary-color);"></i>
-                Taste the Magic of<br>Professional Cooking
+                🔥 Taste the Magic of<br>Professional Cooking
             </h1>
-            <p class="lead mb-4">Connect with expert chefs who bring culinary excellence to your events. From intimate gatherings to grand celebrations.</p>
-            <p class="mb-4" style="font-size: 1.1rem;">Plan your event, choose from mouth-watering menus, and let us match you with the perfect chef in your area.</p>
+            <p class="lead mb-4">Connect with <strong>expert chefs</strong> who bring culinary excellence to your events. From intimate gatherings to grand celebrations. <span class="food-emoji">🍽️</span></p>
+            <p class="mb-4" style="font-size: 1.15rem;">Plan your event, choose from <strong>mouth-watering menus</strong>, and let us match you with the perfect chef in your area. <span class="food-emoji">👨‍🍳</span></p>
             <div class="d-grid gap-3 d-md-flex">
                 <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
-                    <i class="bi bi-rocket-takeoff"></i> Start Planning
+                    <i class="bi bi-rocket-takeoff"></i> Start Planning Your Event
                 </a>
                 <a href="{{ url_for('chef_register') }}" class="btn btn-outline-secondary btn-lg">
-                    <i class="bi bi-award"></i> Become a Chef
+                    <i class="bi bi-award"></i> Join as a Chef
                 </a>
+            </div>
+            <div class="mt-4">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check" style="color: var(--food-green);"></i> Verified Chefs Only &nbsp;&nbsp;
+                    <i class="bi bi-cash-coin" style="color: var(--food-green);"></i> Secure M-PESA Payments &nbsp;&nbsp;
+                    <i class="bi bi-stars" style="color: var(--food-green);"></i> Premium Service
+                </small>
             </div>
         </div>
         <div class="col-lg-6 mt-4 mt-lg-0">
@@ -82,10 +88,10 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="feature-icon mx-auto">
-                    <i class="bi bi-award"></i>
+                    👨‍🍳
                 </div>
-                <h4>Verified Chefs</h4>
-                <p class="text-muted">All our chefs are verified professionals with proven expertise in culinary arts.</p>
+                <h4 style="color: var(--dark-color); font-weight: 700;">Verified Professional Chefs</h4>
+                <p class="text-muted" style="font-size: 1.05rem;">All our chefs are verified professionals with proven expertise in culinary arts and years of experience.</p>
             </div>
         </div>
     </div>
@@ -93,10 +99,10 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="feature-icon mx-auto">
-                    <i class="bi bi-geo-alt"></i>
+                    📍
                 </div>
-                <h4>Local Matching</h4>
-                <p class="text-muted">Find chefs in your exact area for fresh, timely, and convenient service.</p>
+                <h4 style="color: var(--dark-color); font-weight: 700;">Smart Local Matching</h4>
+                <p class="text-muted" style="font-size: 1.05rem;">Find talented chefs in your exact area for fresh ingredients, timely service, and convenient coordination.</p>
             </div>
         </div>
     </div>
@@ -104,11 +110,54 @@
         <div class="card text-center h-100">
             <div class="card-body">
                 <div class="feature-icon mx-auto">
-                    <i class="bi bi-shield-check"></i>
+                    💳
                 </div>
-                <h4>Secure Payments</h4>
-                <p class="text-muted">Safe and reliable M-PESA integration for hassle-free transactions.</p>
+                <h4 style="color: var(--dark-color); font-weight: 700;">Safe & Easy Payments</h4>
+                <p class="text-muted" style="font-size: 1.05rem;">Secure M-PESA integration for hassle-free transactions with instant confirmation.</p>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 mb-4">
+    <div class="col-12 text-center">
+        <h2 class="section-title d-inline-block" style="font-weight: 800;">
+            <span class="food-emoji">✨</span> Why Choose e-Rugah? <span class="food-emoji">✨</span>
+        </h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="info-card">
+            <h5 style="color: var(--primary-color); font-weight: 700;">
+                <span class="food-emoji">🍱</span> Diverse Cuisine Options
+            </h5>
+            <p class="mb-0">From traditional favorites to international delicacies, our chefs offer a wide range of cuisines to satisfy every palate and dietary preference.</p>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="info-card">
+            <h5 style="color: var(--primary-color); font-weight: 700;">
+                <span class="food-emoji">💰</span> Transparent Pricing
+            </h5>
+            <p class="mb-0">Know exactly what you're paying for. No hidden fees, just straightforward pricing based on your menu selections and guest count.</p>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="info-card">
+            <h5 style="color: var(--primary-color); font-weight: 700;">
+                <span class="food-emoji">⚡</span> Quick Booking Process
+            </h5>
+            <p class="mb-0">Book your perfect chef in minutes! Our streamlined process gets you from event planning to confirmation in just a few clicks.</p>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="info-card">
+            <h5 style="color: var(--primary-color); font-weight: 700;">
+                <span class="food-emoji">⭐</span> Quality Guaranteed
+            </h5>
+            <p class="mb-0">Every chef on our platform is thoroughly vetted and verified. We ensure only the best culinary professionals serve your events.</p>
         </div>
     </div>
 </div>
