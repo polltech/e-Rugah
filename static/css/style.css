@@ -349,10 +349,12 @@ body::before {
 
 .hero-section h1 {
     color: white !important;
-    text-shadow: 0 6px 30px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 8px 40px rgba(0, 0, 0, 0.6), 0 4px 15px rgba(0, 0, 0, 0.4);
     font-weight: 900;
-    letter-spacing: -0.5px;
-    line-height: 1.1;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    font-size: 4rem;
+    margin-bottom: 2rem;
 }
 
 .hero-section h1 br {
@@ -361,34 +363,44 @@ body::before {
 
 .hero-section .lead {
     color: rgba(255, 255, 255, 0.98) !important;
-    text-shadow: 0 3px 15px rgba(0, 0, 0, 0.4);
-    font-size: 1.35rem;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    font-size: 1.5rem;
     font-weight: 500;
-    line-height: 1.6;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
 }
 
 .hero-section p {
-    color: rgba(255, 255, 255, 0.95) !important;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.96) !important;
+    text-shadow: 0 3px 15px rgba(0, 0, 0, 0.4);
     font-weight: 400;
+    font-size: 1.3rem;
+    line-height: 1.7;
 }
 
 .hero-section .lead strong,
 .hero-section p strong {
     color: white;
-    font-weight: 700;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    font-weight: 800;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    display: inline-block;
 }
 
 .hero-section small {
-    color: rgba(255, 255, 255, 0.95) !important;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-    font-weight: 600;
-    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.98) !important;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
 }
 
 .hero-section small i {
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
 }
 
 .hero-section .card {
@@ -858,6 +870,23 @@ footer p {
         font-size: 2.2rem;
     }
     
+    .hero-section h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-section .lead {
+        font-size: 1.15rem;
+    }
+    
+    .hero-section p {
+        font-size: 1.05rem;
+    }
+    
+    .hero-section small {
+        font-size: 0.85rem;
+    }
+    
     .hero-section {
         padding: 3rem 1.5rem;
         border-radius: 25px;
@@ -890,6 +919,10 @@ footer p {
         height: 220px;
     }
     
+    .food-gallery-item::after {
+        font-size: 1.2rem;
+    }
+    
     .auth-card {
         padding: 2rem;
     }
@@ -914,6 +947,31 @@ footer p {
 }
 
 @media (max-width: 576px) {
+    .hero-section h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        letter-spacing: -0.5px;
+    }
+    
+    .hero-section .lead {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-section p {
+        font-size: 0.95rem;
+    }
+    
+    .hero-section small {
+        font-size: 0.75rem;
+        display: block;
+        line-height: 1.8;
+    }
+    
+    .hero-section small i {
+        font-size: 1rem;
+    }
+    
     .hero-section {
         padding: 2rem 1rem;
         margin: 1rem 0;
@@ -930,6 +988,10 @@ footer p {
     
     .food-gallery-item {
         height: 250px;
+    }
+    
+    .food-gallery-item::after {
+        font-size: 1.1rem;
     }
     
     .stats-card {
@@ -1093,6 +1155,7 @@ footer p {
     height: 280px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     transition: all 0.4s ease;
+    cursor: pointer;
 }
 
 .food-gallery-item img {
@@ -1102,6 +1165,24 @@ footer p {
     transition: transform 0.6s ease;
 }
 
+.food-gallery-item::after {
+    content: attr(data-title);
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.95), rgba(247, 147, 30, 0.92));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 2rem;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
 .food-gallery-item:hover {
     transform: translateY(-10px) scale(1.02);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
@@ -1109,6 +1190,10 @@ footer p {
 
 .food-gallery-item:hover img {
     transform: scale(1.15);
+}
+
+.food-gallery-item:hover::after {
+    opacity: 1;
 }
 
 .glassmorphism {
