@@ -1,0 +1,97 @@
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+
+db = SQLAlchemy()
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+    role = db.Column(db.String(20), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    chef = db.relationship('Chef', backref='user', uselist=False, lazy=True)
+    events = db.relationship('Event', backref='customer', lazy=True)
+    
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+class Chef(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    county = db.Column(db.String(50), nullable=False)
+    sub_county = db.Column(db.String(50), nullable=False)
+    town = db.Column(db.String(50), nullable=False)
+    about = db.Column(db.Text)
+    meals_offered = db.Column(db.Text)
+    photo_url = db.Column(db.String(200))
+    is_verified = db.Column(db.Boolean, default=False)
+    is_approved = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    bookings = db.relationship('Booking', backref='chef', lazy=True)
+
+class Event(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    county = db.Column(db.String(50), nullable=False)
+    sub_county = db.Column(db.String(50), nullable=False)
+    town = db.Column(db.String(50), nullable=False)
+    adult_guests = db.Column(db.Integer, nullable=False)
+    child_guests = db.Column(db.Integer, nullable=False)
+    event_date = db.Column(db.DateTime, nullable=False)
+    menu_items = db.Column(db.Text)
+    total_cost = db.Column(db.Float, default=0.0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    bookings = db.relationship('Booking', backref='event', lazy=True)
+
+class MenuItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(50))
+    price_per_person = db.Column(db.Float, nullable=False)
+    ingredients = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Booking(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
+    chef_id = db.Column(db.Integer, db.ForeignKey('chef.id'), nullable=False)
+    status = db.Column(db.String(20), default='pending')
+    deposit_amount = db.Column(db.Float)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    confirmed_at = db.Column(db.DateTime)
+    
+    payments = db.relationship('Payment', backref='booking', lazy=True)
+
+class Payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    booking_id = db.Column(db.Integer, db.ForeignKey('booking.id'), nullable=False)
+    phone_number = db.Column(db.String(20), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    mpesa_receipt_number = db.Column(db.String(50))
+    transaction_id = db.Column(db.String(50))
+    status = db.Column(db.String(20), default='pending')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    completed_at = db.Column(db.DateTime)
+
+class OTP(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), nullable=False)
+    code = db.Column(db.String(6), nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=False)
+    is_used = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class SystemConfig(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(50), unique=True, nullable=False)
+    value = db.Column(db.String(200), nullable=False)
