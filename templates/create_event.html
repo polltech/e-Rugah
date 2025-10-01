@@ -3,61 +3,84 @@
 {% block title %}Create Event - e-Rugah{% endblock %}
 
 {% block content %}
+<div class="page-header text-center">
+    <h2><span class="food-emoji">🎉</span> Plan Your Perfect Event <span class="food-emoji">🍴</span></h2>
+    <p class="mb-0">Tell us about your event and select delicious menu items</p>
+</div>
+
 <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-10">
         <div class="card shadow">
             <div class="card-body p-4">
-                <h2 class="card-title mb-4">Create New Event</h2>
+                <h3 class="card-title mb-4 section-title"><i class="bi bi-calendar-event"></i> Event Details</h3>
                 <form method="POST">
-                    <h5 class="mb-3">Location Details</h5>
+                    <h5 class="mb-3"><i class="bi bi-geo-alt-fill" style="color: var(--primary-color);"></i> Location Details</h5>
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="county" class="form-label">County</label>
-                            <input type="text" class="form-control" id="county" name="county" required>
+                            <label for="county" class="form-label"><i class="bi bi-map"></i> County</label>
+                            <input type="text" class="form-control" id="county" name="county" placeholder="e.g., Nairobi" required>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="sub_county" class="form-label">Sub-County</label>
-                            <input type="text" class="form-control" id="sub_county" name="sub_county" required>
+                            <label for="sub_county" class="form-label"><i class="bi bi-pin-map"></i> Sub-County</label>
+                            <input type="text" class="form-control" id="sub_county" name="sub_county" placeholder="e.g., Westlands" required>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="town" class="form-label">Town</label>
-                            <input type="text" class="form-control" id="town" name="town" required>
+                            <label for="town" class="form-label"><i class="bi bi-house"></i> Town</label>
+                            <input type="text" class="form-control" id="town" name="town" placeholder="e.g., Parklands" required>
                         </div>
                     </div>
 
-                    <h5 class="mb-3 mt-4">Event Details</h5>
+                    <h5 class="mb-3 mt-4"><i class="bi bi-calendar-check" style="color: var(--primary-color);"></i> Event Information</h5>
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="event_date" class="form-label">Event Date</label>
+                            <label for="event_date" class="form-label"><i class="bi bi-calendar-heart"></i> Event Date</label>
                             <input type="date" class="form-control" id="event_date" name="event_date" required>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="adult_guests" class="form-label">Adult Guests</label>
-                            <input type="number" class="form-control" id="adult_guests" name="adult_guests" min="0" required>
+                            <label for="adult_guests" class="form-label"><i class="bi bi-people-fill"></i> Adult Guests</label>
+                            <input type="number" class="form-control" id="adult_guests" name="adult_guests" min="0" placeholder="Number of adults" required>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="child_guests" class="form-label">Child Guests</label>
-                            <input type="number" class="form-control" id="child_guests" name="child_guests" min="0" required>
+                            <label for="child_guests" class="form-label"><i class="bi bi-emoji-smile"></i> Child Guests</label>
+                            <input type="number" class="form-control" id="child_guests" name="child_guests" min="0" placeholder="Number of children" required>
                         </div>
                     </div>
 
-                    <h5 class="mb-3 mt-4">Menu Selection</h5>
+                    <h5 class="mb-3 mt-4 section-title"><span class="food-emoji">🍽️</span> Select Delicious Menu Items <span class="food-emoji">😋</span></h5>
+                    <p class="text-muted mb-3">Choose your favorite dishes for your event. All prices are per person.</p>
                     <div class="row">
                         {% for item in menu_items %}
-                        <div class="col-md-6 mb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="menu_items" value="{{ item.id }}" id="item{{ item.id }}">
-                                <label class="form-check-label" for="item{{ item.id }}">
-                                    <strong>{{ item.name }}</strong> ({{ item.category }}) - KES {{ "%.2f"|format(item.price_per_person) }}/person
-                                    <br><small class="text-muted">{{ item.ingredients }}</small>
-                                </label>
+                        <div class="col-md-6 mb-3">
+                            <div class="menu-item-card">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="menu_items" value="{{ item.id }}" id="item{{ item.id }}">
+                                    <label class="form-check-label w-100" for="item{{ item.id }}" style="cursor: pointer;">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong style="color: var(--dark-color); font-size: 1.1rem;">{{ item.name }}</strong>
+                                                <span class="badge bg-secondary ms-2" style="font-size: 0.75rem;">{{ item.category }}</span>
+                                            </div>
+                                            <div>
+                                                <strong style="color: var(--primary-color); font-size: 1.15rem;">KES {{ "%.0f"|format(item.price_per_person) }}</strong>
+                                                <small class="text-muted d-block text-end">per person</small>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted d-block mt-2"><i class="bi bi-info-circle"></i> {{ item.ingredients }}</small>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
 
+                    <div class="alert alert-info mt-4">
+                        <i class="bi bi-lightbulb-fill"></i> <strong>Pro Tip:</strong> Select multiple dishes to give your guests variety and make your event memorable!
+                    </div>
+
                     <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg">Create Event & Match Chefs</button>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-rocket-takeoff"></i> Create Event & Find Chefs
+                        </button>
                     </div>
                 </form>
             </div>
