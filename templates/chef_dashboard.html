@@ -3,72 +3,87 @@
 {% block title %}Chef Dashboard - e-Rugah{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Chef Dashboard</h2>
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="mb-0"><i class="bi bi-speedometer2"></i> Chef Dashboard</h2>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Manage your profile and bookings</p>
+        </div>
+    </div>
+</div>
 
 <div class="row mb-4">
     <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                <h5>Profile Status</h5>
+        <div class="dashboard-card">
+            <h5 class="mb-3"><i class="bi bi-person-badge"></i> Profile Status</h5>
+            <div class="mb-3">
                 {% if chef.is_verified %}
-                    <span class="badge bg-success">Email Verified</span>
+                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Email Verified</span>
                 {% else %}
-                    <span class="badge bg-warning">Email Not Verified</span>
+                    <span class="badge bg-warning"><i class="bi bi-exclamation-circle"></i> Email Not Verified</span>
                 {% endif %}
                 
                 {% if chef.is_approved %}
-                    <span class="badge bg-success">Approved</span>
+                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Approved</span>
                 {% else %}
-                    <span class="badge bg-warning">Pending Admin Approval</span>
+                    <span class="badge bg-warning"><i class="bi bi-clock"></i> Pending Admin Approval</span>
                 {% endif %}
-                
-                <hr>
-                <p><strong>Name:</strong> {{ chef.name }}</p>
-                <p><strong>Phone:</strong> {{ chef.phone }}</p>
-                <p><strong>Location:</strong> {{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}</p>
-                <p><strong>Meals Offered:</strong> {{ chef.meals_offered.replace(',', ', ') }}</p>
+            </div>
+            
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong><i class="bi bi-person"></i> Name:</strong> {{ chef.name }}</p>
+                    <p><strong><i class="bi bi-phone"></i> Phone:</strong> {{ chef.phone }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong><i class="bi bi-geo-alt"></i> Location:</strong> {{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}</p>
+                    <p><strong><i class="bi bi-egg-fried"></i> Meals Offered:</strong> {{ chef.meals_offered.replace(',', ', ') }}</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<h4 class="mb-3">My Bookings</h4>
-{% if bookings %}
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Booking ID</th>
-                <th>Event Date</th>
-                <th>Location</th>
-                <th>Deposit</th>
-                <th>Status</th>
-                <th>Created</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for booking in bookings %}
-            <tr>
-                <td>{{ booking.id }}</td>
-                <td>{{ booking.event.event_date.strftime('%Y-%m-%d') }}</td>
-                <td>{{ booking.event.county }}, {{ booking.event.town }}</td>
-                <td>KES {{ "%.2f"|format(booking.deposit_amount) }}</td>
-                <td>
-                    {% if booking.status == 'confirmed' %}
-                        <span class="badge bg-success">{{ booking.status.title() }}</span>
-                    {% else %}
-                        <span class="badge bg-warning">{{ booking.status.title() }}</span>
-                    {% endif %}
-                </td>
-                <td>{{ booking.created_at.strftime('%Y-%m-%d') }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="dashboard-card">
+    <h4 class="mb-3"><i class="bi bi-calendar-check"></i> My Bookings</h4>
+    {% if bookings %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Event Date</th>
+                    <th>Location</th>
+                    <th>Deposit</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.id }}</td>
+                    <td>{{ booking.event.event_date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ booking.event.county }}, {{ booking.event.town }}</td>
+                    <td>KES {{ "%.2f"|format(booking.deposit_amount) }}</td>
+                    <td>
+                        {% if booking.status == 'confirmed' %}
+                            <span class="badge bg-success">{{ booking.status.title() }}</span>
+                        {% else %}
+                            <span class="badge bg-warning">{{ booking.status.title() }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ booking.created_at.strftime('%Y-%m-%d') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> No bookings yet. Customers will find you when you're approved.
+    </div>
+    {% endif %}
 </div>
-{% else %}
-<div class="alert alert-info">
-    <i class="bi bi-info-circle"></i> No bookings yet. Customers will find you when you're approved.
-</div>
-{% endif %}
 {% endblock %}

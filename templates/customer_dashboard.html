@@ -16,39 +16,41 @@
 </div>
 
 {% if events %}
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Event Date</th>
-                <th>Location</th>
-                <th>Guests</th>
-                <th>Total Cost</th>
-                <th>Created</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for event in events %}
-            <tr>
-                <td>{{ event.id }}</td>
-                <td>{{ event.event_date.strftime('%Y-%m-%d') }}</td>
-                <td>{{ event.county }}, {{ event.sub_county }}, {{ event.town }}</td>
-                <td>{{ event.adult_guests + event.child_guests }}</td>
-                <td>KES {{ "%.2f"|format(event.total_cost) }}</td>
-                <td>{{ event.created_at.strftime('%Y-%m-%d') }}</td>
-                <td>
-                    {% if not event.bookings %}
-                    <a href="{{ url_for('match_chefs', event_id=event.id) }}" class="btn btn-sm btn-primary">Match Chefs</a>
-                    {% else %}
-                    <span class="badge bg-success">Booked</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="dashboard-card">
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Event Date</th>
+                    <th>Location</th>
+                    <th>Guests</th>
+                    <th>Total Cost</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.id }}</td>
+                    <td>{{ event.event_date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ event.county }}, {{ event.sub_county }}, {{ event.town }}</td>
+                    <td>{{ event.adult_guests + event.child_guests }}</td>
+                    <td>KES {{ "%.2f"|format(event.total_cost) }}</td>
+                    <td>{{ event.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        {% if not event.bookings %}
+                        <a href="{{ url_for('match_chefs', event_id=event.id) }}" class="btn btn-sm btn-primary">Match Chefs</a>
+                        {% else %}
+                        <span class="badge bg-success">Booked</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% else %}
 <div class="alert alert-info">

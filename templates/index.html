@@ -85,37 +85,63 @@
 
 <div class="row mt-5">
     <div class="col-md-4 mb-4">
-        <div class="card text-center h-100">
-            <div class="card-body">
-                <div class="feature-icon mx-auto">
-                    👨‍🍳
-                </div>
-                <h4 style="color: var(--dark-color); font-weight: 700;">Verified Professional Chefs</h4>
-                <p class="text-muted" style="font-size: 1.05rem;">All our chefs are verified professionals with proven expertise in culinary arts and years of experience.</p>
+        <div class="feature-image-card">
+            <img src="{{ url_for('static', filename='images/professional_chef_co_3045a4de.jpg') }}" alt="Professional Chef">
+            <div class="overlay">
+                <h4>👨‍🍳 Expert Chefs</h4>
             </div>
+        </div>
+        <div class="mt-3 text-center">
+            <h4 style="color: var(--dark-color); font-weight: 700;">Verified Professional Chefs</h4>
+            <p class="text-muted" style="font-size: 1.05rem;">All our chefs are verified professionals with proven expertise in culinary arts and years of experience.</p>
         </div>
     </div>
     <div class="col-md-4 mb-4">
-        <div class="card text-center h-100">
-            <div class="card-body">
-                <div class="feature-icon mx-auto">
-                    📍
-                </div>
-                <h4 style="color: var(--dark-color); font-weight: 700;">Smart Local Matching</h4>
-                <p class="text-muted" style="font-size: 1.05rem;">Find talented chefs in your exact area for fresh ingredients, timely service, and convenient coordination.</p>
+        <div class="feature-image-card">
+            <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_d952b03d.jpg') }}" alt="Gourmet Food">
+            <div class="overlay">
+                <h4>🍽️ Premium Cuisine</h4>
             </div>
+        </div>
+        <div class="mt-3 text-center">
+            <h4 style="color: var(--dark-color); font-weight: 700;">Smart Local Matching</h4>
+            <p class="text-muted" style="font-size: 1.05rem;">Find talented chefs in your exact area for fresh ingredients, timely service, and convenient coordination.</p>
         </div>
     </div>
     <div class="col-md-4 mb-4">
-        <div class="card text-center h-100">
-            <div class="card-body">
-                <div class="feature-icon mx-auto">
-                    💳
-                </div>
-                <h4 style="color: var(--dark-color); font-weight: 700;">Safe & Easy Payments</h4>
-                <p class="text-muted" style="font-size: 1.05rem;">Secure M-PESA integration for hassle-free transactions with instant confirmation.</p>
+        <div class="feature-image-card">
+            <img src="{{ url_for('static', filename='images/elegant_restaurant_t_fdc83926.jpg') }}" alt="Elegant Setup">
+            <div class="overlay">
+                <h4>✨ Perfect Events</h4>
             </div>
         </div>
+        <div class="mt-3 text-center">
+            <h4 style="color: var(--dark-color); font-weight: 700;">Safe & Easy Payments</h4>
+            <p class="text-muted" style="font-size: 1.05rem;">Secure M-PESA integration for hassle-free transactions with instant confirmation.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 mb-4">
+    <div class="col-12 text-center">
+        <h2 class="section-title d-inline-block" style="font-weight: 800;">
+            <span class="food-emoji">🍴</span> Our Culinary Gallery <span class="food-emoji">🍴</span>
+        </h2>
+    </div>
+</div>
+
+<div class="food-gallery">
+    <div class="food-gallery-item">
+        <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_9aaeee7d.jpg') }}" alt="Gourmet Dish">
+    </div>
+    <div class="food-gallery-item">
+        <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_a4450b86.jpg') }}" alt="Fine Dining">
+    </div>
+    <div class="food-gallery-item">
+        <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_d2787896.jpg') }}" alt="Delicious Meal">
+    </div>
+    <div class="food-gallery-item">
+        <img src="{{ url_for('static', filename='images/modern_kitchen_cooki_28f59968.jpg') }}" alt="Fresh Ingredients">
     </div>
 </div>
 

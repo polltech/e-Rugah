@@ -3,76 +3,86 @@
 {% block title %}Chef Registration - e-Rugah{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow">
-            <div class="card-body p-4">
-                <h2 class="card-title mb-4">Chef Registration</h2>
-                <form method="POST">
-                    <h5 class="mb-3">Account Information</h5>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+<div class="auth-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="auth-card">
+                    <div class="text-center mb-4">
+                        <div class="feature-icon mx-auto mb-3">
+                            <span style="font-size: 2rem;">👨‍🍳</span>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
+                        <h2 class="card-title section-title">Chef Registration</h2>
+                        <p class="text-muted">Join our network of professional chefs</p>
                     </div>
+                    <form method="POST">
+                        <h5 class="mb-3">Account Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label"><i class="bi bi-envelope"></i> Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label"><i class="bi bi-lock"></i> Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                        </div>
 
-                    <h5 class="mb-3 mt-4">Personal Information</h5>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="name" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                        <h5 class="mb-3 mt-4">Personal Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label"><i class="bi bi-person"></i> Full Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label"><i class="bi bi-phone"></i> Phone Number</label>
+                                <input type="text" class="form-control" id="phone" name="phone" placeholder="254712345678" required>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="text" class="form-control" id="phone" name="phone" placeholder="254712345678" required>
-                        </div>
-                    </div>
 
-                    <h5 class="mb-3 mt-4">Location</h5>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="county" class="form-label">County</label>
-                            <input type="text" class="form-control" id="county" name="county" required>
+                        <h5 class="mb-3 mt-4">Location</h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="county" class="form-label"><i class="bi bi-geo-alt"></i> County</label>
+                                <input type="text" class="form-control" id="county" name="county" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="sub_county" class="form-label"><i class="bi bi-geo"></i> Sub-County</label>
+                                <input type="text" class="form-control" id="sub_county" name="sub_county" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="town" class="form-label"><i class="bi bi-pin-map"></i> Town</label>
+                                <input type="text" class="form-control" id="town" name="town" required>
+                            </div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="sub_county" class="form-label">Sub-County</label>
-                            <input type="text" class="form-control" id="sub_county" name="sub_county" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="town" class="form-label">Town</label>
-                            <input type="text" class="form-control" id="town" name="town" required>
-                        </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="about" class="form-label">About You</label>
-                        <textarea class="form-control" id="about" name="about" rows="3" required></textarea>
-                    </div>
+                        <div class="mb-3">
+                            <label for="about" class="form-label"><i class="bi bi-info-circle"></i> About You</label>
+                            <textarea class="form-control" id="about" name="about" rows="3" placeholder="Tell us about your culinary experience and expertise" required></textarea>
+                        </div>
 
-                    <h5 class="mb-3 mt-4">Meals Offered (Maximum 5)</h5>
-                    <div id="meals-container">
-                        <div class="mb-2">
-                            <input type="text" class="form-control" name="meals" placeholder="e.g., Beef Stew" required>
+                        <h5 class="mb-3 mt-4">Meals Offered (Maximum 5)</h5>
+                        <div id="meals-container">
+                            <div class="mb-2">
+                                <input type="text" class="form-control" name="meals" placeholder="e.g., Beef Stew" required>
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" class="form-control" name="meals" placeholder="e.g., Chicken Curry">
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" class="form-control" name="meals" placeholder="e.g., Vegetable Pilau">
+                            </div>
                         </div>
-                        <div class="mb-2">
-                            <input type="text" class="form-control" name="meals" placeholder="e.g., Chicken Curry">
-                        </div>
-                        <div class="mb-2">
-                            <input type="text" class="form-control" name="meals" placeholder="e.g., Vegetable Pilau">
-                        </div>
-                    </div>
 
-                    <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg">Register as Chef</button>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-rocket-takeoff"></i> Register as Chef
+                            </button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Already have an account? <a href="{{ url_for('login') }}" style="color: var(--primary-color); font-weight: 600;">Login here</a></p>
                     </div>
-                </form>
-                <div class="text-center mt-3">
-                    <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
                 </div>
             </div>
         </div>

@@ -3,36 +3,38 @@
 {% block title %}Register - e-Rugah{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card">
-            <div class="card-body p-5">
-                <div class="text-center mb-4">
-                    <div class="feature-icon mx-auto mb-3">
-                        <span style="font-size: 2rem;">🎉</span>
+<div class="auth-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="auth-card">
+                    <div class="text-center mb-4">
+                        <div class="feature-icon mx-auto mb-3">
+                            <span style="font-size: 2rem;">🎉</span>
+                        </div>
+                        <h2 class="card-title section-title">Join e-Rugah Today</h2>
+                        <p class="text-muted">Start planning your perfect event with amazing chefs <span class="food-emoji">👨‍🍳</span></p>
                     </div>
-                    <h2 class="card-title section-title">Join e-Rugah Today</h2>
-                    <p class="text-muted">Start planning your perfect event with amazing chefs <span class="food-emoji">👨‍🍳</span></p>
-                </div>
-                <form method="POST">
-                    <div class="mb-3">
-                        <label for="email" class="form-label"><i class="bi bi-envelope"></i> Email Address</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="your@email.com" required>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label"><i class="bi bi-envelope"></i> Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label"><i class="bi bi-lock"></i> Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Create a strong password" required>
+                        </div>
+                        <input type="hidden" name="role" value="customer">
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-rocket-takeoff"></i> Create Account
+                            </button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-4">
+                        <p class="mb-2">Already have an account? <a href="{{ url_for('login') }}" style="color: var(--primary-color); font-weight: 600;">Login here</a></p>
+                        <p class="mb-0">Are you a chef? <a href="{{ url_for('chef_register') }}" style="color: var(--secondary-color); font-weight: 600;">Register as Chef</a></p>
                     </div>
-                    <div class="mb-4">
-                        <label for="password" class="form-label"><i class="bi bi-lock"></i> Password</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Create a strong password" required>
-                    </div>
-                    <input type="hidden" name="role" value="customer">
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-rocket-takeoff"></i> Create Account
-                        </button>
-                    </div>
-                </form>
-                <div class="text-center mt-4">
-                    <p class="mb-2">Already have an account? <a href="{{ url_for('login') }}" style="color: var(--primary-color); font-weight: 600;">Login here</a></p>
-                    <p class="mb-0">Are you a chef? <a href="{{ url_for('chef_register') }}" style="color: var(--secondary-color); font-weight: 600;">Register as Chef</a></p>
                 </div>
             </div>
         </div>
