@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 50">
+  <text x="10" y="35" font-family="Arial, sans-serif" font-size="30" fill="#f39c12" font-weight="bold">e-Rugah</text>
+  <!-- Crossing fork and knife -->
+  <g transform="translate(180,25)">
+    <!-- Knife -->
+    <g transform="rotate(-15) scale(0.5)">
+      <rect x="-2" y="-35" width="4" height="35" fill="#f39c12" rx="1"/>
+      <polygon points="-2,-35 2,-35 0,-40" fill="#f39c12"/>
+    </g>
+    <!-- Fork -->
+    <g transform="rotate(15) scale(0.5)">
+      <rect x="-2" y="-35" width="4" height="35" fill="#f39c12" rx="1"/>
+      <rect x="-5" y="-35" width="2" height="12" fill="#f39c12" rx="1"/>
+      <rect x="-1" y="-35" width="2" height="12" fill="#f39c12" rx="1"/>
+      <rect x="3" y="-35" width="2" height="12" fill="#f39c12" rx="1"/>
+    </g>
+  </g>
+</svg>

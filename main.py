@@ -44,7 +44,12 @@ def role_required(role):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Show welcome page for non-logged-in users
+    # Show full content (hero + all sections) for logged-in users
+    if current_user.is_authenticated:
+        return render_template('index.html')
+    else:
+        return render_template('welcome.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

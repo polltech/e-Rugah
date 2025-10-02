@@ -1,87 +1,748 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="hero-section">
-    <div class="row align-items-center">
-        <div class="col-lg-6">
-            <h1 class="display-4 fw-bold mb-4">
-                🔥 Taste the Magic of<br>Professional Cooking
-            </h1>
-            <p class="lead mb-4">Connect with <strong>expert chefs</strong> who bring culinary excellence to your events. From intimate gatherings to grand celebrations. <span class="food-emoji">🍽️</span></p>
-            <p class="mb-4" style="font-size: 1.15rem;">Plan your event, choose from <strong>mouth-watering menus</strong>, and let us match you with the perfect chef in your area. <span class="food-emoji">👨‍🍳</span></p>
-            <div class="d-grid gap-3 d-md-flex">
-                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
-                    <i class="bi bi-rocket-takeoff"></i> Start Planning Your Event
-                </a>
-                <a href="{{ url_for('chef_register') }}" class="btn btn-outline-secondary btn-lg">
-                    <i class="bi bi-award"></i> Join as a Chef
-                </a>
+<style>
+    /* Ultra-Modern Hero Section */
+    .ultra-hero {
+        position: relative;
+        min-height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        margin: -2rem -15px 0;
+        padding: 8rem 0 4rem;
+    }
+
+    /* Animated Mesh Background */
+    .hero-mesh {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(at 20% 30%, hsla(280, 100%, 70%, 0.15) 0px, transparent 50%),
+            radial-gradient(at 80% 70%, hsla(200, 100%, 70%, 0.15) 0px, transparent 50%),
+            radial-gradient(at 40% 80%, hsla(340, 100%, 70%, 0.15) 0px, transparent 50%);
+        filter: blur(80px);
+        animation: meshFloat 20s ease-in-out infinite;
+    }
+
+    @keyframes meshFloat {
+        0%, 100% { transform: scale(1) rotate(0deg); }
+        50% { transform: scale(1.2) rotate(10deg); }
+    }
+
+    /* Grid Pattern Overlay */
+    .grid-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(rgba(102, 126, 234, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(102, 126, 234, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(50px, 50px); }
+    }
+
+    /* Floating Orbs */
+    .hero-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        animation: orbFloat 25s infinite ease-in-out;
+    }
+
+    .hero-orb-1 {
+        width: 500px;
+        height: 500px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        top: -15%;
+        left: -10%;
+    }
+
+    .hero-orb-2 {
+        width: 400px;
+        height: 400px;
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+        bottom: -15%;
+        right: -10%;
+        animation-delay: 8s;
+    }
+
+    .hero-orb-3 {
+        width: 350px;
+        height: 350px;
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        top: 40%;
+        right: 20%;
+        animation-delay: 15s;
+    }
+
+    @keyframes orbFloat {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(80px, -80px) scale(1.1); }
+        66% { transform: translate(-80px, 80px) scale(0.9); }
+    }
+
+    /* Hero Container */
+    .hero-wrapper {
+        position: relative;
+        z-index: 10;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .hero-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 4rem;
+        align-items: center;
+    }
+
+    /* Left Content */
+    .hero-left {
+        animation: slideInLeft 1s ease-out;
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(102, 126, 234, 0.15);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        padding: 0.75rem 1.75rem;
+        border-radius: 100px;
+        color: #a8b3ff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+    }
+
+    .tag-icon {
+        font-size: 1.2rem;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+    }
+
+    .hero-heading {
+        font-size: 5rem;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        letter-spacing: -2px;
+    }
+
+    .heading-line {
+        display: block;
+        background: linear-gradient(135deg, #fff 0%, #a8b3ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .heading-accent {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+        display: inline-block;
+    }
+
+    .heading-accent::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        border-radius: 10px;
+        opacity: 0.3;
+    }
+
+    .hero-text {
+        font-size: 1.3rem;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.8;
+        margin-bottom: 3rem;
+        max-width: 600px;
+    }
+
+    /* Feature Pills */
+    .feature-pills {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 3rem;
+    }
+
+    .pill {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        color: white;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .pill:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px);
+    }
+
+    .pill-icon {
+        font-size: 1.2rem;
+    }
+
+    /* CTA Buttons */
+    .hero-actions {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+    }
+
+    .hero-btn {
+        padding: 1.2rem 3rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 100px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-primary-hero:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary-hero:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.6);
+        color: white;
+    }
+
+    .btn-secondary-hero {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .btn-secondary-hero:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        color: white;
+    }
+
+    /* Stats */
+    .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+
+    .stat-box-hero {
+        text-align: center;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .stat-box-hero:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-5px);
+    }
+
+    .stat-value-hero {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: white;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label-hero {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Right Visual */
+    .hero-right {
+        position: relative;
+        animation: slideInRight 1s ease-out;
+    }
+
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .visual-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 30px;
+        padding: 3rem;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .visual-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #4facfe);
+        background-size: 300% auto;
+        animation: shimmer 3s linear infinite;
+    }
+
+    @keyframes shimmer {
+        to { background-position: 300% center; }
+    }
+
+    .card-title-hero {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .title-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .process-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .process-item {
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .process-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateX(10px);
+    }
+
+    .process-num {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: white;
+        flex-shrink: 0;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .process-info h4 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+
+    .process-info p {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    /* Floating Testimonial */
+    .floating-testimonial {
+        position: absolute;
+        bottom: -50px;
+        right: -50px;
+        width: 350px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        padding: 2rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+
+    .testimonial-stars {
+        color: #ffd700;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .testimonial-text {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .author-img {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .author-details h5 {
+        color: white;
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .author-details p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .hero-grid {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+
+        .hero-right {
+            order: -1;
+        }
+
+        .floating-testimonial {
+            position: static;
+            width: 100%;
+            margin-top: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .ultra-hero {
+            padding: 6rem 0 3rem;
+        }
+
+        .hero-heading {
+            font-size: 3rem;
+        }
+
+        .hero-text {
+            font-size: 1.1rem;
+        }
+
+        .hero-actions {
+            flex-direction: column;
+        }
+
+        .hero-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .hero-stats {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<section class="ultra-hero">
+    <!-- Background Elements -->
+    <div class="hero-mesh"></div>
+    <div class="grid-pattern"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+
+    <!-- Main Content -->
+    <div class="hero-wrapper">
+        <div class="hero-grid">
+            <!-- Left Content -->
+            <div class="hero-left">
+                <div class="hero-tag">
+                    <span class="tag-icon">✨</span>
+                    <span>#1 Chef Booking Platform in Kenya</span>
+                </div>
+
+                <h1 class="hero-heading">
+                    <span class="heading-line">Experience</span>
+                    <span class="heading-line"><span class="heading-accent">Culinary Excellence</span></span>
+                    <span class="heading-line">at Your Events</span>
+                </h1>
+
+                <p class="hero-text">
+                    Connect with verified master chefs who transform ordinary gatherings into extraordinary culinary experiences. From intimate dinners to grand celebrations, we bring the finest gastronomy to your doorstep.
+                </p>
+
+                <div class="feature-pills">
+                    <div class="pill">
+                        <span class="pill-icon">✓</span>
+                        <span>Verified Chefs</span>
+                    </div>
+                    <div class="pill">
+                        <span class="pill-icon">⚡</span>
+                        <span>Instant Booking</span>
+                    </div>
+                    <div class="pill">
+                        <span class="pill-icon">🔒</span>
+                        <span>Secure Payment</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    {% if current_user.role == 'customer' %}
+                        <a href="{{ url_for('create_event') }}" class="hero-btn btn-primary-hero">
+                            <span>Create Your Event</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                            </svg>
+                        </a>
+                        <a href="{{ url_for('customer_dashboard') }}" class="hero-btn btn-secondary-hero">
+                            <span>View Dashboard</span>
+                        </a>
+                    {% elif current_user.role == 'chef' %}
+                        <a href="{{ url_for('chef_dashboard') }}" class="hero-btn btn-primary-hero">
+                            <span>View Dashboard</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                            </svg>
+                        </a>
+                    {% elif current_user.role == 'admin' %}
+                        <a href="{{ url_for('admin_dashboard') }}" class="hero-btn btn-primary-hero">
+                            <span>Admin Dashboard</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                            </svg>
+                        </a>
+                        <a href="{{ url_for('manage_menu') }}" class="hero-btn btn-secondary-hero">
+                            <span>Manage Menu</span>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-box-hero">
+                        <span class="stat-value-hero">500+</span>
+                        <span class="stat-label-hero">Happy Events</span>
+                    </div>
+                    <div class="stat-box-hero">
+                        <span class="stat-value-hero">50+</span>
+                        <span class="stat-label-hero">Expert Chefs</span>
+                    </div>
+                    <div class="stat-box-hero">
+                        <span class="stat-value-hero">4.9★</span>
+                        <span class="stat-label-hero">Rating</span>
+                    </div>
+                </div>
             </div>
-            <div class="mt-4">
-                <small>
-                    <i class="bi bi-shield-check" style="color: white;"></i> Verified Chefs Only &nbsp;&nbsp;&nbsp;
-                    <i class="bi bi-cash-coin" style="color: white;"></i> Secure M-PESA Payments &nbsp;&nbsp;&nbsp;
-                    <i class="bi bi-stars" style="color: white;"></i> Premium Service
-                </small>
-            </div>
-        </div>
-        <div class="col-lg-6 mt-4 mt-lg-0">
-            <div class="card">
-                <div class="card-body p-4">
-                    <h3 class="card-title section-title mb-4"><i class="bi bi-lightbulb"></i> How It Works</h3>
-                    
-                    <div class="how-it-works-item">
-                        <div class="d-flex align-items-center">
-                            <div class="feature-icon">
-                                <i class="bi bi-calendar-event"></i>
+
+            <!-- Right Visual -->
+            <div class="hero-right">
+                <div class="visual-card">
+                    <h3 class="card-title-hero">
+                        <span class="title-icon">🎯</span>
+                        <span>How It Works</span>
+                    </h3>
+
+                    <div class="process-list">
+                        <div class="process-item">
+                            <div class="process-num">1</div>
+                            <div class="process-info">
+                                <h4>Plan Your Event</h4>
+                                <p>Tell us about your occasion, guest count, and culinary preferences</p>
                             </div>
-                            <div class="ms-3">
-                                <h5 class="mb-1">Create Your Event</h5>
-                                <p class="text-muted mb-0">Share event details, location, and guest count</p>
+                        </div>
+
+                        <div class="process-item">
+                            <div class="process-num">2</div>
+                            <div class="process-info">
+                                <h4>Choose Your Menu</h4>
+                                <p>Browse curated menus from professional chefs</p>
+                            </div>
+                        </div>
+
+                        <div class="process-item">
+                            <div class="process-num">3</div>
+                            <div class="process-info">
+                                <h4>Get Matched</h4>
+                                <p>We connect you with the perfect chef in your area</p>
+                            </div>
+                        </div>
+
+                        <div class="process-item">
+                            <div class="process-num">4</div>
+                            <div class="process-info">
+                                <h4>Enjoy & Celebrate</h4>
+                                <p>Secure payment and unforgettable culinary experience</p>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="how-it-works-item">
-                        <div class="d-flex align-items-center">
-                            <div class="feature-icon">
-                                <i class="bi bi-card-checklist"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="mb-1">Select Delicious Menus</h5>
-                                <p class="text-muted mb-0">Pick from a variety of cuisines and dishes</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="how-it-works-item">
-                        <div class="d-flex align-items-center">
-                            <div class="feature-icon">
-                                <i class="bi bi-people"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="mb-1">Match with Top Chefs</h5>
-                                <p class="text-muted mb-0">We find verified professionals near you</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="how-it-works-item">
-                        <div class="d-flex align-items-center">
-                            <div class="feature-icon">
-                                <i class="bi bi-check-circle"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="mb-1">Secure Payment & Enjoy</h5>
-                                <p class="text-muted mb-0">Pay deposit via M-PESA and relax</p>
-                            </div>
+                </div>
+
+                <div class="floating-testimonial">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Amazing experience! The chef was professional and the food was incredible. Highly recommend e-Rugah!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-img">SM</div>
+                        <div class="author-details">
+                            <h5>Sarah Mitchell</h5>
+                            <p>Wedding Planner</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<script>
+    // Parallax effect for orbs
+    document.addEventListener('mousemove', (e) => {
+        const orbs = document.querySelectorAll('.hero-orb');
+        const mouseX = e.clientX / window.innerWidth;
+        const mouseY = e.clientY / window.innerHeight;
+
+        orbs.forEach((orb, index) => {
+            const speed = (index + 1) * 25;
+            const x = (mouseX - 0.5) * speed;
+            const y = (mouseY - 0.5) * speed;
+            orb.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    });
+
+    // 3D tilt effect for visual card
+    const visualCard = document.querySelector('.visual-card');
+    if (visualCard) {
+        visualCard.addEventListener('mousemove', (e) => {
+            const rect = visualCard.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            visualCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        
+        visualCard.addEventListener('mouseleave', () => {
+            visualCard.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        });
+    }
+</script>
 
 <div class="row mt-5">
     <div class="col-md-4 mb-4">

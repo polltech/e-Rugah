@@ -1,0 +1,716 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Hero wrapper with 100% width - full width, no space */
+    .hero-wrapper {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        overflow: hidden;
+        box-shadow: none;
+    }
+
+    /* Modern Hero Section with Image Slider */
+    .hero-section {
+        height: 70vh;
+        min-height: 500px;
+        max-height: 700px;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        padding: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Bottom-Left Triangle - Image Slider Background */
+    .hero-slider {
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: calc(100% - 2px);
+        height: calc(100% - 1px);
+        z-index: 1;
+        clip-path: polygon(0 0, 0 100%, 100% 100%);
+    }
+
+    /* Wave Border for Bottom-Left Triangle */
+    .hero-slider::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #ff6b6b);
+        background-size: 400% 400%;
+        animation: waveGradient 8s ease infinite;
+        clip-path: polygon(0 0, 0 100%, 100% 100%);
+        z-index: -1;
+        filter: blur(8px);
+    }
+
+    @keyframes waveGradient {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    .hero-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+    }
+
+    .hero-slide.active {
+        opacity: 1;
+    }
+
+    .hero-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    /* Top-Right Triangle - Second Image Slider (Upside Down) */
+    .hero-slider-right {
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: calc(100% - 2px);
+        height: calc(100% - 1px);
+        z-index: 3;
+        clip-path: polygon(0 0, 100% 0, 100% 100%);
+    }
+
+    .hero-slide-right {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+        z-index: 1;
+    }
+
+    .hero-slide-right.active {
+        opacity: 1;
+        z-index: 2;
+    }
+
+    .hero-slide-right img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    /* Dark Overlay for Bottom-Left Triangle */
+    .hero-overlay {
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: calc(100% - 2px);
+        height: calc(100% - 1px);
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(30, 41, 59, 0.65) 50%, rgba(102, 126, 234, 0.45) 100%);
+        z-index: 2;
+        clip-path: polygon(0 0, 0 100%, 100% 100%);
+    }
+
+    /* Dark Overlay for Top-Right Triangle */
+    .hero-overlay-right {
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: calc(100% - 2px);
+        height: calc(100% - 1px);
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.45) 0%, rgba(30, 41, 59, 0.65) 50%, rgba(15, 23, 42, 0.75) 100%);
+        z-index: 4;
+        clip-path: polygon(0 0, 100% 0, 100% 100%);
+        pointer-events: none;
+    }
+
+    /* Content Container */
+    .hero-content {
+        position: relative;
+        z-index: 10;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 4rem 2rem 2rem;
+        width: 100%;
+    }
+
+    /* Main Title */
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 50%, #c7d2fe 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+        animation: fadeInUp 1s ease-out 0.2s both;
+        letter-spacing: -1px;
+        filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Subtitle */
+    .hero-subtitle {
+        font-size: 1.2rem;
+        font-weight: 400;
+        color: #f0f4ff;
+        margin-bottom: 2.5rem;
+        max-width: 700px;
+        line-height: 1.8;
+        animation: fadeInUp 1s ease-out 0.4s both;
+        text-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
+        letter-spacing: 0.3px;
+    }
+
+    /* CTA Buttons */
+    .hero-cta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        animation: fadeInUp 1s ease-out 0.6s both;
+    }
+
+    .hero-btn {
+        padding: 0.9rem 2.2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+        color: white;
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(99, 102, 241, 0.7);
+        color: white;
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px) scale(1.02);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Slider Navigation Dots */
+    .slider-dots {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.8rem;
+        z-index: 10;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(10px);
+        padding: 0.8rem 1.2rem;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .slider-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+    }
+
+    .slider-dot.active {
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        width: 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
+    }
+
+    .slider-dot:hover {
+        background: rgba(255, 255, 255, 0.8);
+        transform: scale(1.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-wrapper {
+            width: 100%;
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .hero-section {
+            height: 60vh;
+            min-height: 450px;
+        }
+
+        .hero-content {
+            padding: 3rem 1.5rem 2rem;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .hero-cta {
+            flex-direction: column;
+        }
+
+        .hero-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .slider-dots {
+            bottom: 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-wrapper {
+            width: 100%;
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .hero-section {
+            height: 55vh;
+            min-height: 400px;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 0.95rem;
+        }
+
+        .hero-btn {
+            padding: 0.8rem 2rem;
+            font-size: 0.95rem;
+        }
+    }
+</style>
+
+</div> <!-- Close container from base.html -->
+
+<div class="hero-wrapper">
+    <section class="hero-section">
+        <!-- Image Slider -->
+        <div class="hero-slider">
+        <div class="hero-slide active">
+            <img src="{{ url_for('static', filename='images/pexels-robinstickel-70497.jpg') }}" alt="Culinary Excellence">
+        </div>
+        <div class="hero-slide">
+            <img src="{{ url_for('static', filename='images/pexels-taryn-elliott-5107128.jpg') }}" alt="Professional Chef">
+        </div>
+        <div class="hero-slide">
+            <img src="{{ url_for('static', filename='images/pexels-valeriya-1833349.jpg') }}" alt="Gourmet Dining">
+        </div>
+        <div class="hero-slide">
+            <img src="{{ url_for('static', filename='images/pexels-vanmalidate-784633.jpg') }}" alt="Delicious Cuisine">
+        </div>
+        <div class="hero-slide">
+            <img src="{{ url_for('static', filename='images/download.png') }}" alt="Culinary Artistry">
+        </div>
+        <div class="hero-slide">
+            <img src="{{ url_for('static', filename='images/download (1).png') }}" alt="Gourmet Experience">
+        </div>
+    </div>
+
+    <!-- Dark Overlay Left -->
+    <div class="hero-overlay"></div>
+
+    <!-- Right Triangle Image Slider -->
+    <div class="hero-slider-right">
+        <div class="hero-slide-right active">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-asphotograpy-226722 (1).jpg') }}" alt="Culinary Art 1">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-chanwalrus-958545 (1).jpg') }}" alt="Culinary Art 2">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-daniela-elena-tentis-118658-262959.jpg') }}" alt="Culinary Art 3">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-foodie-factor-162291-551997.jpg') }}" alt="Culinary Art 4">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-iina-luoto-460132-1211887.jpg') }}" alt="Culinary Art 5">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-mat-brown-150387-1395967.jpg') }}" alt="Culinary Art 6">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-sebastian-coman-photography-1598188-3655916.jpg') }}" alt="Culinary Art 7">
+        </div>
+    </div>
+
+    <!-- Dark Overlay Right -->
+    <div class="hero-overlay-right"></div>
+
+    <!-- Main Content -->
+    <div class="hero-content">
+        <h1 class="hero-title">
+            Elevate Your Events<br>
+            <span style="background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">With Culinary Excellence</span>
+        </h1>
+
+        <p class="hero-subtitle">
+            🍽️ Connect with verified professional chefs who transform your special moments into unforgettable culinary experiences. From intimate gatherings to grand celebrations.
+        </p>
+
+        <div class="hero-cta">
+            <a href="{{ url_for('login') }}" class="hero-btn btn-primary">
+                <span>Get Started Now</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                </svg>
+            </a>
+            <a href="{{ url_for('chef_register') }}" class="hero-btn btn-secondary">
+                <span>Join as Chef</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Slider Navigation Dots -->
+    <div class="slider-dots">
+        <span class="slider-dot active" data-slide="0"></span>
+        <span class="slider-dot" data-slide="1"></span>
+        <span class="slider-dot" data-slide="2"></span>
+        <span class="slider-dot" data-slide="3"></span>
+        <span class="slider-dot" data-slide="4"></span>
+        <span class="slider-dot" data-slide="5"></span>
+    </div>
+    </section>
+</div>
+
+<div class="container"> <!-- Reopen container for rest of content -->
+
+<script>
+    // Image Slider Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Left Triangle Slider
+        const slides = document.querySelectorAll('.hero-slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        let currentSlide = 0;
+        const slideInterval = 5000; // 5 seconds
+
+        function showSlide(index) {
+            // Remove active class from all slides and dots
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+
+            // Add active class to current slide and dot
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        // Auto-advance slides
+        let autoSlide = setInterval(nextSlide, slideInterval);
+
+        // Manual navigation with dots
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+                // Reset auto-advance timer
+                clearInterval(autoSlide);
+                autoSlide = setInterval(nextSlide, slideInterval);
+            });
+        });
+
+        // Right Triangle Slider (Independent with offset)
+        const slidesRight = document.querySelectorAll('.hero-slide-right');
+        let currentSlideRight = 0;
+        const slideIntervalRight = 5000; // 5 seconds (same as left triangle)
+
+        function showSlideRight(index) {
+            // Remove active class from all right slides
+            slidesRight.forEach(slide => slide.classList.remove('active'));
+
+            // Add active class to current right slide
+            slidesRight[index].classList.add('active');
+        }
+
+        function nextSlideRight() {
+            currentSlideRight = (currentSlideRight + 1) % slidesRight.length;
+            showSlideRight(currentSlideRight);
+        }
+
+        // Start right triangle slider after 2.5 second delay for alternating effect
+        setTimeout(() => {
+            let autoSlideRight = setInterval(nextSlideRight, slideIntervalRight);
+        }, 2500); // 2.5 second offset
+    });
+</script>
+
+<!-- Additional Sections from Index -->
+<div class="container" style="margin-top: 5rem; margin-bottom: 3rem;">
+    <div class="row mt-5">
+        <div class="col-md-4 mb-4">
+            <div class="feature-image-card">
+                <img src="{{ url_for('static', filename='images/professional_chef_co_3045a4de.jpg') }}" alt="Professional Chef">
+                <div class="overlay">
+                    <h4>👨‍🍳 Expert Chefs</h4>
+                </div>
+            </div>
+            <div class="mt-3 text-center">
+                <h4 style="color: #333; font-weight: 700;">Verified Professional Chefs</h4>
+                <p class="text-muted" style="font-size: 1.05rem;">All our chefs are verified professionals with proven expertise in culinary arts and years of experience.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-image-card">
+                <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_d952b03d.jpg') }}" alt="Gourmet Food">
+                <div class="overlay">
+                    <h4>🍽️ Premium Cuisine</h4>
+                </div>
+            </div>
+            <div class="mt-3 text-center">
+                <h4 style="color: #333; font-weight: 700;">Smart Local Matching</h4>
+                <p class="text-muted" style="font-size: 1.05rem;">Find talented chefs in your exact area for fresh ingredients, timely service, and convenient coordination.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-image-card">
+                <img src="{{ url_for('static', filename='images/elegant_restaurant_t_fdc83926.jpg') }}" alt="Elegant Setup">
+                <div class="overlay">
+                    <h4>✨ Perfect Events</h4>
+                </div>
+            </div>
+            <div class="mt-3 text-center">
+                <h4 style="color: #333; font-weight: 700;">Safe & Easy Payments</h4>
+                <p class="text-muted" style="font-size: 1.05rem;">Secure M-PESA integration for hassle-free transactions with instant confirmation.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5 mb-4">
+        <div class="col-12 text-center">
+            <h2 class="section-title d-inline-block" style="font-weight: 800;">
+                <span class="food-emoji">🍴</span> Our Culinary Gallery <span class="food-emoji">🍴</span>
+            </h2>
+        </div>
+    </div>
+
+    <div class="food-gallery">
+        <div class="food-gallery-item" data-title="🍽️ Gourmet Excellence">
+            <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_9aaeee7d.jpg') }}" alt="Gourmet Dish">
+        </div>
+        <div class="food-gallery-item" data-title="✨ Fine Dining">
+            <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_a4450b86.jpg') }}" alt="Fine Dining">
+        </div>
+        <div class="food-gallery-item" data-title="🔥 Culinary Artistry">
+            <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_d2787896.jpg') }}" alt="Delicious Meal">
+        </div>
+        <div class="food-gallery-item" data-title="🥗 Fresh & Delicious">
+            <img src="{{ url_for('static', filename='images/modern_kitchen_cooki_28f59968.jpg') }}" alt="Fresh Ingredients">
+        </div>
+    </div>
+
+    <div class="row mt-5 mb-4">
+        <div class="col-12 text-center">
+            <h2 class="section-title d-inline-block" style="font-weight: 800;">
+                <span class="food-emoji">✨</span> Why Choose e-Rugah? <span class="food-emoji">✨</span>
+            </h2>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4">
+            <div class="info-card">
+                <h5 style="color: #667eea; font-weight: 700;">
+                    <span class="food-emoji">🍱</span> Diverse Cuisine Options
+                </h5>
+                <p class="mb-0">From traditional favorites to international delicacies, our chefs offer a wide range of cuisines to satisfy every palate and dietary preference.</p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="info-card">
+                <h5 style="color: #667eea; font-weight: 700;">
+                    <span class="food-emoji">💰</span> Transparent Pricing
+                </h5>
+                <p class="mb-0">Know exactly what you're paying for. No hidden fees, just straightforward pricing based on your menu selections and guest count.</p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="info-card">
+                <h5 style="color: #667eea; font-weight: 700;">
+                    <span class="food-emoji">⚡</span> Quick Booking Process
+                </h5>
+                <p class="mb-0">Book your perfect chef in minutes! Our streamlined process gets you from event planning to confirmation in just a few clicks.</p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="info-card">
+                <h5 style="color: #667eea; font-weight: 700;">
+                    <span class="food-emoji">⭐</span> Quality Guaranteed
+                </h5>
+                <p class="mb-0">Every chef on our platform is thoroughly vetted and verified. We ensure only the best culinary professionals serve your events.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Generate Particles
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 50;
+
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        particlesContainer.appendChild(particle);
+    }
+
+    // Parallax Effect on Mouse Move
+    document.addEventListener('mousemove', (e) => {
+        const orbs = document.querySelectorAll('.orb');
+        const mouseX = e.clientX / window.innerWidth;
+        const mouseY = e.clientY / window.innerHeight;
+
+        orbs.forEach((orb, index) => {
+            const speed = (index + 1) * 30;
+            const x = (mouseX - 0.5) * speed;
+            const y = (mouseY - 0.5) * speed;
+            orb.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    });
+
+    // Smooth Scroll for Scroll Indicator
+    document.querySelector('.scroll-indicator')?.addEventListener('click', () => {
+        window.scrollTo({
+            top: window.innerHeight,
+            behavior: 'smooth'
+        });
+    });
+
+    // Add 3D Tilt Effect to Glass Cards
+    const cards = document.querySelectorAll('.glass-card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+            
+            card.style.transform = `translateY(-15px) perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0) perspective(1000px) rotateX(0) rotateY(0)';
+        });
+    });
+
+    // Button Ripple Effect
+    document.querySelectorAll('.modern-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                background: rgba(255, 255, 255, 0.5);
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s ease-out;
+                pointer-events: none;
+            `;
+            
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+
+    // Add ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}
