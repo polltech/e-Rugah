@@ -28,13 +28,7 @@ ENV/
 env/
 .venv/
 
-# Flask
-instance/
-.webassets-cache
-*.db
-*.sqlite
-*.sqlite3
-flask_session/
+
 
 # Environment variables
 .env
