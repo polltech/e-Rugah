@@ -3,83 +3,880 @@
 {% block title %}Create Event - e-Rugah{% endblock %}
 
 {% block content %}
-<div class="page-header text-center">
-    <h2><span class="food-emoji">🎉</span> Plan Your Perfect Event <span class="food-emoji">🍴</span></h2>
-    <p class="mb-0">Tell us about your event and select delicious menu items</p>
+<style>
+    /* Ultra-Modern Event Creation Styles */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa552 100%);
+        --success-gradient: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa552 100%);
+        --info-gradient: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa552 100%);
+        --warning-gradient: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa552 100%);
+        --glass-bg: rgba(255, 255, 255, 0.95);
+    }
+
+    body {
+        background: linear-gradient(135deg, #fff5f0 0%, #ffe4d6 100%);
+        min-height: 100vh;
+    }
+
+    /* Floating Background Elements */
+    .bg-decoration {
+        position: fixed;
+        border-radius: 50%;
+        opacity: 0.08;
+        z-index: 0;
+        pointer-events: none;
+        filter: blur(40px);
+    }
+
+    .bg-decoration-1 {
+        width: 500px;
+        height: 500px;
+        background: var(--primary-gradient);
+        top: -150px;
+        right: -150px;
+        animation: float 25s ease-in-out infinite;
+    }
+
+    .bg-decoration-2 {
+        width: 400px;
+        height: 400px;
+        background: var(--success-gradient);
+        bottom: -100px;
+        left: -100px;
+        animation: float 20s ease-in-out infinite reverse;
+    }
+
+    .bg-decoration-3 {
+        width: 350px;
+        height: 350px;
+        background: var(--info-gradient);
+        top: 50%;
+        left: 50%;
+        animation: float 30s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        33% { transform: translate(50px, -50px) rotate(120deg); }
+        66% { transform: translate(-30px, 30px) rotate(240deg); }
+    }
+
+    /* Page Header with Glass Morphism */
+    .page-header {
+        background: var(--primary-gradient);
+        background-size: 200% auto;
+        color: white;
+        padding: 4rem 3rem;
+        border-radius: 40px;
+        margin-bottom: 3rem;
+        box-shadow: 0 30px 80px rgba(255, 107, 53, 0.5),
+                    0 15px 40px rgba(255, 107, 53, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        animation: slideDown 0.8s ease-out, gradientShift 10s ease infinite;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background-image: 
+            radial-gradient(circle, rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+        background-size: 50px 50px;
+        animation: patternMove 30s linear infinite;
+    }
+
+    @keyframes patternMove {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        100% { transform: translate(50px, 50px) rotate(360deg); }
+    }
+
+    .page-header h2 {
+        font-size: 3rem;
+        font-weight: 900;
+        margin-bottom: 1rem;
+        text-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 1;
+        letter-spacing: -1px;
+    }
+
+    .page-header p {
+        font-size: 1.3rem;
+        opacity: 0.95;
+        position: relative;
+        z-index: 1;
+        font-weight: 500;
+    }
+
+    .food-emoji {
+        font-size: 3.5rem;
+        display: inline-block;
+        animation: bounce 2s ease-in-out infinite;
+        filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-15px) rotate(10deg); }
+    }
+
+    /* Ultra-Modern Form Card */
+    .card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border-radius: 40px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15),
+                    0 15px 40px rgba(0, 0, 0, 0.1),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        animation: fadeInUp 0.8s ease-out 0.2s both;
+        position: relative;
+        overflow: hidden;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, #ff6b35, #ff8c42, #ffa552, #ffb366, #ff6b35);
+        background-size: 400% 400%;
+        animation: waveGradient 8s ease infinite;
+        box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+    }
+
+    @keyframes waveGradient {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .card-body {
+        padding: 3.5rem !important;
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #ff6b35;
+        margin-bottom: 2.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .card-title i {
+        font-size: 2.5rem;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    /* Section Headers */
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #ff6b35;
+        margin-bottom: 1.5rem;
+        margin-top: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid transparent;
+        border-image: linear-gradient(90deg, #ff6b35, #ff8c42, transparent) 1;
+    }
+
+    h5 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    h5 i {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+
+    /* Modern Form Controls */
+    .form-label {
+        font-weight: 700;
+        color: #2c3e50 !important;
+        margin-bottom: 0.75rem !important;
+        font-size: 1rem !important;
+        display: block !important;
+        width: 100% !important;
+        position: relative !important;
+        z-index: 10 !important;
+        background: white !important;
+        padding: 0 0.25rem !important;
+        line-height: 1.5 !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        pointer-events: auto !important;
+    }
+
+    .form-label i {
+        color: #ff6b35;
+        font-size: 1.1rem;
+        margin-right: 0.5rem;
+        display: inline-block;
+    }
+
+    .mb-3 {
+        margin-bottom: 1.5rem !important;
+        position: relative;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        background: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        display: block;
+        position: relative;
+        z-index: 1;
+        margin-top: 0 !important;
+    }
+
+    .form-control:focus {
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1),
+                    0 8px 25px rgba(255, 107, 53, 0.15);
+        transform: translateY(-2px);
+        background: white;
+    }
+
+    .form-control::placeholder {
+        color: #94a3b8;
+        font-weight: 500;
+    }
+
+    /* Override any floating label styles */
+    .form-floating {
+        position: static !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .form-floating > .form-label {
+        position: static !important;
+        transform: none !important;
+        opacity: 1 !important;
+        order: -1 !important;
+    }
+
+    .form-floating > .form-control {
+        position: static !important;
+    }
+
+    /* Ensure proper form group spacing */
+    .col-md-4 {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .col-md-4 > .mb-3 {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* Menu Item Cards */
+    .menu-item-card {
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 0.85rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu-item-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: var(--primary-gradient);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+    }
+
+    .menu-item-card:hover {
+        border-color: #ff6b35;
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(255, 107, 53, 0.2);
+    }
+
+    .menu-item-card:hover::before {
+        transform: scaleY(1);
+    }
+
+    .menu-item-card .form-check {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .menu-item-card .form-check-input {
+        margin-top: 0.15rem;
+        flex-shrink: 0;
+        width: 1.1rem;
+        height: 1.1rem;
+    }
+
+    .menu-item-card .form-check-label {
+        flex: 1;
+    }
+
+    /* Dish Card Sections */
+    .dish-header {
+        padding-bottom: 0.35rem;
+        border-bottom: 2px solid #f1f3f5;
+    }
+
+    .dish-description {
+        transition: all 0.3s ease;
+    }
+
+    .menu-item-card:hover .dish-description {
+        background: #fff5f0 !important;
+        border-left-color: #ff8c42 !important;
+    }
+
+    .ingredients-section {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px dashed #e9ecef;
+    }
+
+    .ingredient-item {
+        transition: all 0.2s ease;
+        font-size: 0.7rem !important;
+    }
+
+    .ingredient-item:hover {
+        transform: translateX(3px);
+        border-color: #ff6b35 !important;
+        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+    }
+
+    .form-check-input {
+        width: 1.5rem;
+        height: 1.5rem;
+        border: 2px solid #ff6b35;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .form-check-input:checked {
+        background-color: #ff6b35;
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.2);
+    }
+
+    .form-check-input:focus {
+        box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.2);
+    }
+
+    .form-check-label {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .menu-item-card .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        background: var(--info-gradient);
+    }
+
+    /* Alert Box */
+    .alert-info {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.1));
+        border: 2px solid rgba(59, 130, 246, 0.3);
+        border-radius: 25px;
+        padding: 1.5rem 2rem;
+        color: #1e40af;
+        font-weight: 600;
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+        animation: slideIn 0.6s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .alert-info i {
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+        color: #3b82f6;
+    }
+
+    /* Ultra-Modern Submit Button */
+    .btn-primary {
+        background: var(--success-gradient);
+        background-size: 200% auto;
+        border: none;
+        padding: 1.5rem 3rem;
+        font-weight: 800;
+        font-size: 1.2rem;
+        border-radius: 60px;
+        box-shadow: 0 20px 50px rgba(16, 185, 129, 0.5),
+                    0 10px 25px rgba(16, 185, 129, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        position: relative;
+        overflow: hidden;
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-primary:hover::before {
+        width: 600px;
+        height: 600px;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-8px) scale(1.05);
+        box-shadow: 0 25px 60px rgba(16, 185, 129, 0.7),
+                    0 15px 35px rgba(16, 185, 129, 0.4);
+        background-position: right center;
+        color: white;
+    }
+
+    .btn-primary:active {
+        transform: translateY(-4px) scale(1.02);
+    }
+
+    .btn-primary i {
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+        animation: rocket 2s ease-in-out infinite;
+    }
+
+    @keyframes rocket {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-5px) rotate(-10deg); }
+    }
+
+    .btn-primary:hover i {
+        animation: rocketLaunch 0.6s ease-out forwards;
+    }
+
+    @keyframes rocketLaunch {
+        0% { transform: translateY(0) rotate(0deg); }
+        100% { transform: translateY(-20px) rotate(-45deg); }
+    }
+
+    /* Progress Indicator */
+    .progress-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .progress-indicator::before {
+        content: '';
+        position: absolute;
+        top: 25px;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #ff6b35, #ff8c42);
+        z-index: 0;
+        border-radius: 10px;
+    }
+
+    .progress-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        position: relative;
+        z-index: 1;
+        flex: 1;
+    }
+
+    .progress-step-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: white;
+        border: 4px solid #ff6b35;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: #ff6b35;
+        box-shadow: 0 5px 20px rgba(255, 107, 53, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .progress-step.active .progress-step-circle {
+        background: var(--primary-gradient);
+        color: white;
+        transform: scale(1.2);
+        box-shadow: 0 8px 30px rgba(255, 107, 53, 0.5);
+    }
+
+    .progress-step-label {
+        font-weight: 700;
+        color: #64748b;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .progress-step.active .progress-step-label {
+        color: #ff6b35;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 3rem 2rem;
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+        }
+
+        .food-emoji {
+            font-size: 2.5rem;
+        }
+
+        .card-body {
+            padding: 2rem !important;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+        }
+
+        .btn-primary {
+            padding: 1.2rem 2rem;
+            font-size: 1rem;
+        }
+
+        .progress-indicator {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .progress-indicator::before {
+            display: none;
+        }
+    }
+
+    /* Scroll Animation */
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease-out;
+    }
+
+    .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<!-- Background Decorations -->
+<div class="bg-decoration bg-decoration-1"></div>
+<div class="bg-decoration bg-decoration-2"></div>
+<div class="bg-decoration bg-decoration-3"></div>
+
+<div class="page-header">
+    <h2>
+        <span class="food-emoji">🎉</span> 
+        Plan Your Perfect Event 
+        <span class="food-emoji">🍴</span>
+    </h2>
+    <p>Tell us about your event and select delicious menu items</p>
 </div>
 
 <div class="row justify-content-center">
     <div class="col-md-10">
         <div class="card shadow">
             <div class="card-body p-4">
-                <h3 class="card-title mb-4 section-title"><i class="bi bi-calendar-event"></i> Event Details</h3>
-                <form method="POST">
-                    <h5 class="mb-3"><i class="bi bi-geo-alt-fill" style="color: var(--primary-color);"></i> Location Details</h5>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="county" class="form-label"><i class="bi bi-map"></i> County</label>
-                            <input type="text" class="form-control" id="county" name="county" placeholder="e.g., Nairobi" required>
+                <!-- Progress Indicator -->
+                <div class="progress-indicator">
+                    <div class="progress-step active">
+                        <div class="progress-step-circle">
+                            <i class="bi bi-geo-alt-fill"></i>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="sub_county" class="form-label"><i class="bi bi-pin-map"></i> Sub-County</label>
-                            <input type="text" class="form-control" id="sub_county" name="sub_county" placeholder="e.g., Westlands" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="town" class="form-label"><i class="bi bi-house"></i> Town</label>
-                            <input type="text" class="form-control" id="town" name="town" placeholder="e.g., Parklands" required>
-                        </div>
+                        <div class="progress-step-label">Location</div>
                     </div>
-
-                    <h5 class="mb-3 mt-4"><i class="bi bi-calendar-check" style="color: var(--primary-color);"></i> Event Information</h5>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="event_date" class="form-label"><i class="bi bi-calendar-heart"></i> Event Date</label>
-                            <input type="date" class="form-control" id="event_date" name="event_date" required>
+                    <div class="progress-step">
+                        <div class="progress-step-circle">
+                            <i class="bi bi-calendar-heart"></i>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="adult_guests" class="form-label"><i class="bi bi-people-fill"></i> Adult Guests</label>
-                            <input type="number" class="form-control" id="adult_guests" name="adult_guests" min="0" placeholder="Number of adults" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="child_guests" class="form-label"><i class="bi bi-emoji-smile"></i> Child Guests</label>
-                            <input type="number" class="form-control" id="child_guests" name="child_guests" min="0" placeholder="Number of children" required>
-                        </div>
+                        <div class="progress-step-label">Event Details</div>
                     </div>
+                    <div class="progress-step">
+                        <div class="progress-step-circle">
+                            <i class="bi bi-cup-hot-fill"></i>
+                        </div>
+                        <div class="progress-step-label">Menu Selection</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="progress-step-circle">
+                            <i class="bi bi-rocket-takeoff"></i>
+                        </div>
+                        <div class="progress-step-label">Launch Event</div>
+                    </div>
+                </div>
 
-                    <h5 class="mb-3 mt-4 section-title"><span class="food-emoji">🍽️</span> Select Delicious Menu Items <span class="food-emoji">😋</span></h5>
-                    <p class="text-muted mb-3">Choose your favorite dishes for your event. All prices are per person.</p>
-                    <div class="row">
-                        {% for item in menu_items %}
-                        <div class="col-md-6 mb-3">
-                            <div class="menu-item-card">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="menu_items" value="{{ item.id }}" id="item{{ item.id }}">
-                                    <label class="form-check-label w-100" for="item{{ item.id }}" style="cursor: pointer;">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <div>
-                                                <strong style="color: var(--dark-color); font-size: 1.1rem;">{{ item.name }}</strong>
-                                                <span class="badge bg-secondary ms-2" style="font-size: 0.75rem;">{{ item.category }}</span>
-                                            </div>
-                                            <div>
-                                                <strong style="color: var(--primary-color); font-size: 1.15rem;">KES {{ "%.0f"|format(item.price_per_person) }}</strong>
-                                                <small class="text-muted d-block text-end">per person</small>
-                                            </div>
-                                        </div>
-                                        <small class="text-muted d-block mt-2"><i class="bi bi-info-circle"></i> {{ item.ingredients }}</small>
-                                    </label>
-                                </div>
+                <h3 class="card-title">
+                    <i class="bi bi-calendar-event"></i> 
+                    Event Details
+                </h3>
+                
+                <form method="POST" id="eventForm">
+                    <!-- Location Section -->
+                    <div class="animate-on-scroll">
+                        <h5>
+                            <i class="bi bi-geo-alt-fill" style="color: var(--primary-color);"></i> 
+                            Location Details
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="county" class="form-label">
+                                    <i class="bi bi-map"></i> County
+                                </label>
+                                <input type="text" class="form-control" id="county" name="county" placeholder="e.g., Nairobi" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="sub_county" class="form-label">
+                                    <i class="bi bi-pin-map"></i> Sub-County
+                                </label>
+                                <input type="text" class="form-control" id="sub_county" name="sub_county" placeholder="e.g., Westlands" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="town" class="form-label">
+                                    <i class="bi bi-house"></i> Town
+                                </label>
+                                <input type="text" class="form-control" id="town" name="town" placeholder="e.g., Parklands" required>
                             </div>
                         </div>
-                        {% endfor %}
                     </div>
 
-                    <div class="alert alert-info mt-4">
-                        <i class="bi bi-lightbulb-fill"></i> <strong>Pro Tip:</strong> Select multiple dishes to give your guests variety and make your event memorable!
+                    <!-- Event Information Section -->
+                    <div class="animate-on-scroll">
+                        <h5 class="mt-4">
+                            <i class="bi bi-calendar-check" style="color: var(--primary-color);"></i> 
+                            Event Information
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="event_date" class="form-label">
+                                    <i class="bi bi-calendar-heart"></i> Event Date
+                                </label>
+                                <input type="date" class="form-control" id="event_date" name="event_date" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="adult_guests" class="form-label">
+                                    <i class="bi bi-people-fill"></i> Adult Guests
+                                </label>
+                                <input type="number" class="form-control" id="adult_guests" name="adult_guests" min="0" placeholder="Number of adults" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="child_guests" class="form-label">
+                                    <i class="bi bi-emoji-smile"></i> Child Guests
+                                </label>
+                                <input type="number" class="form-control" id="child_guests" name="child_guests" min="0" placeholder="Number of children" required>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="d-grid mt-4">
+                    <!-- Menu Selection Section -->
+                    <div class="animate-on-scroll">
+                        <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                            <h5 class="section-title mb-0">
+                                <span class="food-emoji">🍽️</span> 
+                                Select Delicious Dishes 
+                                <span class="food-emoji">😋</span>
+                            </h5>
+                            <button type="button" class="btn btn-sm" id="customMenuBtn" data-bs-toggle="modal" data-bs-target="#customMenuModal" style="background: linear-gradient(135deg, #6c757d, #5a6268); color: white; font-size: 0.75rem; padding: 0.4rem 0.8rem; border-radius: 10px; border: none; box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3); font-weight: 600;">
+                                <i class="bi bi-search"></i> Custom Menu
+                            </button>
+                        </div>
+                        <p class="text-muted mb-3" style="font-weight: 600; font-size: 1.05rem;">
+                            Choose your favorite dishes for your event. Pricing will be calculated based on ingredients and guest count.
+                        </p>
+                        <div class="row">
+                            {% for dish in dishes %}
+                            <div class="col-lg-4 col-md-6 mb-4 animate-on-scroll">
+                                <div class="menu-item-card">
+                                    <div class="form-check">
+                                        <input class="form-check-input dish-checkbox" type="checkbox" name="dishes" value="{{ dish.id }}" id="dish{{ dish.id }}" data-dish-name="{{ dish.name }}">
+                                        <label class="form-check-label w-100" for="dish{{ dish.id }}">
+                                            <!-- Dish Header -->
+                                            <div class="dish-header mb-1">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <strong style="color: #2c3e50; font-size: 0.9rem; font-weight: 700;">
+                                                        {{ dish.name }}
+                                                    </strong>
+                                                    <span class="badge" style="background: linear-gradient(135deg, #ff6b35, #ff8c42); font-size: 0.6rem; padding: 0.25rem 0.5rem;">
+                                                        {{ dish.base_servings }} srv
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Dish Description -->
+                                            <div class="dish-description mb-1" style="padding: 0.4rem; background: #f8f9fa; border-radius: 8px; border-left: 2px solid #ff6b35;">
+                                                <small style="color: #495057; font-size: 0.72rem; line-height: 1.3; display: block;">
+                                                    {{ dish.description }}
+                                                </small>
+                                            </div>
+                                            
+                                            <!-- Ingredients Section -->
+                                            {% if dish.dish_ingredients %}
+                                            <div class="ingredients-section">
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <i class="bi bi-basket2-fill" style="color: #ff6b35; font-size: 0.75rem; margin-right: 0.3rem;"></i>
+                                                    <small style="font-weight: 700; font-size: 0.68rem; color: #2c3e50; text-transform: uppercase; letter-spacing: 0.3px;">
+                                                        Ingredients
+                                                    </small>
+                                                </div>
+                                                <div class="ingredients-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.3rem; padding-left: 0.2rem;">
+                                                    {% for dish_ingredient in dish.dish_ingredients %}
+                                                    <div class="ingredient-item" style="color: #6c757d; padding: 0.25rem 0.4rem; background: white; border-radius: 5px; border: 1px solid #e9ecef;">
+                                                        <i class="bi bi-dot" style="color: #ff6b35; font-size: 0.65rem;"></i>
+                                                        <span style="font-weight: 600; color: #495057; font-size: 0.7rem;">{{ dish_ingredient.ingredient.name }}</span>
+                                                        <span style="color: #6c757d; font-size: 0.65rem;">({{ dish_ingredient.quantity_for_base_servings }}{{ dish_ingredient.ingredient.unit }})</span>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Calculate Total Price Button -->
+                        <div class="text-center mt-4 mb-3">
+                            <button type="button" class="btn btn-primary btn-sm" id="calculateTotalBtn" style="font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 8px;">
+                                <i class="bi bi-calculator-fill"></i> Calculate Total Price
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Custom Dishes Display -->
+                    <div id="customDishesDisplay" class="mt-3" style="display: none;">
+                        <div class="alert" style="background: linear-gradient(135deg, #6c757d15, #5a626815); border-left: 4px solid #6c757d; border-radius: 12px;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong style="color: #2c3e50; font-size: 0.9rem;">
+                                    <i class="bi bi-star-fill" style="color: #6c757d;"></i> Custom Selected Dishes
+                                </strong>
+                            </div>
+                            <div id="customDishesListDisplay" style="font-size: 0.85rem;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden input for custom dishes -->
+                    <input type="hidden" name="custom_dishes" id="customDishesInput" value="[]">
+
+                    <!-- Pro Tip Alert -->
+                    <div class="alert alert-info mt-4 animate-on-scroll">
+                        <i class="bi bi-lightbulb-fill"></i> 
+                        <strong>Pro Tip:</strong> Select multiple dishes to give your guests variety and make your event memorable!
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid mt-4 animate-on-scroll">
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-rocket-takeoff"></i> Create Event & Find Chefs
+                            <i class="bi bi-rocket-takeoff"></i> 
+                            Create Event & Find Chefs
                         </button>
                     </div>
                 </form>
@@ -87,4 +884,670 @@
         </div>
     </div>
 </div>
+
+<!-- Price Calculator Modal -->
+<div class="modal fade" id="priceModal" tabindex="-1" aria-labelledby="priceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%); padding: 0.75rem 1rem; border-radius: 20px 20px 0 0;">
+                <h6 class="modal-title text-white mb-0" id="priceModalLabel" style="font-size: 0.9rem; font-weight: 600;">
+                    <i class="bi bi-calculator"></i> Price Calculator
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="font-size: 0.7rem;"></button>
+            </div>
+            <div class="modal-body" id="priceModalBody" style="font-size: 0.75rem; padding: 0.75rem; background: #f8f9fa;">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer border-0" style="padding: 0.5rem 1rem;">
+                <button type="button" class="btn btn-sm" data-bs-dismiss="modal" style="font-size: 0.75rem; padding: 0.35rem 1rem; border-radius: 10px; background: #e9ecef; color: #495057; border: none;">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Menu Modal -->
+<div class="modal fade" id="customMenuModal" tabindex="-1" aria-labelledby="customMenuModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); padding: 1rem 1.5rem; border-radius: 20px 20px 0 0;">
+                <h5 class="modal-title text-white mb-0" id="customMenuModalLabel" style="font-size: 1.1rem; font-weight: 700;">
+                    <i class="bi bi-search"></i> Custom Menu Search
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding: 1.5rem; background: #f8f9fa;">
+                <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                    Search for specific dishes to check their ingredients and prices. You can add up to 10 custom dishes.
+                </p>
+                
+                <!-- Search Section -->
+                <div class="mb-4">
+                    <div class="input-group" style="box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; overflow: hidden;">
+                        <input type="text" class="form-control" id="customDishSearch" placeholder="Enter dish name (e.g., Pilau, Biryani, Samosa)" style="border: 2px solid #e2e8f0; padding: 0.75rem 1rem; font-size: 0.95rem; border-right: none;">
+                        <button class="btn" id="checkDishBtn" type="button" style="background: linear-gradient(135deg, #6c757d, #5a6268); color: white; border: 2px solid #6c757d; padding: 0.75rem 1.5rem; font-weight: 600;">
+                            <i class="bi bi-search"></i> Check
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Results -->
+                <div id="customDishResults" style="min-height: 100px;">
+                    <div class="text-center text-muted" style="padding: 2rem;">
+                        <i class="bi bi-search" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p style="margin-top: 1rem; font-size: 0.9rem;">Enter a dish name and click "Check" to see if it's available</p>
+                    </div>
+                </div>
+
+                <!-- Selected Custom Dishes -->
+                <div id="selectedCustomDishes" style="display: none; margin-top: 1.5rem;">
+                    <h6 style="color: #2c3e50; font-weight: 700; margin-bottom: 1rem;">
+                        <i class="bi bi-check-circle-fill" style="color: #28a745;"></i> Selected Custom Dishes (<span id="customDishCount">0</span>/10)
+                    </h6>
+                    <div id="selectedCustomDishesList" class="mb-3"></div>
+                </div>
+            </div>
+            <div class="modal-footer border-0" style="padding: 1rem 1.5rem; background: white;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 10px; padding: 0.5rem 1.5rem;">
+                    <i class="bi bi-x-circle"></i> Close
+                </button>
+                <button type="button" class="btn btn-primary" id="addCustomDishesBtn" style="border-radius: 10px; padding: 0.5rem 1.5rem; background: linear-gradient(135deg, #ff6b35, #ff8c42); border: none;">
+                    <i class="bi bi-plus-circle"></i> Add to Event
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Animate elements on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, index * 100);
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Progress indicator animation
+    const form = document.getElementById('eventForm');
+    const progressSteps = document.querySelectorAll('.progress-step');
+    
+    // Update progress based on form completion
+    const inputs = {
+        location: ['county', 'sub_county', 'town'],
+        event: ['event_date', 'adult_guests', 'child_guests'],
+        menu: ['dishes']
+    };
+
+    function updateProgress() {
+        // Check location fields
+        const locationComplete = inputs.location.every(id => 
+            document.getElementById(id).value.trim() !== ''
+        );
+        if (locationComplete) {
+            progressSteps[0].classList.add('active');
+            progressSteps[1].classList.add('active');
+        }
+
+        // Check event fields
+        const eventComplete = inputs.event.every(id => 
+            document.getElementById(id).value.trim() !== ''
+        );
+        if (eventComplete && locationComplete) {
+            progressSteps[2].classList.add('active');
+        }
+
+        // Check menu selection
+        const menuSelected = document.querySelectorAll('input[name="dishes"]:checked').length > 0;
+        if (menuSelected && eventComplete && locationComplete) {
+            progressSteps[3].classList.add('active');
+        }
+    }
+
+    // Add event listeners to all form inputs
+    form.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', updateProgress);
+        input.addEventListener('change', updateProgress);
+    });
+
+    // Add ripple effect to submit button
+    const submitBtn = document.querySelector('.btn-primary');
+    submitBtn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            left: ${x}px;
+            top: ${y}px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s ease-out;
+            pointer-events: none;
+        `;
+        
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+    });
+
+    // Add CSS for ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Smooth scroll to form sections
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add hover effect to menu items
+    document.querySelectorAll('.menu-item-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Set minimum date to today
+    const dateInput = document.getElementById('event_date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+
+    // Form validation with custom messages
+    form.addEventListener('submit', function(e) {
+        const menuSelected = document.querySelectorAll('input[name="dishes"]:checked').length > 0;
+
+        if (!menuSelected) {
+            e.preventDefault();
+            alert('Please select at least one menu item for your event! 🍽️');
+            document.querySelector('.section-title').scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+
+    // Calculate Total Price Button Handler
+    document.getElementById('calculateTotalBtn').addEventListener('click', function() {
+        const adultGuests = parseInt(document.getElementById('adult_guests').value) || 0;
+        const childGuests = parseInt(document.getElementById('child_guests').value) || 0;
+        const totalGuests = adultGuests + childGuests;
+
+        if (totalGuests === 0) {
+            alert('Please enter the number of guests first.');
+            return;
+        }
+
+        // Get all selected dishes
+        const selectedDishes = [];
+        document.querySelectorAll('.dish-checkbox:checked').forEach(checkbox => {
+            selectedDishes.push({
+                id: checkbox.value,
+                name: checkbox.getAttribute('data-dish-name')
+            });
+        });
+
+        if (selectedDishes.length === 0) {
+            alert('Please select at least one dish.');
+            return;
+        }
+
+        // Show loading
+        const modal = new bootstrap.Modal(document.getElementById('priceModal'));
+        document.getElementById('priceModalBody').innerHTML = '<div class="text-center py-3"><div class="spinner-border" role="status" style="width: 1.5rem; height: 1.5rem; color: #ff6b35; border-width: 2px;"><span class="visually-hidden">Loading...</span></div><p class="mt-2 mb-0" style="font-size: 0.7rem; color: #6c757d;">Calculating prices...</p></div>';
+        modal.show();
+
+        // Fetch prices for all selected dishes
+        const fetchPromises = selectedDishes.map(dish => 
+            fetch('/api/calculate-dish-price', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'dish_id': dish.id,
+                    'guests': totalGuests
+                })
+            }).then(response => response.json())
+        );
+
+        Promise.all(fetchPromises)
+            .then(results => {
+                let html = `
+                    <div style="background: linear-gradient(135deg, #ff6b3515, #ff8c4215); padding: 0.5rem; border-radius: 10px; margin-bottom: 0.75rem; border-left: 3px solid #ff6b35;">
+                        <div style="font-size: 0.7rem; color: #ff6b35; font-weight: 600;">
+                            <i class="bi bi-people-fill"></i> ${totalGuests} Guests
+                        </div>
+                    </div>
+                `;
+
+                let grandTotal = 0;
+
+                results.forEach((data, index) => {
+                    grandTotal += data.selling_price;
+                    
+                    html += `
+                        <div style="background: white; border-radius: 12px; margin-bottom: 0.75rem; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                            <div style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 0.5rem 0.75rem; border-bottom: 1px solid #dee2e6;">
+                                <div style="font-size: 0.8rem; font-weight: 600; color: #2c3e50;">
+                                    <span style="display: inline-block; width: 20px; height: 20px; background: linear-gradient(135deg, #ff6b35, #ff8c42); color: white; border-radius: 50%; text-align: center; line-height: 20px; font-size: 0.7rem; margin-right: 0.4rem;">${index + 1}</span>
+                                    ${data.dish_name}
+                                </div>
+                            </div>
+                            <div style="padding: 0.5rem;">
+                                <table style="width: 100%; font-size: 0.7rem; margin-bottom: 0;">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid #e9ecef;">
+                                            <th style="padding: 0.25rem; font-weight: 600; color: #6c757d;">Item</th>
+                                            <th style="padding: 0.25rem; font-weight: 600; color: #6c757d; text-align: center;">Qty</th>
+                                            <th style="padding: 0.25rem; font-weight: 600; color: #6c757d; text-align: right;">Cost</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                    `;
+                    
+                    data.ingredient_breakdown.forEach(item => {
+                        html += `
+                            <tr style="border-bottom: 1px solid #f8f9fa;">
+                                <td style="padding: 0.25rem; color: #495057;">${item.name}</td>
+                                <td style="padding: 0.25rem; color: #6c757d; text-align: center; font-size: 0.65rem;">${item.scaled_quantity}${item.unit}</td>
+                                <td style="padding: 0.25rem; color: #495057; text-align: right; font-weight: 500;">${item.cost.toLocaleString()}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                                    </tbody>
+                                </table>
+                                <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 2px solid #e9ecef;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: #6c757d; margin-bottom: 0.2rem;">
+                                        <span>Ingredients</span>
+                                        <span>KSh ${data.total_cost.toLocaleString()}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: #6c757d; margin-bottom: 0.3rem;">
+                                        <span>Markup (${data.markup_percentage}%)</span>
+                                        <span>KSh ${data.markup_amount.toLocaleString()}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: #ff6b35; padding: 0.3rem; background: #ff6b3510; border-radius: 6px;">
+                                        <span>Total</span>
+                                        <span>KSh ${data.selling_price.toLocaleString()}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Add grand total
+                html += `
+                    <div style="background: linear-gradient(135deg, #ff6b35, #ff8c42); border-radius: 12px; padding: 0.75rem; margin-top: 0.5rem; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 0.75rem; font-weight: 600; color: white; margin-bottom: 0.2rem;">
+                                    <i class="bi bi-cash-stack"></i> Grand Total
+                                </div>
+                                <div style="font-size: 0.65rem; color: rgba(255,255,255,0.8);">
+                                    ${results.length} dish${results.length > 1 ? 'es' : ''} × ${totalGuests} guests
+                                </div>
+                            </div>
+                            <div style="font-size: 1.3rem; font-weight: 700; color: white;">
+                                KSh ${grandTotal.toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('priceModalBody').innerHTML = html;
+            })
+            .catch(error => {
+                document.getElementById('priceModalBody').innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill"></i> Error calculating prices. Please try again.</div>';
+                console.error('Error:', error);
+            });
+    });
+
+    // Custom Menu Modal Functionality
+    let customSelectedDishes = [];
+    const MAX_CUSTOM_DISHES = 10;
+
+    // Check dish button handler
+    document.getElementById('checkDishBtn').addEventListener('click', function() {
+        const dishName = document.getElementById('customDishSearch').value.trim();
+        
+        if (!dishName) {
+            alert('Please enter a dish name');
+            return;
+        }
+
+        // Show loading
+        document.getElementById('customDishResults').innerHTML = `
+            <div class="text-center py-3">
+                <div class="spinner-border" role="status" style="color: #6c757d;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 mb-0" style="font-size: 0.9rem; color: #6c757d;">Searching for "${dishName}"...</p>
+            </div>
+        `;
+
+        // Check if dish exists
+        fetch('/api/check-custom-dish', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'dish_name': dishName
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.found) {
+                displayDishDetails(data.dish);
+            } else {
+                displayDishNotFound(dishName);
+            }
+        })
+        .catch(error => {
+            document.getElementById('customDishResults').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Error searching for dish. Please try again.
+                </div>
+            `;
+            console.error('Error:', error);
+        });
+    });
+
+    // Allow Enter key to trigger search
+    document.getElementById('customDishSearch').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('checkDishBtn').click();
+        }
+    });
+
+    function displayDishDetails(dish) {
+        let html = `
+            <div class="card" style="border: 2px solid #28a745; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);">
+                <div class="card-header" style="background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 1rem;">
+                    <h6 class="mb-0" style="font-weight: 700;">
+                        <i class="bi bi-check-circle-fill"></i> ${dish.name} Found!
+                    </h6>
+                </div>
+                <div class="card-body" style="padding: 1rem;">
+                    <p style="color: #6c757d; font-size: 0.9rem; margin-bottom: 1rem;">${dish.description || 'No description available'}</p>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <small class="text-muted">Base Servings:</small>
+                            <div style="font-weight: 600; color: #2c3e50;">${dish.base_servings} people</div>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Markup:</small>
+                            <div style="font-weight: 600; color: #2c3e50;">${dish.markup}%</div>
+                        </div>
+                    </div>
+
+                    <h6 style="font-weight: 700; color: #2c3e50; margin-bottom: 0.75rem;">
+                        <i class="bi bi-basket2-fill" style="color: #ff6b35;"></i> Ingredients & Prices
+                    </h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm" style="font-size: 0.85rem;">
+                            <thead style="background: #f8f9fa;">
+                                <tr>
+                                    <th>Ingredient</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-end">Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+        `;
+
+        dish.ingredients.forEach(ing => {
+            html += `
+                <tr>
+                    <td style="font-weight: 600;">${ing.name}</td>
+                    <td class="text-center">${ing.quantity}${ing.unit}</td>
+                    <td class="text-end">KSh ${ing.total_cost.toLocaleString()}</td>
+                </tr>
+            `;
+        });
+
+        html += `
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="background: #f8f9fa; padding: 0.75rem; border-radius: 8px; margin-top: 1rem;">
+                        <div class="d-flex justify-content-between mb-2" style="font-size: 0.9rem;">
+                            <span>Ingredients Cost:</span>
+                            <span style="font-weight: 600;">KSh ${dish.total_base_cost.toLocaleString()}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2" style="font-size: 0.9rem;">
+                            <span>Markup (${dish.markup}%):</span>
+                            <span style="font-weight: 600;">KSh ${dish.markup_amount.toLocaleString()}</span>
+                        </div>
+                        <div class="d-flex justify-content-between" style="font-size: 1rem; font-weight: 700; color: #28a745;">
+                            <span>Base Price (${dish.base_servings} servings):</span>
+                            <span>KSh ${dish.base_selling_price.toLocaleString()}</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <button class="btn btn-success" onclick="selectCustomDish(${dish.id}, '${dish.name}')" style="border-radius: 10px; padding: 0.5rem 2rem;">
+                            <i class="bi bi-plus-circle"></i> Select This Dish
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('customDishResults').innerHTML = html;
+    }
+
+    function displayDishNotFound(dishName) {
+        let html = `
+            <div class="card" style="border: 2px solid #ffc107; border-radius: 12px; overflow: hidden;">
+                <div class="card-header" style="background: linear-gradient(135deg, #ffc107, #ffb300); color: white; padding: 1rem;">
+                    <h6 class="mb-0" style="font-weight: 700;">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Dish Not Found
+                    </h6>
+                </div>
+                <div class="card-body" style="padding: 1.5rem; text-align: center;">
+                    <p style="font-size: 1rem; color: #6c757d; margin-bottom: 1.5rem;">
+                        "${dishName}" is not currently in our menu database.
+                    </p>
+                    <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 1.5rem;">
+                        Would you like to request this dish? We'll send your request to our admin team.
+                    </p>
+                    
+                    <div class="mb-3">
+                        <textarea class="form-control" id="customDishNotes" rows="3" placeholder="Add any additional notes about this dish (optional)" style="border-radius: 10px; font-size: 0.9rem;"></textarea>
+                    </div>
+
+                    <button class="btn btn-warning" onclick="requestCustomDish('${dishName}')" style="border-radius: 10px; padding: 0.5rem 2rem; color: white; font-weight: 600;">
+                        <i class="bi bi-envelope-fill"></i> Request This Dish
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('customDishResults').innerHTML = html;
+    }
+
+    window.selectCustomDish = function(dishId, dishName) {
+        if (customSelectedDishes.length >= MAX_CUSTOM_DISHES) {
+            alert('Maximum 10 custom dishes allowed');
+            return;
+        }
+
+        // Check if already selected
+        if (customSelectedDishes.find(d => d.id === dishId)) {
+            alert('This dish is already selected');
+            return;
+        }
+
+        customSelectedDishes.push({ id: dishId, name: dishName });
+        updateSelectedCustomDishes();
+        
+        // Clear search
+        document.getElementById('customDishSearch').value = '';
+        document.getElementById('customDishResults').innerHTML = `
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle-fill"></i> "${dishName}" added to your selection!
+            </div>
+        `;
+    };
+
+    window.requestCustomDish = function(dishName) {
+        const notes = document.getElementById('customDishNotes').value;
+
+        // Show loading
+        document.getElementById('customDishResults').innerHTML = `
+            <div class="text-center py-3">
+                <div class="spinner-border" role="status" style="color: #ffc107;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 mb-0" style="font-size: 0.9rem; color: #6c757d;">Sending request...</p>
+            </div>
+        `;
+
+        fetch('/api/request-custom-dish', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'dish_name': dishName,
+                'notes': notes
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('customDishResults').innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle-fill"></i> ${data.message}
+                    </div>
+                `;
+            } else {
+                document.getElementById('customDishResults').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill"></i> ${data.message}
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            document.getElementById('customDishResults').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Error sending request. Please try again.
+                </div>
+            `;
+            console.error('Error:', error);
+        });
+    };
+
+    function updateSelectedCustomDishes() {
+        if (customSelectedDishes.length === 0) {
+            document.getElementById('selectedCustomDishes').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('selectedCustomDishes').style.display = 'block';
+        document.getElementById('customDishCount').textContent = customSelectedDishes.length;
+
+        let html = '';
+        customSelectedDishes.forEach((dish, index) => {
+            html += `
+                <div class="d-flex justify-content-between align-items-center p-2 mb-2" style="background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <span style="font-weight: 600; color: #2c3e50;">
+                        <i class="bi bi-check-circle-fill" style="color: #28a745;"></i> ${dish.name}
+                    </span>
+                    <button class="btn btn-sm btn-danger" onclick="removeCustomDish(${index})" style="border-radius: 6px; padding: 0.25rem 0.5rem;">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `;
+        });
+
+        document.getElementById('selectedCustomDishesList').innerHTML = html;
+    }
+
+    window.removeCustomDish = function(index) {
+        customSelectedDishes.splice(index, 1);
+        updateSelectedCustomDishes();
+    };
+
+    // Add custom dishes to event
+    document.getElementById('addCustomDishesBtn').addEventListener('click', function() {
+        if (customSelectedDishes.length === 0) {
+            alert('Please select at least one custom dish');
+            return;
+        }
+
+        // Update hidden input
+        const dishIds = customSelectedDishes.map(d => d.id);
+        document.getElementById('customDishesInput').value = JSON.stringify(dishIds);
+
+        // Update display
+        let displayHtml = '';
+        customSelectedDishes.forEach(dish => {
+            displayHtml += `
+                <span class="badge me-2 mb-2" style="background: linear-gradient(135deg, #6c757d, #5a6268); font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 8px;">
+                    <i class="bi bi-star-fill"></i> ${dish.name}
+                </span>
+            `;
+        });
+        document.getElementById('customDishesListDisplay').innerHTML = displayHtml;
+        document.getElementById('customDishesDisplay').style.display = 'block';
+
+        // Close modal
+        bootstrap.Modal.getInstance(document.getElementById('customMenuModal')).hide();
+        
+        // Show success message
+        alert(`${customSelectedDishes.length} custom dish${customSelectedDishes.length > 1 ? 'es' : ''} added to your event!`);
+    });
+
+    // Reset modal when closed
+    document.getElementById('customMenuModal').addEventListener('hidden.bs.modal', function() {
+        document.getElementById('customDishSearch').value = '';
+        document.getElementById('customDishResults').innerHTML = `
+            <div class="text-center text-muted" style="padding: 2rem;">
+                <i class="bi bi-search" style="font-size: 3rem; opacity: 0.3;"></i>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">Enter a dish name and click "Check" to see if it's available</p>
+            </div>
+        `;
+    });
+</script>
 {% endblock %}

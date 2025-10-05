@@ -3,44 +3,675 @@
 {% block title %}Admin Dashboard - e-Rugah{% endblock %}
 
 {% block content %}
+<style>
+    body { background: linear-gradient(135deg, #ffe4b5, #ffedd5); color: white; text-shadow: 0 0 5px rgba(0,0,0,0.5); animation: fadeIn 0.5s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .bi { color: #ff6b35; }
+    
+    /* Card hover effect with left-to-right color slide */
+    .dashboard-card, .stats-card { 
+        position: relative; 
+        overflow: hidden; 
+        background: rgba(255, 140, 66, 0.3); 
+        border: 1px solid rgba(255, 107, 53, 0.4); 
+        backdrop-filter: blur(10px); 
+        box-shadow: 0 8px 32px rgba(255, 107, 53, 0.2); 
+        transition: all 0.3s ease; 
+        animation: slideUp 0.6s ease-out; 
+    }
+    .dashboard-card::before, .stats-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(255, 107, 53, 0.6), rgba(255, 140, 66, 0.6));
+        transition: left 0.5s ease;
+        z-index: 0;
+    }
+    .dashboard-card:hover::before, .stats-card:hover::before {
+        left: 0;
+    }
+    .dashboard-card > *, .stats-card > * {
+        position: relative;
+        z-index: 1;
+    }
+    .dashboard-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(255, 107, 53, 0.4); }
+    .stats-card:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4); }
+    
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes bounceIn { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.05); } 70% { transform: scale(0.9); } 100% { transform: scale(1); opacity: 1; } }
+    
+    /* All buttons same orange color with left-to-right hover */
+    .btn { 
+        position: relative; 
+        overflow: hidden; 
+        transition: all 0.3s ease; 
+        border: none; 
+        background: linear-gradient(45deg, #ff6b35, #ff8c42); 
+        color: white;
+    }
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, #ff8c42, #ffa552);
+        transition: left 0.4s ease;
+        z-index: 0;
+    }
+    .btn:hover::before {
+        left: 0;
+    }
+    .btn > * {
+        position: relative;
+        z-index: 1;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5); }
+    
+    /* Outline button style */
+    .btn-outline-secondary { 
+        background: transparent !important; 
+        border: 1px solid rgba(255, 107, 53, 0.6) !important; 
+        color: white !important; 
+    }
+    .btn-outline-secondary::before {
+        background: linear-gradient(90deg, rgba(255, 107, 53, 0.3), rgba(255, 140, 66, 0.3)) !important;
+    }
+    
+    .table { background: rgba(255, 140, 66, 0.2); border: 1px solid rgba(255, 107, 53, 0.3); }
+    .table th, .table td { border-color: rgba(255, 107, 53, 0.3); color: white; }
+    .alert { background: rgba(255, 140, 66, 0.25); border: 1px solid rgba(255, 107, 53, 0.4); color: white; }
+    .badge { background: rgba(255, 107, 53, 0.6); color: white; }
+
+    /* Ultra-Comprehensive Responsive Design */
+
+    /* Large Desktop (1440px+) */
+    @media (min-width: 1440px) {
+        .container {
+            max-width: 1400px !important;
+        }
+
+        .page-header h5 {
+            font-size: 1.4rem !important;
+        }
+
+        .stats-card h4 {
+            font-size: 1.5rem !important;
+        }
+
+        .dashboard-card {
+            padding: 2rem !important;
+        }
+    }
+
+    /* Desktop (1200px - 1439px) */
+    @media (min-width: 1200px) and (max-width: 1439px) {
+        .container {
+            max-width: 1140px !important;
+        }
+
+        .stats-card {
+            padding: 1.5rem !important;
+        }
+    }
+
+    /* Large Tablet (992px - 1199px) */
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .container {
+            max-width: 960px !important;
+        }
+
+        .page-header {
+            padding: 1.5rem !important;
+        }
+
+        .page-header h5 {
+            font-size: 1.2rem !important;
+        }
+
+        .stats-card {
+            padding: 1.25rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .stats-card h4 {
+            font-size: 1.3rem !important;
+        }
+
+        .dashboard-card {
+            padding: 1.5rem !important;
+        }
+
+        .table-responsive {
+            font-size: 0.9rem !important;
+        }
+    }
+
+    /* Medium Tablet (768px - 991px) */
+    @media (min-width: 768px) and (max-width: 991px) {
+        .container {
+            max-width: 720px !important;
+        }
+
+        .page-header {
+            padding: 1.25rem !important;
+            text-align: center !important;
+        }
+
+        .page-header h5 {
+            font-size: 1.1rem !important;
+        }
+
+        .page-header p {
+            font-size: 0.8rem !important;
+        }
+
+        /* Stack stats cards in 2 columns */
+        .row .col-md-3 {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .stats-card {
+            padding: 1rem !important;
+            text-align: center !important;
+        }
+
+        .stats-card h4 {
+            font-size: 1.2rem !important;
+        }
+
+        .stats-card i {
+            font-size: 1.3rem !important;
+        }
+
+        .dashboard-card {
+            padding: 1.25rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+
+        .btn {
+            padding: 0.5rem 0.75rem !important;
+            font-size: 0.8rem !important;
+        }
+
+        .table-responsive {
+            font-size: 0.85rem !important;
+        }
+
+        .table th, .table td {
+            padding: 0.5rem !important;
+        }
+    }
+
+    /* Small Tablet/Mobile (576px - 767px) */
+    @media (min-width: 576px) and (max-width: 767px) {
+        .container {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+
+        .page-header {
+            padding: 1rem !important;
+            margin-bottom: 1.5rem !important;
+            text-align: center !important;
+        }
+
+        .page-header h5 {
+            font-size: 1rem !important;
+        }
+
+        .page-header p {
+            font-size: 0.75rem !important;
+        }
+
+        /* Stack all stats cards vertically */
+        .row .col-md-3 {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .stats-card {
+            padding: 1.25rem !important;
+            text-align: center !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .stats-card h4 {
+            font-size: 1.4rem !important;
+        }
+
+        .stats-card i {
+            font-size: 1.5rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .dashboard-card {
+            padding: 1rem !important;
+            margin-bottom: 1.25rem !important;
+        }
+
+        .dashboard-card h6 {
+            font-size: 0.9rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        /* Stack quick action buttons */
+        .row .col-md-3 {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+            margin-bottom: 0.75rem !important;
+        }
+
+        .btn {
+            padding: 0.625rem 0.5rem !important;
+            font-size: 0.75rem !important;
+            min-height: 60px !important;
+        }
+
+        .btn small {
+            font-size: 0.65rem !important;
+        }
+
+        .table-responsive {
+            font-size: 0.8rem !important;
+            border-radius: 8px !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+
+        .table {
+            min-width: 600px !important;
+        }
+
+        .table th, .table td {
+            padding: 0.5rem 0.25rem !important;
+            white-space: nowrap !important;
+        }
+
+        .alert {
+            padding: 0.75rem !important;
+            font-size: 0.8rem !important;
+        }
+    }
+
+    /* Mobile (320px - 575px) */
+    @media (max-width: 575px) {
+        body {
+            font-size: 0.9rem !important;
+        }
+
+        .container {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+
+        .page-header {
+            padding: 0.875rem !important;
+            margin-bottom: 1.25rem !important;
+            text-align: center !important;
+        }
+
+        .page-header h5 {
+            font-size: 0.95rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+
+        .page-header p {
+            font-size: 0.7rem !important;
+            line-height: 1.3 !important;
+        }
+
+        /* Single column stats cards */
+        .row .col-md-3 {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+            margin-bottom: 0.75rem !important;
+        }
+
+        .stats-card {
+            padding: 1rem !important;
+            text-align: center !important;
+            border-radius: 12px !important;
+        }
+
+        .stats-card h4 {
+            font-size: 1.3rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+
+        .stats-card i {
+            font-size: 1.4rem !important;
+            margin-bottom: 0.5rem !important;
+            display: block !important;
+        }
+
+        .stats-card small {
+            font-size: 0.7rem !important;
+            opacity: 0.8 !important;
+        }
+
+        .dashboard-card {
+            padding: 0.875rem !important;
+            margin-bottom: 1rem !important;
+            border-radius: 12px !important;
+        }
+
+        .dashboard-card h6 {
+            font-size: 0.85rem !important;
+            margin-bottom: 0.75rem !important;
+        }
+
+        /* Grid layout for quick actions */
+        .row {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.5rem !important;
+            margin: 0 !important;
+        }
+
+        .row .col-md-3 {
+            margin: 0 !important;
+            flex: none !important;
+            max-width: none !important;
+        }
+
+        .btn {
+            width: 100% !important;
+            padding: 0.5rem 0.25rem !important;
+            font-size: 0.7rem !important;
+            min-height: 55px !important;
+            border-radius: 8px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.25rem !important;
+        }
+
+        .btn i {
+            font-size: 1rem !important;
+        }
+
+        .btn small {
+            font-size: 0.6rem !important;
+            line-height: 1 !important;
+        }
+
+        .table-responsive {
+            font-size: 0.75rem !important;
+            border-radius: 8px !important;
+            margin: 0 -0.5rem !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+
+        .table {
+            min-width: 600px !important;
+        }
+
+        .table th, .table td {
+            padding: 0.375rem 0.25rem !important;
+            white-space: nowrap !important;
+        }
+
+        .table th {
+            font-size: 0.7rem !important;
+            font-weight: 600 !important;
+        }
+
+        .table td {
+            font-size: 0.7rem !important;
+        }
+
+        .alert {
+            padding: 0.625rem 0.75rem !important;
+            font-size: 0.75rem !important;
+            border-radius: 8px !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .badge {
+            font-size: 0.65rem !important;
+            padding: 0.25rem 0.5rem !important;
+        }
+
+        /* Hide complex animations on mobile for performance */
+        .dashboard-card, .stats-card {
+            animation-duration: 0.3s !important;
+        }
+
+        .dashboard-card::before, .stats-card::before {
+            display: none !important;
+        }
+
+        /* Improve touch targets */
+        .btn {
+            min-height: 48px !important;
+        }
+
+        a {
+            min-height: 44px !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+    }
+
+    /* Extra Small Mobile (320px - 375px) */
+    @media (max-width: 375px) {
+        .container {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+
+        .page-header {
+            padding: 0.75rem !important;
+        }
+
+        .page-header h5 {
+            font-size: 0.9rem !important;
+        }
+
+        .page-header p {
+            font-size: 0.65rem !important;
+        }
+
+        .stats-card {
+            padding: 0.875rem !important;
+        }
+
+        .stats-card h4 {
+            font-size: 1.2rem !important;
+        }
+
+        .dashboard-card {
+            padding: 0.75rem !important;
+        }
+
+        .btn {
+            padding: 0.4rem 0.2rem !important;
+            min-height: 50px !important;
+        }
+
+        .table-responsive {
+            font-size: 0.7rem !important;
+        }
+
+        .alert {
+            padding: 0.5rem 0.625rem !important;
+            font-size: 0.7rem !important;
+        }
+    }
+
+    /* Landscape Mobile (orientation: landscape) and (max-height: 500px) */
+    @media (orientation: landscape) and (max-height: 500px) {
+        .page-header {
+            padding: 0.75rem 1rem !important;
+        }
+
+        .page-header h5 {
+            font-size: 0.9rem !important;
+        }
+
+        .page-header p {
+            display: none !important;
+        }
+
+        .stats-card {
+            padding: 0.75rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .stats-card h4 {
+            font-size: 1.1rem !important;
+        }
+
+        .dashboard-card {
+            padding: 0.75rem !important;
+        }
+
+        .btn {
+            padding: 0.375rem !important;
+            min-height: 44px !important;
+        }
+
+        .table th, .table td {
+            padding: 0.25rem !important;
+        }
+
+        /* Reduce vertical spacing */
+        .mb-3, .mb-2 {
+            margin-bottom: 0.75rem !important;
+        }
+
+        .dashboard-card {
+            margin-bottom: 1rem !important;
+        }
+    }
+
+    /* High DPI/Retina displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .dashboard-card, .stats-card {
+            box-shadow:
+                0 12px 40px rgba(255, 107, 53, 0.25),
+                0 4px 12px rgba(0, 0, 0, 0.15),
+                0 0 20px rgba(255, 107, 53, 0.15) !important;
+        }
+
+        .btn {
+            box-shadow:
+                0 6px 20px rgba(255, 107, 53, 0.3),
+                0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+    }
+
+    /* Print styles */
+    @media print {
+        .dashboard-card, .stats-card {
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
+            background: white !important;
+            color: black !important;
+        }
+
+        .btn {
+            display: none !important;
+        }
+
+        .page-header {
+            background: white !important;
+            color: black !important;
+            border-bottom: 2px solid #ff6b35 !important;
+        }
+    }
+</style>
 <div class="page-header">
-    <h2 class="mb-0"><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
-    <p class="mb-0 mt-2" style="opacity: 0.9;">Manage chefs, menus, and monitor platform performance</p>
+    <div>
+        <h5 class="mb-0" style="font-size: 1.1rem;"><i class="bi bi-speedometer2"></i> Admin Dashboard</h5>
+        <p class="mb-1 mt-1 small" style="font-size: 0.8rem; color: rgba(0, 0, 0, 0.8);">Manage chefs, menus, and monitor platform performance</p>
+    </div>
 </div>
 
-<div class="row mb-4">
+<div class="row mb-3">
     <div class="col-md-3 mb-3">
         <div class="stats-card">
-            <i class="bi bi-calendar-check" style="font-size: 2.5rem; opacity: 0.8;"></i>
-            <h2>{{ total_bookings }}</h2>
-            <h5>Total Bookings</h5>
+            <i class="bi bi-calendar-check" style="font-size: 1.5rem;"></i>
+            <h4 class="mb-1" style="font-size: 1.25rem;">{{ total_bookings }}</h4>
+            <small style="font-size: 0.75rem; color: rgba(0, 0, 0, 0.7);">Total Bookings</small>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="stats-card" style="background: linear-gradient(135deg, var(--food-green), #4cd137);">
-            <i class="bi bi-check-circle" style="font-size: 2.5rem; opacity: 0.8;"></i>
-            <h2>{{ confirmed_bookings }}</h2>
-            <h5>Confirmed Bookings</h5>
+        <div class="stats-card">
+            <i class="bi bi-check-circle" style="font-size: 1.5rem;"></i>
+            <h4 class="mb-1" style="font-size: 1.25rem;">{{ confirmed_bookings }}</h4>
+            <small style="font-size: 0.75rem; color: rgba(0, 0, 0, 0.7);">Confirmed Bookings</small>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="stats-card" style="background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));">
-            <i class="bi bi-hourglass-split" style="font-size: 2.5rem; opacity: 0.8;"></i>
-            <h2>{{ pending_chefs|length }}</h2>
-            <h5>Pending Approvals</h5>
+        <div class="stats-card">
+            <i class="bi bi-hourglass-split" style="font-size: 1.5rem;"></i>
+            <h4 class="mb-1" style="font-size: 1.25rem;">{{ pending_chefs|length }}</h4>
+            <small style="font-size: 0.75rem; color: rgba(0, 0, 0, 0.7);">Pending Approvals</small>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="stats-card" style="background: linear-gradient(135deg, #3498db, #2980b9);">
-            <i class="bi bi-people" style="font-size: 2.5rem; opacity: 0.8;"></i>
-            <h2>{{ approved_chefs|length }}</h2>
-            <h5>Active Chefs</h5>
+        <div class="stats-card">
+            <i class="bi bi-people" style="font-size: 1.5rem;"></i>
+            <h4 class="mb-1" style="font-size: 1.25rem;">{{ approved_chefs|length }}</h4>
+            <small style="font-size: 0.75rem; color: rgba(0, 0, 0, 0.7);">Active Chefs</small>
         </div>
     </div>
 </div>
 
-<div class="dashboard-card mb-4">
-    <h4 class="mb-3"><i class="bi bi-hourglass-split"></i> Pending Chef Approvals</h4>
+<div class="dashboard-card mb-3">
+    <h6 class="mb-2" style="font-size: 0.9rem;"><i class="bi bi-tools"></i> Quick Actions</h6>
+    <div class="row">
+        <div class="col-md-3 mb-2">
+            <button class="btn btn-secondary btn-sm w-100" style="font-size: 0.75rem; padding: 0.25rem; opacity: 0.5; cursor: not-allowed;" disabled>
+                <i class="bi bi-list-ul"></i><br><small style="font-size: 0.7rem;">Manage Menu</small>
+            </button>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('reports') }}" class="btn btn-info btn-sm w-100" style="font-size: 0.75rem; padding: 0.25rem;">
+                <i class="bi bi-bar-chart"></i><br><small style="font-size: 0.7rem;">View Reports</small>
+            </a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin_create_dish') }}" class="btn btn-success btn-sm w-100" style="font-size: 0.75rem; padding: 0.25rem;">
+                <i class="bi bi-plus-circle"></i><br><small style="font-size: 0.7rem;">Create Dish</small>
+            </a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin_custom_dish_database') }}" class="btn btn-primary btn-sm w-100" style="font-size: 0.75rem; padding: 0.25rem; background: linear-gradient(135deg, #ff6b35, #e55a2b); border: none;">
+                <i class="bi bi-database"></i><br><small style="font-size: 0.7rem;">Custom Dish DB</small>
+            </a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin_settings') }}" class="btn btn-warning btn-sm w-100" style="font-size: 0.75rem; padding: 0.25rem;">
+                <i class="bi bi-gear"></i><br><small style="font-size: 0.7rem;">Settings</small>
+            </a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin_mpesa_settings') }}" class="btn btn-success btn-sm w-100" style="font-size: 0.75rem; padding: 0.25rem; background: linear-gradient(135deg, #28a745, #218838); border: none;">
+                <i class="bi bi-phone-fill"></i><br><small style="font-size: 0.7rem;">M-Pesa Settings</small>
+            </a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin_images') }}" class="btn btn-info btn-sm w-100" style="font-size: 0.75rem; padding: 0.25rem;">
+                <i class="bi bi-images"></i><br><small style="font-size: 0.7rem;">Manage Images</small>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-card mb-3">
+    <h6 class="mb-2" style="font-size: 0.9rem;"><i class="bi bi-hourglass-split"></i> Pending Chef Approvals</h6>
     {% if pending_chefs %}
     <div class="table-responsive">
         <table class="table table-striped">
@@ -87,7 +718,7 @@
 </div>
 
 <div class="dashboard-card">
-    <h4 class="mb-3"><i class="bi bi-people"></i> Approved Chefs</h4>
+    <h6 class="mb-2" style="font-size: 0.9rem;"><i class="bi bi-people"></i> Approved Chefs</h6>
     {% if approved_chefs %}
     <div class="table-responsive">
         <table class="table table-striped">

@@ -3,6 +3,409 @@
 {% block title %}Login - e-Rugah{% endblock %}
 
 {% block content %}
+<style>
+    /* Hide footer on login page */
+    footer {
+        display: none !important;
+    }
+    .modal-backdrop-custom {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.7) 50%, rgba(102, 126, 234, 0.6) 100%);
+        backdrop-filter: blur(20px);
+        z-index: 1040;
+        display: none;
+        animation: backdropFadeIn 0.5s ease-out;
+    }
+
+    .login-modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+        z-index: 1050;
+        width: 90%;
+        max-width: 450px;
+        animation: modalScaleIn 0.5s ease-out forwards;
+    }
+
+    @keyframes backdropFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes modalScaleIn {
+        from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+        to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    .modal-content-custom {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05), 0 0 40px rgba(255, 107, 107, 0.2), 0 0 80px rgba(255, 107, 107, 0.1), 0 0 120px rgba(249, 115, 22, 0.05);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .modal-content-custom::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #ff6b6b, #f97316, #fb923c, #fdba74, #ff6b6b);
+        background-size: 200% 100%;
+        animation: gradientBorder 3s ease infinite;
+    }
+
+    @keyframes gradientBorder {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .modal-header-custom {
+        padding: 1.5rem 1.5rem 0;
+        text-align: right;
+    }
+
+    .modal-close-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .modal-close-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        transform: rotate(90deg);
+    }
+
+    .modal-body-custom {
+        padding: 2rem 2rem 2.5rem;
+    }
+
+    .auth-section {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .brand-section {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .brand-icon .icon-circle {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #ff6b6b, #f97316);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .brand-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #ff6b6b, #f97316, #fb923c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .brand-subtitle {
+        background: linear-gradient(135deg, #10b981, #34d399, #6ee7b7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .form-section {
+        width: 100%;
+    }
+
+    .login-form {
+        width: 100%;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .input-wrapper {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.6);
+        z-index: 2;
+        transition: color 0.3s ease;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #ff6b6b;
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+    }
+
+    .form-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .form-label {
+        position: absolute;
+        left: 3rem;
+        top: 1rem;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+        pointer-events: none;
+        background: transparent;
+        padding: 0 0.25rem;
+    }
+
+    .form-input:focus + .form-label,
+    .form-input:not(:placeholder-shown) + .form-label {
+        top: -0.5rem;
+        left: 2.5rem;
+        font-size: 0.85rem;
+        color: #ff6b6b;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        backdrop-filter: blur(10px);
+        border-radius: 4px;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .password-toggle:hover {
+        color: #ff6b6b;
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, #ff6b6b, #f97316);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+    }
+
+    .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(255, 107, 107, 0.5);
+        background: linear-gradient(135deg, #e53e3e, #dd6b20);
+    }
+
+    .login-btn:active {
+        transform: translateY(0);
+    }
+
+    .btn-text {
+        transition: opacity 0.3s ease;
+    }
+
+    .btn-loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .remember-me-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding: 0 0.25rem;
+    }
+
+    .remember-me-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    .remember-checkbox {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: #ff6b6b;
+        border-radius: 4px;
+    }
+
+    .remember-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.95rem;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.3s ease;
+    }
+
+    .remember-label:hover {
+        color: white;
+    }
+
+    .forgot-password-link {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+    }
+
+    .forgot-password-link:hover {
+        color: #ff6b6b;
+        text-decoration: underline;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .auth-footer-text {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+    }
+
+    .auth-link {
+        color: #ff6b6b;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .auth-link:hover {
+        color: #e53e3e;
+        text-decoration: underline;
+    }
+
+    /* Notification Styles */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        z-index: 1060;
+        transform: translateX(100%);
+        transition: transform 0.5s ease;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .notification.show {
+        transform: translateX(0);
+    }
+
+    .notification.error {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .login-modal {
+            width: 95%;
+            max-width: none;
+        }
+
+        .modal-body-custom {
+            padding: 1.5rem;
+        }
+
+        .brand-title {
+            font-size: 1.8rem;
+        }
+
+        .notification {
+            left: 10px;
+            right: 10px;
+            top: 10px;
+        }
+    }
+</style>
+
 <div class="modal-backdrop-custom" id="loginModalBackdrop">
     <div class="login-modal" id="loginModal">
         <div class="modal-content-custom">
@@ -31,7 +434,7 @@
                     </div>
 
                     <div class="form-section">
-                        <form method="POST" class="login-form">
+                        <form method="POST" class="login-form" autocomplete="on">
                             <div class="form-group">
                                 <div class="input-wrapper">
                                     <div class="input-icon">
@@ -40,7 +443,7 @@
                                             <polyline points="22,6 12,13 2,6"/>
                                         </svg>
                                     </div>
-                                    <input type="email" class="form-input" id="email" name="email" placeholder=" " required>
+                                    <input type="email" class="form-input" id="email" name="email" placeholder=" " required autocomplete="username email">
                                     <label for="email" class="form-label">Email Address</label>
                                     <div class="input-border"></div>
                                 </div>
@@ -55,7 +458,7 @@
                                             <path d="m7 11 1.5-1.5L12 11l3.5-1.5L17 11"/>
                                         </svg>
                                     </div>
-                                    <input type="password" class="form-input" id="password" name="password" placeholder=" " required>
+                                    <input type="password" class="form-input" id="password" name="password" placeholder=" " required autocomplete="current-password">
                                     <label for="password" class="form-label">Password</label>
                                     <button class="password-toggle" type="button" id="togglePassword">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon" id="eyeIcon">
@@ -65,6 +468,14 @@
                                     </button>
                                     <div class="input-border"></div>
                                 </div>
+                            </div>
+
+                            <div class="remember-me-wrapper">
+                                <div class="remember-me-container">
+                                    <input type="checkbox" id="remember_me" name="remember_me" class="remember-checkbox">
+                                    <label for="remember_me" class="remember-label">Remember Me</label>
+                                </div>
+                                <a href="{{ url_for('forgot_password') }}" class="forgot-password-link">Forgot Password?</a>
                             </div>
 
                             <div class="form-actions">
@@ -155,6 +566,34 @@
                 }
             });
         });
+
+        // Show notifications if any
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    showNotification('{{ message }}', '{{ category }}');
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type === 'danger' ? 'error' : ''}`;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 4000);
+        }
     });
 </script>
 {% endblock %}

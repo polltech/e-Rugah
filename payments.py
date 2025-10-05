@@ -2,12 +2,23 @@ import requests
 import base64
 import os
 from datetime import datetime
-from models import db, Payment, Booking
+from models import db, Payment, Booking, MpesaConfig
+
+def get_mpesa_config():
+    """Get M-Pesa configuration from database"""
+    config = MpesaConfig.query.first()
+    if not config:
+        # Create default config if none exists
+        config = MpesaConfig()
+        db.session.add(config)
+        db.session.commit()
+    return config
 
 def get_access_token():
-    consumer_key = os.getenv('MPESA_CONSUMER_KEY', 'test_key')
-    consumer_secret = os.getenv('MPESA_CONSUMER_SECRET', 'test_secret')
-    api_url = os.getenv('MPESA_API_URL', 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials')
+    config = get_mpesa_config()
+    consumer_key = config.consumer_key
+    consumer_secret = config.consumer_secret
+    api_url = config.api_url
     
     credentials = base64.b64encode(f'{consumer_key}:{consumer_secret}'.encode()).decode()
     headers = {'Authorization': f'Basic {credentials}'}
@@ -27,9 +38,10 @@ def initiate_mpesa_stk(phone, amount, booking_id):
         print("Failed to get M-PESA access token. Using simulation mode.")
         return simulate_payment(phone, amount, booking_id)
     
-    api_url = os.getenv('MPESA_STK_URL', 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest')
-    business_shortcode = os.getenv('MPESA_SHORTCODE', '174379')
-    passkey = os.getenv('MPESA_PASSKEY', 'test_passkey')
+    config = get_mpesa_config()
+    api_url = config.stk_url
+    business_shortcode = config.shortcode
+    passkey = config.passkey
     
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
     password = base64.b64encode(f'{business_shortcode}{passkey}{timestamp}'.encode()).decode()
@@ -48,7 +60,7 @@ def initiate_mpesa_stk(phone, amount, booking_id):
         'PartyA': phone,
         'PartyB': business_shortcode,
         'PhoneNumber': phone,
-        'CallBackURL': os.getenv('MPESA_CALLBACK_URL', 'https://yourapp.repl.co/mpesa/callback'),
+        'CallBackURL': config.callback_url,
         'AccountReference': f'Booking-{booking_id}',
         'TransactionDesc': f'Deposit for booking #{booking_id}'
     }

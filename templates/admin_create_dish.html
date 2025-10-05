@@ -1,0 +1,651 @@
+{% extends "base.html" %}
+
+{% block title %}Create Dish - e-Rugah{% endblock %}
+
+{% block content %}
+<style>
+    /* Modern animated background */
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    body {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        min-height: 100vh;
+        color: white;
+    }
+
+    /* Modern orange card styling with glassmorphism */
+    .card {
+        background: rgba(255, 107, 107, 0.1) !important;
+        backdrop-filter: blur(20px) saturate(180%);
+        border: 2px solid rgba(255, 107, 107, 0.3) !important;
+        border-radius: 24px !important;
+        box-shadow:
+            0 8px 32px rgba(255, 107, 53, 0.2),
+            0 2px 8px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 107, 107, 0.2) !important;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 
+            0 12px 48px rgba(255, 107, 53, 0.3),
+            0 4px 16px rgba(0, 0, 0, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    /* Orange card headers */
+    .card-header {
+        background: linear-gradient(135deg, rgba(255, 87, 34, 0.95) 0%, rgba(255, 107, 53, 0.95) 100%) !important;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3) !important;
+        padding: 1.25rem 1.5rem;
+        color: white !important;
+    }
+
+    .card-header h4,
+    .card-header h5 {
+        color: white !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .card-header i {
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
+    .card-body {
+        background: rgba(255, 107, 107, 0.05);
+        padding: 2rem;
+    }
+
+    /* Hide all form labels */
+    .form-label {
+        display: none !important;
+    }
+
+    /* Modern form controls */
+    .form-control,
+    .form-select,
+    textarea.form-control {
+        border: 2px solid rgba(255, 107, 107, 0.3);
+        border-radius: 16px;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 107, 107, 0.1) !important;
+        color: white !important;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        font-size: 0.95rem;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+        margin-top: 0;
+        display: block;
+        width: 100%;
+    }
+
+    .form-control:focus,
+    .form-select:focus,
+    textarea.form-control:focus {
+        border-color: rgba(255, 107, 107, 0.5);
+        box-shadow:
+            0 0 0 4px rgba(255, 140, 66, 0.4),
+            0 4px 16px rgba(255, 107, 53, 0.3);
+        transform: translateY(-2px);
+        background: rgba(255, 107, 107, 0.1) !important;
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+        font-weight: 400;
+    }
+
+    /* Ensure textarea is visible */
+    textarea.form-control {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    /* Section headings - white text */
+    h5.mt-4 {
+        color: white !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Ingredient rows with modern styling */
+    .ingredient-row {
+        background: rgba(255, 107, 107, 0.1) !important;
+        border: 2px solid rgba(255, 107, 107, 0.3) !important;
+        border-radius: 20px !important;
+        padding: 1.5rem !important;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        animation: fadeIn 0.4s ease-out;
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.1);
+    }
+
+    .ingredient-row:hover {
+        background: rgba(255, 107, 107, 0.15) !important;
+        transform: translateX(5px);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.15);
+    }
+
+    /* Ingredient row labels - hidden */
+    .ingredient-row .form-label {
+        display: none !important;
+    }
+
+    /* Form groups spacing */
+    .mb-3 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    /* Ensure proper spacing in ingredient rows */
+    .ingredient-row .col-md-3,
+    .ingredient-row .col-md-2 {
+        padding-bottom: 0.5rem;
+    }
+
+    /* Ingredient row internal structure */
+    .ingredient-row .row {
+        margin: 0;
+    }
+
+    .ingredient-row .col-md-3 > *,
+    .ingredient-row .col-md-2 > * {
+        width: 100%;
+    }
+
+    /* Modern orange buttons */
+    .btn-primary,
+    .btn-success,
+    .btn-info {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%) !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        color: white !important;
+        border-radius: 16px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary:hover,
+    .btn-success:hover,
+    .btn-info:hover {
+        background: linear-gradient(135deg, #ff5722 0%, #ff7733 100%) !important;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+        border-color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .btn-primary:active,
+    .btn-success:active,
+    .btn-info:active {
+        transform: translateY(-1px);
+    }
+
+    .btn-primary i,
+    .btn-success i,
+    .btn-info i {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-primary:hover i,
+    .btn-success:hover i,
+    .btn-info:hover i {
+        transform: scale(1.1);
+    }
+
+    /* Danger button - darker orange/red */
+    .btn-danger {
+        background: linear-gradient(135deg, #ff5722 0%, #ff6b35 100%) !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        color: white !important;
+        border-radius: 16px;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #e64a19 0%, #ff5722 100%) !important;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(255, 87, 34, 0.4);
+    }
+
+    /* List group items */
+    .list-group-item {
+        background: rgba(255, 107, 107, 0.1) !important;
+        border: 2px solid rgba(255, 107, 107, 0.3) !important;
+        border-radius: 12px !important;
+        margin-bottom: 0.5rem;
+        padding: 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+    }
+
+    .list-group-item:hover {
+        background: rgba(255, 107, 107, 0.15) !important;
+        transform: translateX(5px);
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
+    }
+
+    .list-group-item strong {
+        color: white !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        font-size: 1.05rem;
+        font-weight: 700;
+    }
+
+    .list-group-item .text-muted {
+        color: rgba(255, 255, 255, 0.9) !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .list-group-item small {
+        color: rgba(255, 255, 255, 0.9) !important;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Badges with orange theme */
+    .badge {
+        background: white !important;
+        color: #ff5722 !important;
+        border: 2px solid rgba(255, 107, 53, 0.4);
+        border-radius: 12px;
+        padding: 0.5rem 0.75rem;
+        font-weight: 700;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .badge:hover {
+        background: white !important;
+        color: #e64a19 !important;
+        transform: scale(1.08);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border-color: rgba(255, 87, 34, 0.6);
+    }
+
+    /* Badge text color override */
+    .badge.bg-light {
+        background: white !important;
+        color: #ff5722 !important;
+    }
+
+    .badge.text-dark {
+        color: #ff5722 !important;
+    }
+
+    /* Text muted - white with good visibility */
+    .text-muted {
+        color: rgba(255, 255, 255, 0.95) !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        font-weight: 500;
+    }
+
+    /* Paragraph text in card body */
+    .card-body p {
+        color: white !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        font-weight: 500;
+    }
+
+    /* Animations */
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Staggered animation for cards */
+    .col-md-8 .card {
+        animation-delay: 0.1s;
+    }
+
+    .col-md-4 .card:nth-child(1) {
+        animation-delay: 0.2s;
+    }
+
+    .col-md-4 .card:nth-child(2) {
+        animation-delay: 0.3s;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .card {
+            border-radius: 20px !important;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .ingredient-row {
+            padding: 1rem !important;
+        }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    /* Focus states for accessibility */
+    .btn:focus-visible,
+    .form-control:focus-visible {
+        outline: 3px solid rgba(255, 140, 66, 0.5);
+        outline-offset: 2px;
+    }
+
+    /* Custom scrollbar */
+    .card-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .card-body::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .card-body::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        border-radius: 10px;
+    }
+
+    .card-body::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #ff5722, #ff7733);
+    }
+
+    /* Enhanced list group */
+    .list-group-flush {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    /* Smooth transitions for all interactive elements */
+    * {
+        transition-property: background, border, transform, box-shadow;
+        transition-duration: 0.3s;
+        transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Help text styling */
+    .help-text {
+        background: rgba(255, 107, 107, 0.1);
+        border: 2px solid rgba(255, 107, 107, 0.3);
+        border-radius: 16px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        color: white;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+    }
+
+    .help-text strong {
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        font-weight: 700;
+    }
+
+    .help-text ul {
+        margin: 0.5rem 0 0 0;
+        padding-left: 1.5rem;
+    }
+
+    .help-text li {
+        margin-bottom: 0.25rem;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Column width adjustment for mobile */
+    @media (max-width: 768px) {
+        .col-md-3, .col-md-2 {
+            margin-bottom: 1rem;
+        }
+    }
+
+    /* Small helper text under inputs */
+    .form-text {
+        color: rgba(255, 255, 255, 0.85) !important;
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        font-style: italic;
+    }
+
+    /* Delete button styling */
+    .btn-sm {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.85rem;
+        border-radius: 10px;
+        min-width: 40px;
+    }
+
+    .delete-dish-btn {
+        transition: all 0.3s ease;
+    }
+
+    .delete-dish-btn:hover {
+        transform: scale(1.1);
+    }
+
+    /* List item flex layout */
+    .list-group-item.d-flex {
+        align-items: center !important;
+    }
+
+    .flex-grow-1 {
+        flex-grow: 1;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Create New Dish</h4>
+            </div>
+            <div class="card-body">
+                <div class="help-text">
+                    <strong>ℹ️ How to Create a Dish:</strong>
+                    <ul>
+                        <li><strong>Dish Name:</strong> Enter the name of your dish (e.g., "Grilled Chicken Salad")</li>
+                        <li><strong>Base Servings:</strong> Number of people this recipe serves (e.g., 4 people)</li>
+                        <li><strong>Markup:</strong> Your profit percentage on top of ingredient costs (e.g., 30%)</li>
+                        <li><strong>Ingredients:</strong> Add all ingredients with their unit price and quantity needed</li>
+                    </ul>
+                    <small>* = Required field</small>
+                </div>
+
+                <form method="POST" id="dishForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">🍽️ Dish Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="🍽️ Dish Name (e.g., Grilled Chicken Salad) *" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="base_servings" class="form-label">👥 Base Servings *</label>
+                                <input type="number" class="form-control" id="base_servings" name="base_servings" min="1" placeholder="👥 Base Servings (e.g., 4) *" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="markup" class="form-label">💰 Markup (%) *</label>
+                                <input type="number" step="0.01" class="form-control" id="markup" name="markup" placeholder="💰 Markup % (e.g., 30) *" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">📝 Description (Optional)</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="📝 Description (Optional) - Describe the dish, its flavors, and presentation..."></textarea>
+                    </div>
+
+                    <h5 class="mt-4 mb-3">🥘 Ingredients (Required)</h5>
+                    <div id="ingredients-container">
+                        <div class="ingredient-row mb-3 border rounded p-3">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-label">🥬 Ingredient Name *</label>
+                                    <input type="text" class="form-control" name="ingredient_name[]" placeholder="🥬 Ingredient Name (e.g., Chicken Breast) *" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">📏 Unit *</label>
+                                    <input type="text" class="form-control" name="unit[]" placeholder="📏 Unit (kg, g, pcs, L) *" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">💵 Unit Price *</label>
+                                    <input type="number" step="0.01" class="form-control" name="unit_price[]" placeholder="💵 Unit Price (0.00) *" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">📊 Quantity Needed *</label>
+                                    <input type="number" step="0.01" class="form-control" name="quantity[]" placeholder="📊 Quantity (for base servings) *" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">🗑️ Remove</label>
+                                    <button type="button" class="btn btn-danger w-100 remove-ingredient"><i class="bi bi-trash"></i> Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-success mb-3" id="add-ingredient"><i class="bi bi-plus-circle"></i> Add Another Ingredient</button>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Create Dish</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-list"></i> Existing Dishes</h5>
+            </div>
+            <div class="card-body">
+                {% if dishes %}
+                    <ul class="list-group list-group-flush">
+                        {% for dish in dishes %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <strong>{{ dish.name }}</strong><br>
+                                    <small class="text-muted">{{ dish.description if dish.description else 'No description' }}</small>
+                                </div>
+                                <button type="button" class="btn btn-danger btn-sm delete-dish-btn" 
+                                        data-dish-id="{{ dish.id }}" 
+                                        data-dish-name="{{ dish.name }}"
+                                        style="margin-left: 10px;">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">No dishes created yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card shadow mt-3">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="bi bi-tags"></i> Ingredient Library</h5>
+            </div>
+            <div class="card-body">
+                {% if ingredients %}
+                    <div class="row">
+                        {% for ingredient in ingredients %}
+                            <div class="col-6 mb-2">
+                                <small class="badge bg-light text-dark">{{ ingredient.name }} ({{ ingredient.unit }})</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No ingredients in library yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('ingredients-container');
+    const addButton = document.getElementById('add-ingredient');
+
+    // Add ingredient functionality
+    addButton.addEventListener('click', function() {
+        const newRow = container.querySelector('.ingredient-row').cloneNode(true);
+        // Clear inputs
+        newRow.querySelectorAll('input').forEach(input => input.value = '');
+        container.appendChild(newRow);
+    });
+
+    // Remove ingredient functionality
+    container.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-ingredient') || e.target.closest('.remove-ingredient')) {
+            const rows = container.querySelectorAll('.ingredient-row');
+            if (rows.length > 1) {
+                e.target.closest('.ingredient-row').remove();
+            } else {
+                alert('At least one ingredient is required.');
+            }
+        }
+    });
+
+    // Delete dish functionality
+    document.querySelectorAll('.delete-dish-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const dishId = this.getAttribute('data-dish-id');
+            const dishName = this.getAttribute('data-dish-name');
+            
+            if (confirm(`Are you sure you want to delete "${dishName}"?\n\nThis action cannot be undone and will remove all associated ingredients.`)) {
+                // Create a form and submit it
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/delete-dish/${dishId}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

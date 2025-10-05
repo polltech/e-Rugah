@@ -2,850 +2,2677 @@
 
 {% block content %}
 <style>
-    /* Ultra-Modern Hero Section */
-    .ultra-hero {
-        position: relative;
-        min-height: 100vh;
-        overflow: hidden;
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-        margin: -2rem -15px 0;
-        padding: 8rem 0 4rem;
-    }
-
-    /* Animated Mesh Background */
-    .hero-mesh {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: 
-            radial-gradient(at 20% 30%, hsla(280, 100%, 70%, 0.15) 0px, transparent 50%),
-            radial-gradient(at 80% 70%, hsla(200, 100%, 70%, 0.15) 0px, transparent 50%),
-            radial-gradient(at 40% 80%, hsla(340, 100%, 70%, 0.15) 0px, transparent 50%);
-        filter: blur(80px);
-        animation: meshFloat 20s ease-in-out infinite;
-    }
-
-    @keyframes meshFloat {
-        0%, 100% { transform: scale(1) rotate(0deg); }
-        50% { transform: scale(1.2) rotate(10deg); }
-    }
-
-    /* Grid Pattern Overlay */
-    .grid-pattern {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: 
-            linear-gradient(rgba(102, 126, 234, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(102, 126, 234, 0.03) 1px, transparent 1px);
-        background-size: 50px 50px;
-        animation: gridMove 20s linear infinite;
-    }
-
-    @keyframes gridMove {
-        0% { transform: translate(0, 0); }
-        100% { transform: translate(50px, 50px); }
-    }
-
-    /* Floating Orbs */
-    .hero-orb {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(80px);
-        opacity: 0.4;
-        animation: orbFloat 25s infinite ease-in-out;
-    }
-
-    .hero-orb-1 {
-        width: 500px;
-        height: 500px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        top: -15%;
-        left: -10%;
-    }
-
-    .hero-orb-2 {
-        width: 400px;
-        height: 400px;
-        background: linear-gradient(135deg, #f093fb, #f5576c);
-        bottom: -15%;
-        right: -10%;
-        animation-delay: 8s;
-    }
-
-    .hero-orb-3 {
-        width: 350px;
-        height: 350px;
-        background: linear-gradient(135deg, #4facfe, #00f2fe);
-        top: 40%;
-        right: 20%;
-        animation-delay: 15s;
-    }
-
-    @keyframes orbFloat {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        33% { transform: translate(80px, -80px) scale(1.1); }
-        66% { transform: translate(-80px, 80px) scale(0.9); }
-    }
-
-    /* Hero Container */
+    /* Hero wrapper with 100% width - full width, no space */
     .hero-wrapper {
-        position: relative;
-        z-index: 10;
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 2rem;
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        overflow: hidden;
+        box-shadow: none;
     }
 
-    .hero-grid {
-        display: grid;
-        grid-template-columns: 1.2fr 1fr;
-        gap: 4rem;
+    /* Modern Hero Section with Image Slider */
+    .hero-section {
+        height: 70vh;
+        min-height: 500px;
+        max-height: 700px;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        padding: 0;
+        display: flex;
         align-items: center;
     }
 
-    /* Left Content */
-    .hero-left {
-        animation: slideInLeft 1s ease-out;
+    /* Bottom-Left Triangle - Image Slider Background */
+    .hero-slider {
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: calc(100% - 2px);
+        height: calc(100% - 1px);
+        z-index: 1;
+        clip-path: polygon(0 0, 0 100%, 100% 100%);
     }
 
-    @keyframes slideInLeft {
+    /* Wave Border for Bottom-Left Triangle */
+    .hero-slider::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #ff6b6b);
+        background-size: 400% 400%;
+        animation: waveGradient 8s ease infinite;
+        clip-path: polygon(0 0, 0 100%, 100% 100%);
+        z-index: -1;
+        filter: blur(8px);
+    }
+
+    @keyframes waveGradient {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    .hero-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+    }
+
+    .hero-slide.active {
+        opacity: 1;
+    }
+
+    .hero-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    /* Top-Right Triangle - Second Image Slider (Upside Down) */
+    .hero-slider-right {
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: calc(100% - 2px);
+        height: calc(100% - 1px);
+        z-index: 3;
+        clip-path: polygon(0 0, 100% 0, 100% 100%);
+    }
+
+    /* Wave Border for Top-Right Triangle */
+    .hero-slider-right::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #667eea);
+        background-size: 400% 400%;
+        animation: waveGradientRight 10s ease infinite;
+        clip-path: polygon(0 0, 100% 0, 100% 100%);
+        z-index: -1;
+        filter: blur(10px);
+    }
+
+    @keyframes waveGradientRight {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    .hero-slide-right {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+        z-index: 1;
+    }
+
+    .hero-slide-right.active {
+        opacity: 1;
+        z-index: 2;
+    }
+
+    .hero-slide-right img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    /* Dark Overlay for Bottom-Left Triangle */
+    .hero-overlay {
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: calc(100% - 2px);
+        height: calc(100% - 1px);
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(30, 41, 59, 0.65) 50%, rgba(102, 126, 234, 0.45) 100%);
+        z-index: 2;
+        clip-path: polygon(0 0, 0 100%, 100% 100%);
+    }
+
+    /* Dark Overlay for Top-Right Triangle */
+    .hero-overlay-right {
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: calc(100% - 2px);
+        height: calc(100% - 1px);
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.45) 0%, rgba(30, 41, 59, 0.65) 50%, rgba(15, 23, 42, 0.75) 100%);
+        z-index: 4;
+        clip-path: polygon(0 0, 100% 0, 100% 100%);
+        pointer-events: none;
+    }
+
+    /* Left Triangle Content */
+    .hero-content-left {
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        z-index: 15;
+        max-width: 60%;
+        margin: 2rem 0 2rem 2rem;
+        width: 100%;
+        height: calc(100% - 4rem);
+        text-align: left;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-start;
+    }
+
+    /* Main Title */
+    .hero-title {
+        font-size: 2.8rem;
+        font-weight: 800;
+        line-height: 1.2;
+        background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 50%, #c7d2fe 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 2rem;
+        letter-spacing: -1px;
+        filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+    }
+
+    .hero-title-left {
+        position: absolute;
+        top: 35%;
+        left: 0;
+        width: 100%;
+        text-align: left;
+        margin-left: 0.9rem;
+        font-size: 2.8rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 0;
+        letter-spacing: -1px;
+        filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+        z-index: 16;
+        transform: translateY(-50%);
+    }
+
+    .hero-title-left .bring,
+    .hero-title-left .your {
+        background: linear-gradient(135deg, #f97316 0%, #fb923c 50%, #fdba74 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-title-left .event {
+        background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-title-left .to-life {
+        background: linear-gradient(135deg, #f97316 0%, #fb923c 50%, #fdba74 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-title-line {
+        animation: slideInUp 0.8s ease-out both;
+        display: block;
+    }
+
+    .hero-title-line:nth-child(1) { animation-delay: 0.2s; }
+    .hero-title-line:nth-child(2) { animation-delay: 0.7s; }
+    .hero-title-line:nth-child(3) { animation-delay: 1.2s; }
+
+    .animated-gradient {
+        background: linear-gradient(-45deg, #a855f7, #6366f1, #a855f7, #6366f1);
+        background-size: 400% 400%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 4s ease infinite;
+    }
+
+    .glitch {
+        position: relative;
+        animation: glitch 2s infinite;
+    }
+
+    .glitch::before,
+    .glitch::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .glitch::before {
+        animation: glitch-1 0.5s infinite;
+        color: #ff6b6b;
+        z-index: -1;
+    }
+
+    .glitch::after {
+        animation: glitch-2 0.5s infinite;
+        color: #4ecdc4;
+        z-index: -2;
+    }
+
+    @keyframes glitch {
+        0%, 100% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+    }
+
+    @keyframes glitch-1 {
+        0%, 100% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+    }
+
+    @keyframes glitch-2 {
+        0%, 100% { transform: translate(0); }
+        20% { transform: translate(2px, -2px); }
+        40% { transform: translate(2px, 2px); }
+        60% { transform: translate(-2px, -2px); }
+        80% { transform: translate(-2px, 2px); }
+    }
+
+    @keyframes slideInUp {
         from {
             opacity: 0;
-            transform: translateX(-50px);
+            transform: translateY(50px);
         }
         to {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateY(0);
         }
     }
 
-    .hero-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
-        background: rgba(102, 126, 234, 0.15);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(102, 126, 234, 0.3);
-        padding: 0.75rem 1.75rem;
-        border-radius: 100px;
-        color: #a8b3ff;
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    /* Subtitle */
+    .hero-subtitle {
         font-size: 0.95rem;
-        font-weight: 600;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+        font-weight: 400;
+        color: #f0f4ff;
+        margin-bottom: 2.5rem;
+        max-width: 700px;
+        line-height: 1.6;
+        animation: fadeInUp 1.5s ease-out 1.5s both;
+        text-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
+        letter-spacing: 0.3px;
     }
 
-    .tag-icon {
-        font-size: 1.2rem;
-        animation: pulse 2s ease-in-out infinite;
+    .hero-text-left {
+        font-size: 0.95rem;
+        font-weight: 400;
+        color: #fb923c;
+        margin-bottom: 1rem;
+        max-width: 700px;
+        line-height: 1.6;
+        text-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
+        letter-spacing: 0.3px;
     }
 
-    @keyframes pulse {
+    .hero-text-right {
+        font-size: 0.95rem;
+        font-weight: 400;
+        color: #fb923c;
+        margin-bottom: 1rem;
+        max-width: 700px;
+        line-height: 1.6;
+        text-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
+        letter-spacing: 0.3px;
+    }
+
+    .highlight-green {
+        color: #34d399;
+    }
+
+    .with {
+        color: #fb923c;
+    }
+
+    .erugah {
+        color: #34d399;
+    }
+
+    .hero-subtitle::first-letter {
+        animation: emojiPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes emojiPulse {
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.2); }
     }
 
-    .hero-heading {
-        font-size: 5rem;
-        font-weight: 900;
-        line-height: 1.1;
-        margin-bottom: 1.5rem;
-        letter-spacing: -2px;
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    .heading-line {
-        display: block;
-        background: linear-gradient(135deg, #fff 0%, #a8b3ff 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .heading-accent {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+    /* Modern Section Title */
+    .modern-title {
+        color: #ff6b6b;
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        animation: titleGlow 2s ease-in-out infinite alternate;
         position: relative;
-        display: inline-block;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
 
-    .heading-accent::after {
+    .modern-title::after {
         content: '';
         position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 8px;
-        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
-        border-radius: 10px;
-        opacity: 0.3;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 3px;
+        background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+        animation: underlineExpand 1.5s ease-out 0.5s forwards;
     }
 
-    .hero-text {
-        font-size: 1.3rem;
-        color: rgba(255, 255, 255, 0.8);
-        line-height: 1.8;
-        margin-bottom: 3rem;
-        max-width: 600px;
+    .title-icon {
+        animation: sparkle 2s ease-in-out infinite;
     }
 
-    /* Feature Pills */
-    .feature-pills {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        margin-bottom: 3rem;
+    @keyframes titleGlow {
+        0% { filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.5)); }
+        100% { filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.8)); }
     }
 
-    .pill {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 0.75rem 1.5rem;
-        border-radius: 50px;
-        color: white;
-        font-size: 0.95rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
+    @keyframes underlineExpand {
+        to { width: 200px; }
     }
 
-    .pill:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.2);
-        transform: translateY(-3px);
+    @keyframes sparkle {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.2); opacity: 0.8; }
     }
 
-    .pill-icon {
-        font-size: 1.2rem;
-    }
-
-    /* CTA Buttons */
-    .hero-actions {
-        display: flex;
-        gap: 1.5rem;
-        margin-bottom: 3rem;
-        flex-wrap: wrap;
-    }
-
-    .hero-btn {
-        padding: 1.2rem 3rem;
-        font-size: 1.1rem;
-        font-weight: 700;
-        border-radius: 100px;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Modern Feature Cards */
+    .feature-image-card {
         position: relative;
         overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 4px 6px rgba(255, 138, 76, 0.1), 0 10px 15px rgba(255, 138, 76, 0.1), 0 0 20px rgba(255, 138, 76, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
     }
 
-    .btn-primary-hero {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
-    }
-
-    .btn-primary-hero::before {
+    .feature-image-card::before {
         content: '';
         position: absolute;
         top: 0;
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        transition: left 0.5s;
-    }
-
-    .btn-primary-hero:hover::before {
-        left: 100%;
-    }
-
-    .btn-primary-hero:hover {
-        transform: translateY(-5px) scale(1.05);
-        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.6);
-        color: white;
-    }
-
-    .btn-secondary-hero {
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(20px);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        color: white;
-    }
-
-    .btn-secondary-hero:hover {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: rgba(255, 255, 255, 0.4);
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        color: white;
-    }
-
-    /* Stats */
-    .hero-stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
-    }
-
-    .stat-box-hero {
-        text-align: center;
-        padding: 1.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 138, 76, 0.7);
+        transition: left 0.5s ease;
+        z-index: 1;
         border-radius: 20px;
-        transition: all 0.3s ease;
     }
 
-    .stat-box-hero:hover {
-        background: rgba(255, 255, 255, 0.08);
-        transform: translateY(-5px);
+    .feature-image-card:hover::before {
+        left: 0;
     }
 
-    .stat-value-hero {
-        font-size: 2.5rem;
-        font-weight: 900;
-        color: white;
-        display: block;
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-label-hero {
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.7);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    /* Right Visual */
-    .hero-right {
+    /* Feature Description Cards */
+    .feature-description-card {
         position: relative;
-        animation: slideInRight 1s ease-out;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 4px 6px rgba(255, 138, 76, 0.1), 0 10px 15px rgba(255, 138, 76, 0.1), 0 0 20px rgba(255, 138, 76, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        padding: 2px;
     }
 
-    @keyframes slideInRight {
-        from {
-            opacity: 0;
-            transform: translateX(50px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
+    .feature-description-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 138, 76, 0.7);
+        transition: left 0.5s ease;
+        z-index: 1;
+        border-radius: 20px;
     }
 
-    .visual-card {
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(30px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 30px;
-        padding: 3rem;
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+    .feature-description-card:hover::before {
+        left: 0;
+    }
+
+    .feature-description-card:hover {
+        transform: translateY(-5px) scale(1.01);
+        box-shadow: 0 10px 20px rgba(255, 138, 76, 0.15), 0 20px 40px rgba(255, 138, 76, 0.15), 0 0 30px rgba(255, 138, 76, 0.3);
+        border-color: rgba(255, 138, 76, 0.3);
+    }
+
+    .feature-description-card h4 {
+        position: relative;
+        z-index: 2;
+        font-size: 0.7rem;
+    }
+
+    .feature-description-card p {
+        position: relative;
+        z-index: 2;
+        font-size: 0.65rem;
+    }
+
+    .feature-image-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 10px 20px rgba(255, 138, 76, 0.15), 0 20px 40px rgba(255, 138, 76, 0.15), 0 0 30px rgba(255, 138, 76, 0.3);
+        border-color: rgba(255, 138, 76, 0.3);
+    }
+
+    .feature-image-card img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-image-card:hover img {
+        transform: scale(1.05);
+    }
+
+    /* Chef Slider */
+    .chef-slider {
         position: relative;
         overflow: hidden;
     }
 
-    .visual-card::before {
-        content: '';
+    .chef-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .chef-slide.active {
+        opacity: 1;
+    }
+
+    .chef-slide img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .chef-slide:hover img {
+        transform: scale(1.05);
+    }
+
+    /* Ingredient Slider */
+    .ingredient-slider {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ingredient-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .ingredient-slide.active {
+        opacity: 1;
+    }
+
+    .ingredient-slide img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .ingredient-slide:hover img {
+        transform: scale(1.05);
+    }
+
+    /* M-Pesa Slider */
+    .mpesa-slider {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .mpesa-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .mpesa-slide.active {
+        opacity: 1;
+    }
+
+    .mpesa-slide img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .mpesa-slide:hover img {
+        transform: scale(1.05);
+    }
+
+    .overlay {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 5px;
-        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #4facfe);
-        background-size: 300% auto;
-        animation: shimmer 3s linear infinite;
-    }
-
-    @keyframes shimmer {
-        to { background-position: 300% center; }
-    }
-
-    .card-title-hero {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: white;
-        margin-bottom: 2rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .title-icon {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 12px;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         display: flex;
         align-items: center;
         justify-content: center;
+        opacity: 0;
+        transition: all 0.3s ease;
+        border-radius: 20px;
+        z-index: 2;
+    }
+
+    .feature-image-card:hover .overlay {
+        opacity: 1;
+    }
+
+    .overlay h4 {
+        color: white;
         font-size: 1.5rem;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        margin: 0;
+        animation: fadeInScale 0.3s ease;
     }
 
-    .process-list {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
+    @keyframes fadeInScale {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 
-    .process-item {
-        display: flex;
-        gap: 1.5rem;
-        align-items: flex-start;
-        padding: 1.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+    .mt-3 h4 {
+        background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
         transition: all 0.3s ease;
     }
 
-    .process-item:hover {
-        background: rgba(255, 255, 255, 0.08);
-        transform: translateX(10px);
+    .mt-3 h4:hover {
+        background: linear-gradient(135deg, #feca57 0%, #ff6b6b 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
-    .process-num {
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-weight: 900;
-        color: white;
-        flex-shrink: 0;
-        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-    }
-
-    .process-info h4 {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: white;
-        margin-bottom: 0.5rem;
-    }
-
-    .process-info p {
-        font-size: 0.95rem;
-        color: rgba(255, 255, 255, 0.7);
-        margin: 0;
-        line-height: 1.6;
-    }
-
-    /* Floating Testimonial */
-    .floating-testimonial {
-        position: absolute;
-        bottom: -50px;
-        right: -50px;
-        width: 350px;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(30px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 24px;
-        padding: 2rem;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        animation: float 6s ease-in-out infinite;
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-20px); }
-    }
-
-    .testimonial-stars {
-        color: #ffd700;
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-    }
-
-    .testimonial-text {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin-bottom: 1rem;
-    }
-
-    .testimonial-author {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .author-img {
-        width: 45px;
-        height: 45px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 700;
-        font-size: 1.1rem;
-    }
-
-    .author-details h5 {
-        color: white;
+    .mt-3 p {
+        color: #666;
         font-size: 1rem;
-        font-weight: 700;
-        margin: 0;
+        line-height: 1.6;
+        font-weight: 400;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(10px);
+        padding: 1rem;
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    .author-details p {
-        color: rgba(255, 255, 255, 0.6);
+    .mt-3:hover p {
+        color: #333;
+        background: rgba(255, 255, 255, 0.7);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* CTA Buttons */
+    .hero-cta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        animation: fadeInUp 1s ease-out 0.6s both;
+    }
+
+    .hero-btn {
+        padding: 0.9rem 2.2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+        color: white;
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(99, 102, 241, 0.7);
+        color: white;
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        color: #ffffff;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-secondary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-secondary:hover::before {
+        left: 100%;
+    }
+
+    .btn-secondary:hover {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+        transform: translateY(-3px) scale(1.02);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Slider Navigation Dots */
+    .slider-dots {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.8rem;
+        z-index: 10;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(10px);
+        padding: 0.8rem 1.2rem;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .slider-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+    }
+
+    .slider-dot.active {
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        width: 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
+    }
+
+    .slider-dot:hover {
+        background: rgba(255, 255, 255, 0.8);
+        transform: scale(1.2);
+    }
+
+    /* Right Triangle Content */
+    .hero-content-right {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        z-index: 15;
+        max-width: 50%;
+        margin: 2rem 2rem 2rem 0;
+        width: 100%;
+        height: calc(100% - 4rem);
+        text-align: right;
+        padding: 2rem;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    /* Main Title Right */
+    .hero-title-right {
+        font-size: 2.2rem;
+        font-weight: 800;
+        line-height: 1.2;
+        background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 50%, #c7d2fe 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+        letter-spacing: -1px;
+        filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+    }
+
+    .hero-title-line {
+        animation: slideInUp 0.8s ease-out both;
+        display: block;
+    }
+
+    /* Subtitle Right */
+    .hero-subtitle-right {
         font-size: 0.85rem;
-        margin: 0;
+        font-weight: 400;
+        color: #f0f4ff;
+        margin-bottom: 1rem;
+        max-width: 500px;
+        line-height: 1.5;
+        animation: fadeInUp 1.5s ease-out 1.5s both;
+        text-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
+        letter-spacing: 0.3px;
+        margin-left: auto;
     }
 
-    /* Responsive */
-    @media (max-width: 1024px) {
-        .hero-grid {
-            grid-template-columns: 1fr;
-            gap: 3rem;
-        }
+    /* CTA Buttons Right */
+    .hero-cta-right {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        animation: fadeInUp 1s ease-out 0.6s both;
+    }
 
-        .hero-right {
-            order: -1;
-        }
+    /* CTA Buttons Left */
+    .hero-cta-left {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        animation: fadeInUp 1s ease-out 0.6s both;
+    }
 
-        .floating-testimonial {
-            position: static;
-            width: 100%;
-            margin-top: 2rem;
+    /* Info Card Styling for Why Choose e-Rugah */
+    .info-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 2rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(255, 165, 0, 0.3);
+    }
+
+    .info-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s;
+    }
+
+    .info-card:hover::before {
+        left: 100%;
+    }
+
+    .info-card:hover {
+        transform: translateY(-15px) scale(1.02);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2), 0 0 40px rgba(255, 165, 0, 0.5);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+        border-color: rgba(255, 165, 0, 0.4);
+    }
+
+    .info-card h5 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #667eea;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+    }
+
+    .info-card:hover h5 {
+        color: #4f46e5;
+        transform: scale(1.05);
+    }
+
+    .info-card p {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #555;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+    }
+
+    .info-card:hover p {
+        color: #333;
+    }
+
+    .food-emoji {
+        font-size: 1.8rem;
+        margin-right: 0.5rem;
+        display: inline-block;
+        transition: transform 0.3s ease;
+    }
+
+    .info-card:hover .food-emoji {
+        transform: scale(1.2) rotate(10deg);
+    }
+
+    /* Animation for cards */
+    .info-card:nth-child(1) { animation: fadeInUpCard 0.8s ease-out 0.2s both; }
+    .info-card:nth-child(2) { animation: fadeInUpCard 0.8s ease-out 0.4s both; }
+    .info-card:nth-child(3) { animation: fadeInUpCard 0.8s ease-out 0.6s both; }
+    .info-card:nth-child(4) { animation: fadeInUpCard 0.8s ease-out 0.8s both; }
+
+    @keyframes fadeInUpCard {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
 
-    @media (max-width: 768px) {
-        .ultra-hero {
-            padding: 6rem 0 3rem;
+    /* Ultra-Comprehensive Responsive Design for Home Page */
+
+    /* Large Desktop (1440px+) */
+    @media (min-width: 1440px) {
+        .container {
+            max-width: 1400px !important;
         }
 
-        .hero-heading {
-            font-size: 3rem;
+        .hero-section {
+            height: 80vh !important;
+            min-height: 800px !important;
+            max-height: 900px !important;
         }
 
-        .hero-text {
-            font-size: 1.1rem;
+        .hero-title-left {
+            font-size: 3.5rem !important;
         }
 
-        .hero-actions {
-            flex-direction: column;
+        .hero-content-left {
+            max-width: 70% !important;
+            padding: 3rem !important;
+        }
+
+        .hero-content-right {
+            max-width: 60% !important;
+            padding: 3rem !important;
+        }
+
+        .modern-title {
+            font-size: 3rem !important;
+        }
+
+        .info-card {
+            padding: 3rem !important;
+        }
+
+        .feature-image-card img {
+            height: 300px !important;
+        }
+    }
+
+    /* Desktop (1200px - 1439px) */
+    @media (min-width: 1200px) and (max-width: 1439px) {
+        .container {
+            max-width: 1140px !important;
+        }
+
+        .hero-section {
+            height: 75vh !important;
+            min-height: 700px !important;
+            max-height: 800px !important;
+        }
+
+        .hero-title-left {
+            font-size: 3rem !important;
+        }
+
+        .hero-content-left {
+            max-width: 65% !important;
+            padding: 2.5rem !important;
+        }
+
+        .hero-content-right {
+            max-width: 55% !important;
+            padding: 2.5rem !important;
+        }
+
+        .modern-title {
+            font-size: 2.8rem !important;
+        }
+
+        .info-card {
+            padding: 2.5rem !important;
+        }
+    }
+
+    /* Large Tablet (992px - 1199px) */
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .container {
+            max-width: 960px !important;
+        }
+
+        .hero-section {
+            height: 70vh !important;
+            min-height: 600px !important;
+            max-height: 700px !important;
+        }
+
+        .hero-title-left {
+            font-size: 2.5rem !important;
+        }
+
+        .hero-content-left {
+            max-width: 60% !important;
+            padding: 2rem !important;
+        }
+
+        .hero-content-right {
+            max-width: 50% !important;
+            padding: 2rem !important;
+        }
+
+        .hero-cta-left {
+            gap: 0.75rem !important;
         }
 
         .hero-btn {
-            width: 100%;
-            justify-content: center;
+            padding: 1rem 2rem !important;
+            font-size: 0.95rem !important;
         }
 
-        .hero-stats {
-            grid-template-columns: 1fr;
+        .modern-title {
+            font-size: 2.4rem !important;
+        }
+
+        .info-card {
+            padding: 2rem !important;
+        }
+
+        .info-card h5 {
+            font-size: 1.6rem !important;
+        }
+
+        .feature-image-card img {
+            height: 280px !important;
+        }
+    }
+
+    /* Medium Tablet (768px - 991px) */
+    @media (min-width: 768px) and (max-width: 991px) {
+        .container {
+            max-width: 720px !important;
+        }
+
+        .hero-section {
+            height: 65vh !important;
+            min-height: 550px !important;
+            max-height: 650px !important;
+        }
+
+        .hero-content-left {
+            position: absolute !important;
+            top: 1px !important;
+            left: 1px !important;
+            max-width: 55% !important;
+            margin: 0 !important;
+            text-align: left !important;
+            justify-content: flex-end !important;
+            height: calc(100% - 4rem) !important;
+            padding: 1.5rem !important;
+        }
+
+        .hero-title-left {
+            position: absolute !important;
+            top: 40% !important;
+            left: 0 !important;
+            width: 100% !important;
+            text-align: left !important;
+            margin-left: 1rem !important;
+            margin-bottom: 0.5rem !important;
+            font-size: 2rem !important;
+            letter-spacing: -0.5px !important;
+            transform: translateY(-50%) !important;
+        }
+
+        .hero-text-left {
+            display: none !important; /* Hide on medium tablets to save space */
+        }
+
+        .hero-cta-left {
+            flex-direction: column !important;
+            justify-content: center !important;
+            gap: 0.5rem !important;
+        }
+
+        .hero-btn {
+            width: 100% !important;
+            justify-content: center !important;
+            padding: 0.75rem 1.5rem !important;
+            font-size: 0.9rem !important;
+        }
+
+        .hero-content-right {
+            position: absolute !important;
+            top: 1px !important;
+            right: 1px !important;
+            max-width: 45% !important;
+            padding: 1rem 1.5rem 1.5rem 1rem !important;
+            font-size: 0.7rem !important;
+            justify-content: flex-start !important;
+            text-align: left !important;
+        }
+
+        .hero-text-right {
+            font-size: 0.75rem !important;
+            line-height: 1.4 !important;
+        }
+
+        .slider-dots {
+            bottom: 1.5rem !important;
+            padding: 0.6rem 1rem !important;
+        }
+
+        .slider-dot {
+            width: 8px !important;
+            height: 8px !important;
+        }
+
+        .modern-title {
+            font-size: 2rem !important;
+        }
+
+        .info-card {
+            padding: 1.75rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+
+        .info-card h5 {
+            font-size: 1.4rem !important;
+        }
+
+        .info-card p {
+            font-size: 0.95rem !important;
+        }
+
+        .feature-image-card img {
+            height: 240px !important;
+        }
+
+        .feature-description-card {
+            padding: 1.5rem !important;
+        }
+
+        .food-gallery-item img {
+            border-radius: 15px !important;
+        }
+    }
+
+    /* Small Tablet/Mobile (576px - 767px) */
+    @media (min-width: 576px) and (max-width: 767px) {
+        .container {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+
+        .hero-section {
+            height: 60vh !important;
+            min-height: 500px !important;
+            max-height: 600px !important;
+        }
+
+        .hero-content-left {
+            position: absolute !important;
+            top: 1px !important;
+            left: 1px !important;
+            max-width: 50% !important;
+            margin: 0 !important;
+            text-align: left !important;
+            justify-content: flex-end !important;
+            height: calc(100% - 4rem) !important;
+            padding: 1.25rem !important;
+        }
+
+        .hero-title-left {
+            position: absolute !important;
+            top: 35% !important;
+            left: 0 !important;
+            width: 100% !important;
+            text-align: left !important;
+            margin-left: 0.75rem !important;
+            margin-bottom: 0 !important;
+            font-size: 1.75rem !important;
+            letter-spacing: -0.5px !important;
+            transform: translateY(-50%) !important;
+        }
+
+        .hero-title-line {
+            margin-bottom: 0.25rem !important;
+        }
+
+        .hero-text-left {
+            display: none !important;
+        }
+
+        .hero-cta-left {
+            flex-direction: column !important;
+            justify-content: center !important;
+            gap: 0.5rem !important;
+        }
+
+        .hero-btn {
+            width: 100% !important;
+            justify-content: center !important;
+            padding: 0.7rem 1.25rem !important;
+            font-size: 0.85rem !important;
+            border-radius: 40px !important;
+        }
+
+        .hero-content-right {
+            position: absolute !important;
+            top: 1px !important;
+            right: 1px !important;
+            max-width: 50% !important;
+            padding: 0.75rem 1rem 1rem 1rem !important;
+            font-size: 0.65rem !important;
+            justify-content: flex-start !important;
+            text-align: left !important;
+        }
+
+        .hero-text-right {
+            font-size: 0.7rem !important;
+            line-height: 1.4 !important;
+        }
+
+        .slider-dots {
+            bottom: 1.25rem !important;
+            padding: 0.5rem 0.875rem !important;
+        }
+
+        .slider-dot {
+            width: 7px !important;
+            height: 7px !important;
+        }
+
+        .modern-title {
+            font-size: 1.75rem !important;
+        }
+
+        .info-card {
+            padding: 1.5rem !important;
+            margin-bottom: 1.25rem !important;
+            border-radius: 16px !important;
+        }
+
+        .info-card h5 {
+            font-size: 1.2rem !important;
+        }
+
+        .info-card p {
+            font-size: 0.9rem !important;
+        }
+
+        .feature-image-card {
+            margin-bottom: 1rem !important;
+            border-radius: 16px !important;
+        }
+
+        .feature-image-card img {
+            height: 200px !important;
+        }
+
+        .feature-description-card {
+            padding: 1.25rem !important;
+            border-radius: 16px !important;
+        }
+
+        .feature-description-card h4 {
+            font-size: 0.9rem !important;
+        }
+
+        .feature-description-card p {
+            font-size: 0.85rem !important;
+        }
+
+        .food-gallery-item img {
+            border-radius: 12px !important;
+        }
+    }
+
+    /* Mobile (320px - 575px) */
+    @media (max-width: 575px) {
+        body {
+            font-size: 0.9rem !important;
+        }
+
+        .container {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+
+        .hero-section {
+            height: 55vh !important;
+            min-height: 450px !important;
+            max-height: 550px !important;
+            position: relative !important;
+        }
+
+        /* Keep the same triangle arrangement as desktop */
+        .hero-slider {
+            /* Bottom-left triangle - keep the same */
+            clip-path: polygon(0 0, 0 100%, 100% 100%) !important;
+        }
+
+        .hero-slider-right {
+            /* Top-right triangle - keep the same */
+            clip-path: polygon(0 0, 100% 0, 100% 100%) !important;
+        }
+
+        .hero-overlay {
+            /* Bottom-left overlay - keep the same */
+            clip-path: polygon(0 0, 0 100%, 100% 100%) !important;
+        }
+
+        .hero-overlay-right {
+            /* Top-right overlay - keep the same */
+            clip-path: polygon(0 0, 100% 0, 100% 100%) !important;
+        }
+
+        .hero-content-left {
+            position: absolute !important;
+            bottom: auto !important;
+            left: 0.5rem !important;
+            top: 58% !important;
+            transform: translateY(-50%) !important;
+            max-width: 80% !important;
+            margin: 0 !important;
+            text-align: left !important;
+            justify-content: flex-start !important;
+            align-items: flex-start !important;
+            height: auto !important;
+            padding: 0.75rem !important;
+            padding-left: 0.5rem !important;
+            z-index: 15 !important;
+        }
+
+        .hero-title-left {
+            position: static !important;
+            top: auto !important;
+            left: auto !important;
+            width: 100% !important;
+            text-align: left !important;
+            margin-left: 0 !important;
+            margin-bottom: 0.5rem !important;
+            font-size: 1.1rem !important;
+            letter-spacing: -0.5px !important;
+            transform: none !important;
+            line-height: 1.1 !important;
+        }
+
+        .hero-title-line {
+            margin-bottom: 0.1rem !important;
+            display: block !important;
+        }
+
+        .hero-title-line:nth-child(1) {
+            margin-left: 0 !important;
+        }
+
+        .hero-title-line:nth-child(2) {
+            margin-left: 0 !important;
+        }
+
+        .hero-title-line:nth-child(3) {
+            margin-left: 0 !important;
+        }
+
+        .hero-text-left {
+            display: none !important;
+        }
+
+        .hero-cta-left {
+            flex-direction: row !important;
+            justify-content: flex-start !important;
+            gap: 0.3rem !important;
+            flex-wrap: nowrap !important;
+            margin-left: 0 !important;
+        }
+
+        .hero-btn {
+            width: auto !important;
+            flex: 1 !important;
+            justify-content: center !important;
+            padding: 0.4rem 0.5rem !important;
+            font-size: 0.55rem !important;
+            border-radius: 25px !important;
+            min-height: 38px !important;
+            white-space: nowrap !important;
+        }
+
+        .hero-btn span {
+            font-size: 0.55rem !important;
+            line-height: 1.2 !important;
+        }
+
+        .hero-btn svg {
+            width: 12px !important;
+            height: 12px !important;
+        }
+
+        .hero-content-right {
+            position: absolute !important;
+            top: 1rem !important;
+            right: 0.5rem !important;
+            max-width: 48% !important;
+            margin: 0 !important;
+            text-align: right !important;
+            height: auto !important;
+            padding: 0.75rem !important;
+            z-index: 15 !important;
+            display: flex !important;
+            align-items: flex-start !important;
+            justify-content: flex-end !important;
+        }
+
+        .hero-text-right {
+            font-size: 0.8rem !important;
+            line-height: 1.4 !important;
+            margin-bottom: 0 !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8) !important;
+        }
+
+        .slider-dots {
+            bottom: 0.5rem !important;
+            padding: 0.15rem 0.25rem !important;
+            gap: 0.15rem !important;
+            border-radius: 8px !important;
+        }
+
+        .slider-dot {
+            width: 3px !important;
+            height: 3px !important;
+            margin: 0 1px !important;
+            border-radius: 50% !important;
+        }
+
+        .slider-dot.active {
+            width: 3px !important;
+            height: 3px !important;
+            background: rgba(255, 255, 255, 1) !important;
+            transform: scale(1.3) !important;
+        }
+
+        .modern-title {
+            font-size: 1.5rem !important;
+            padding: 0.75rem 1.5rem !important;
+        }
+
+        .modern-title .title-icon {
+            font-size: 1rem !important;
+        }
+
+        .info-card {
+            padding: 1.25rem !important;
+            margin-bottom: 1rem !important;
+            border-radius: 12px !important;
+        }
+
+        .info-card h5 {
+            font-size: 1.1rem !important;
+            margin-bottom: 0.75rem !important;
+        }
+
+        .info-card p {
+            font-size: 0.85rem !important;
+            line-height: 1.4 !important;
+        }
+
+        .feature-image-card {
+            margin-bottom: 0.75rem !important;
+            border-radius: 12px !important;
+        }
+
+        .feature-image-card img {
+            height: 180px !important;
+        }
+
+        .feature-description-card {
+            padding: 1rem !important;
+            border-radius: 12px !important;
+        }
+
+        .feature-description-card h4 {
+            font-size: 0.85rem !important;
+        }
+
+        .feature-description-card p {
+            font-size: 0.8rem !important;
+        }
+
+        .food-gallery-item img {
+            border-radius: 10px !important;
+        }
+
+        /* Improve touch targets */
+        .hero-btn {
+            min-height: 44px !important;
+        }
+    }
+
+    /* Extra Small Mobile (320px - 375px) */
+    @media (max-width: 375px) {
+        .container {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+
+        .hero-section {
+            height: 50vh !important;
+            min-height: 400px !important;
+            max-height: 500px !important;
+        }
+
+        .hero-title-left {
+            font-size: 1.35rem !important;
+        }
+
+        .hero-btn {
+            padding: 0.5rem 0.875rem !important;
+            font-size: 0.75rem !important;
+        }
+
+        .modern-title {
+            font-size: 1.35rem !important;
+            padding: 0.625rem 1.25rem !important;
+        }
+
+        .info-card {
+            padding: 1rem !important;
+        }
+
+        .info-card h5 {
+            font-size: 1rem !important;
+        }
+
+        .feature-image-card img {
+            height: 160px !important;
+        }
+
+        .feature-description-card {
+            padding: 0.875rem !important;
+        }
+    }
+
+    /* Landscape Mobile (orientation: landscape) and (max-height: 500px) */
+    @media (orientation: landscape) and (max-height: 500px) {
+        .hero-section {
+            height: 90vh !important;
+            min-height: 400px !important;
+            max-height: 500px !important;
+        }
+
+        .hero-content-left {
+            max-width: 45% !important;
+            padding: 0.75rem !important;
+        }
+
+        .hero-title-left {
+            font-size: 1.2rem !important;
+            top: 30% !important;
+            margin-left: 0.5rem !important;
+        }
+
+        .hero-cta-left {
+            gap: 0.25rem !important;
+        }
+
+        .hero-btn {
+            padding: 0.4rem 0.75rem !important;
+            font-size: 0.7rem !important;
+        }
+
+        .hero-content-right {
+            max-width: 45% !important;
+            padding: 0.5rem 0.75rem 0.75rem 0.5rem !important;
+            font-size: 0.55rem !important;
+        }
+
+        .slider-dots {
+            bottom: 0.75rem !important;
+        }
+
+        .modern-title {
+            font-size: 1.3rem !important;
+        }
+
+        .info-card {
+            padding: 1rem !important;
+        }
+
+        .feature-image-card img {
+            height: 140px !important;
+        }
+
+        /* Reduce vertical spacing */
+        .mt-5 {
+            margin-top: 2rem !important;
+        }
+
+        .mb-5, .mb-4 {
+            margin-bottom: 1.5rem !important;
+        }
+    }
+
+    /* High DPI/Retina displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .hero-section {
+            box-shadow:
+                0 20px 40px rgba(255, 107, 53, 0.3),
+                0 10px 20px rgba(255, 107, 53, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .info-card {
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, 0.15),
+                0 5px 15px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+        }
+
+        .feature-image-card {
+            box-shadow:
+                0 10px 25px rgba(255, 138, 76, 0.2),
+                0 4px 12px rgba(255, 138, 76, 0.15) !important;
+        }
+    }
+
+    /* Print styles */
+    @media print {
+        .hero-section {
+            display: none !important;
+        }
+
+        .hero-btn, .slider-dots {
+            display: none !important;
+        }
+
+        .info-card, .feature-image-card, .feature-description-card {
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
+            background: white !important;
+            color: black !important;
+        }
+
+        .modern-title {
+            background: white !important;
+            color: black !important;
+            border: none !important;
+        }
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+        .info-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(51, 65, 85, 0.6)) !important;
+            border-color: rgba(255, 107, 53, 0.4) !important;
+        }
+
+        .feature-description-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(51, 65, 85, 0.4)) !important;
+        }
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+        .hero-slide, .hero-slide-right, .chef-slide, .ingredient-slide, .mpesa-slide {
+            transition: none !important;
+        }
+
+        .hero-section, .info-card, .feature-image-card {
+            animation: none !important;
+        }
+
+        .hero-title-line, .modern-title, .info-card {
+            animation: none !important;
+        }
+    }
+
+    /* Mobile Performance Optimizations */
+    @media (max-width: 575px) {
+        /* Reduce complex animations on mobile */
+        .hero-section::before,
+        .hero-section::after,
+        .info-card::before,
+        .feature-image-card::before {
+            display: none !important;
+        }
+
+        /* Simplify gradients */
+        .hero-section {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%) !important;
+        }
+
+        /* Reduce shadow complexity */
+        .info-card,
+        .feature-image-card,
+        .feature-description-card {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Optimize hover states for touch */
+        .info-card:hover,
+        .feature-image-card:hover,
+        .food-gallery-item:hover {
+            transform: none !important;
+        }
+
+        /* Improve tap targets */
+        .hero-btn {
+            min-height: 48px !important;
+        }
+    }
+
+    /* Touch Device Optimizations */
+    @media (hover: none) and (pointer: coarse) {
+        /* Remove hover effects on touch devices */
+        .info-card:hover,
+        .feature-image-card:hover,
+        .food-gallery-item:hover,
+        .hero-btn:hover {
+            transform: none !important;
+            box-shadow: inherit !important;
+        }
+
+        /* Add active states for touch feedback */
+        .info-card:active,
+        .feature-image-card:active,
+        .food-gallery-item:active {
+            transform: scale(0.98) !important;
+            transition: transform 0.1s ease !important;
+        }
+
+        .hero-btn:active {
+            transform: scale(0.95) !important;
+        }
+    }
+
+    /* iOS Safari specific fixes */
+    @supports (-webkit-touch-callout: none) {
+        .hero-section {
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+
+        .slider-dots {
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+    }
+
+    /* Android specific optimizations */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
+        .hero-btn {
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: rgba(255, 107, 53, 0.3);
+        }
+
+        .slider-dot {
+            -webkit-tap-highlight-color: rgba(255, 107, 53, 0.3);
+        }
+    }
+
+    /* Large screen mobile devices (iPad Pro, etc.) */
+    @media (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+        .hero-section {
+            height: 60vh !important;
+            min-height: 500px !important;
+        }
+
+        .hero-title-left {
+            font-size: 2.2rem !important;
+        }
+
+        .modern-title {
+            font-size: 2.2rem !important;
+        }
+    }
+
+    /* Ultra-wide displays */
+    @media (min-width: 1920px) {
+        .container {
+            max-width: 1600px !important;
+        }
+
+        .hero-section {
+            height: 85vh !important;
+            max-height: 1000px !important;
+        }
+
+        .hero-title-left {
+            font-size: 3.5rem !important;
+        }
+
+        .hero-content-left {
+            max-width: 70% !important;
+            padding: 3rem !important;
+        }
+
+        .hero-content-right {
+            max-width: 65% !important;
+            padding: 3rem !important;
+        }
+
+        .food-gallery {
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 2.5rem !important;
+        }
+
+        .feature-image-card img {
+            height: 350px !important;
+        }
+    }
+
+    /* 4K and larger displays */
+    @media (min-width: 2560px) {
+        .container {
+            max-width: 2200px !important;
+        }
+
+        .hero-section {
+            height: 90vh !important;
+            max-height: 1200px !important;
+        }
+
+        .hero-title-left {
+            font-size: 4rem !important;
+        }
+
+        .food-gallery {
+            grid-template-columns: repeat(5, 1fr) !important;
+            gap: 3rem !important;
+        }
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-contrast: high) {
+        .hero-section {
+            background: linear-gradient(135deg, #000 0%, #333 100%) !important;
+        }
+
+        .info-card,
+        .feature-description-card {
+            background: #fff !important;
+            border: 2px solid #000 !important;
+            color: #000 !important;
+        }
+
+        .hero-title-left {
+            background: linear-gradient(135deg, #000 0%, #333 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+        }
+    }
+
+    /* Culinary Gallery Styles */
+    .food-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .food-gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(255, 138, 76, 0.15), 0 4px 12px rgba(255, 138, 76, 0.1);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        cursor: pointer;
+    }
+
+    .food-gallery-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 138, 76, 0.3), transparent);
+        transition: left 0.5s ease;
+        z-index: 1;
+    }
+
+    .food-gallery-item:hover::before {
+        left: 100%;
+    }
+
+    .food-gallery-item img {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        border-radius: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .food-gallery-item:hover img {
+        transform: scale(1.08) rotate(2deg);
+        filter: brightness(1.1) saturate(1.2);
+    }
+
+    .food-gallery-item:hover {
+        transform: translateY(-15px) scale(1.03);
+        box-shadow: 0 20px 40px rgba(255, 138, 76, 0.25), 0 10px 20px rgba(255, 138, 76, 0.15), 0 0 40px rgba(255, 138, 76, 0.4);
+        border-radius: 25px;
+    }
+
+    /* Tablet gallery adjustments */
+    @media (max-width: 991px) {
+        .food-gallery {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .food-gallery-item img {
+            height: 200px;
+        }
+    }
+
+    /* Mobile gallery adjustments */
+    @media (max-width: 575px) {
+        .food-gallery {
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .food-gallery-item img {
+            height: 160px;
+            border-radius: 12px;
+        }
+
+        .food-gallery-item:hover img {
+            transform: scale(1.05) rotate(1deg);
+        }
+
+        .food-gallery-item:hover {
+            transform: translateY(-8px) scale(1.02);
         }
     }
 </style>
 
-<section class="ultra-hero">
-    <!-- Background Elements -->
-    <div class="hero-mesh"></div>
-    <div class="grid-pattern"></div>
-    <div class="hero-orb hero-orb-1"></div>
-    <div class="hero-orb hero-orb-2"></div>
-    <div class="hero-orb hero-orb-3"></div>
+</div> <!-- Close container from base.html -->
 
-    <!-- Main Content -->
-    <div class="hero-wrapper">
-        <div class="hero-grid">
-            <!-- Left Content -->
-            <div class="hero-left">
-                <div class="hero-tag">
-                    <span class="tag-icon">✨</span>
-                    <span>#1 Chef Booking Platform in Kenya</span>
+<div class="hero-wrapper">
+    <section class="hero-section">
+        <!-- Image Slider -->
+        <div class="hero-slider">
+        <div class="hero-slide active">
+            <img src="{{ url_for('static', filename='images/pexels-robinstickel-70497.jpg') }}" alt="Culinary Excellence">
+        </div>
+        <div class="hero-slide">
+            <img src="{{ url_for('static', filename='images/pexels-taryn-elliott-5107128.jpg') }}" alt="Professional Chef">
+        </div>
+        <div class="hero-slide">
+            <img src="{{ url_for('static', filename='images/pexels-valeriya-1833349.jpg') }}" alt="Gourmet Dining">
+        </div>
+        <div class="hero-slide">
+            <img src="{{ url_for('static', filename='images/pexels-vanmalidate-784633.jpg') }}" alt="Delicious Cuisine">
+        </div>
+        <div class="hero-slide">
+            <img src="{{ url_for('static', filename='images/download.png') }}" alt="Culinary Artistry">
+        </div>
+        <div class="hero-slide">
+            <img src="{{ url_for('static', filename='images/download (1).png') }}" alt="Gourmet Experience">
+        </div>
+    </div>
+
+    <!-- Dark Overlay Left -->
+    <div class="hero-overlay"></div>
+
+    <!-- Right Triangle Image Slider -->
+    <div class="hero-slider-right">
+        <div class="hero-slide-right active">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-asphotograpy-226722 (1).jpg') }}" alt="Culinary Art 1">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-chanwalrus-958545 (1).jpg') }}" alt="Culinary Art 2">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-daniela-elena-tentis-118658-262959.jpg') }}" alt="Culinary Art 3">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-foodie-factor-162291-551997.jpg') }}" alt="Culinary Art 4">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-iina-luoto-460132-1211887.jpg') }}" alt="Culinary Art 5">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-mat-brown-150387-1395967.jpg') }}" alt="Culinary Art 6">
+        </div>
+        <div class="hero-slide-right">
+            <img src="{{ url_for('static', filename='hero-triangle/pexels-sebastian-coman-photography-1598188-3655916.jpg') }}" alt="Culinary Art 7">
+        </div>
+    </div>
+
+    <!-- Dark Overlay Right -->
+    <div class="hero-overlay-right"></div>
+
+    <!-- Right Triangle Content -->
+    <div class="hero-content-right">
+        <p class="hero-text-right">From <span class="highlight-green">Weddings</span> and <span class="highlight-green">Birthdays</span> to <span class="highlight-green">Private dinners</span> and <span class="highlight-green">Corporate functions</span>, e-Rugah makes <span class="highlight-green">event</span> planning effortless. Our platform connects you with talented <span class="highlight-green">Chefs</span> and <span class="highlight-green">Catering professionals</span> who bring flavor, creativity, and unforgettable dining experiences to your special moments.</p>
+    </div>
+
+    <!-- Left Triangle Content -->
+    <div class="hero-content-left">
+        <h2 class="hero-title-left">
+            <span class="hero-title-line"><span class="bring">BRING</span></span>
+            <span class="hero-title-line"><span class="your">YOUR</span> <span class="event">EVENT</span></span>
+            <span class="hero-title-line"><span class="to-life">TO LIFE</span> <span class="with">WITH</span> <span class="erugah">E-RUGAH</span></span>
+        </h2>
+
+        <div class="hero-cta-left">
+            <a href="{{ url_for('login') }}" class="hero-btn btn-primary">
+                <span>Get Started Now</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                </svg>
+            </a>
+            <a href="{{ url_for('chef_register') }}" class="hero-btn btn-secondary">
+                <span>Join as a <span class="highlight-green">Chef</span></span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Slider Navigation Dots -->
+    <div class="slider-dots">
+        <span class="slider-dot active" data-slide="0"></span>
+        <span class="slider-dot" data-slide="1"></span>
+        <span class="slider-dot" data-slide="2"></span>
+        <span class="slider-dot" data-slide="3"></span>
+        <span class="slider-dot" data-slide="4"></span>
+        <span class="slider-dot" data-slide="5"></span>
+    </div>
+    </section>
+</div>
+
+<div class="container"> <!-- Reopen container for rest of content -->
+
+<script>
+    // Image Slider Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Left Triangle Slider
+        const slides = document.querySelectorAll('.hero-slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        let currentSlide = 0;
+        const slideInterval = 5000; // 5 seconds
+
+        function showSlide(index) {
+            // Remove active class from all slides and dots
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+
+            // Add active class to current slide and dot
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        // Auto-advance slides
+        let autoSlide = setInterval(nextSlide, slideInterval);
+
+        // Manual navigation with dots
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+                // Reset auto-advance timer
+                clearInterval(autoSlide);
+                autoSlide = setInterval(nextSlide, slideInterval);
+            });
+        });
+
+        // Right Triangle Slider (Independent with offset)
+        const slidesRight = document.querySelectorAll('.hero-slide-right');
+        let currentSlideRight = 0;
+        const slideIntervalRight = 5000; // 5 seconds (same as left triangle)
+
+        function showSlideRight(index) {
+            // Remove active class from all right slides
+            slidesRight.forEach(slide => slide.classList.remove('active'));
+
+            // Add active class to current right slide
+            slidesRight[index].classList.add('active');
+        }
+
+        function nextSlideRight() {
+            currentSlideRight = (currentSlideRight + 1) % slidesRight.length;
+            showSlideRight(currentSlideRight);
+        }
+
+        // Start right triangle slider after 2.5 second delay for alternating effect
+        setTimeout(() => {
+            let autoSlideRight = setInterval(nextSlideRight, slideIntervalRight);
+        }, 2500); // 2.5 second offset
+
+        // Chef Slider
+        const chefSlides = document.querySelectorAll('.chef-slide');
+        let currentChefSlide = 0;
+        const chefSlideInterval = 5000; // 5 seconds
+
+        function showChefSlide(index) {
+            chefSlides.forEach(slide => slide.classList.remove('active'));
+            chefSlides[index].classList.add('active');
+        }
+
+        function nextChefSlide() {
+            currentChefSlide = (currentChefSlide + 1) % chefSlides.length;
+            showChefSlide(currentChefSlide);
+        }
+
+        // Start chef slider
+        let autoChefSlide = setInterval(nextChefSlide, chefSlideInterval);
+
+        // Add click functionality to show chef name
+        chefSlides.forEach((slide, index) => {
+            slide.addEventListener('click', () => {
+                const overlay = slide.querySelector('.overlay h4');
+                overlay.style.color = '#ff6b6b';
+                overlay.style.fontSize = '1.8rem';
+                setTimeout(() => {
+                    overlay.style.color = 'white';
+                    overlay.style.fontSize = '1.5rem';
+                }, 1000);
+            });
+        });
+
+        // Ingredient Slider
+        const ingredientSlides = document.querySelectorAll('.ingredient-slide');
+        let currentIngredientSlide = 0;
+        const ingredientSlideInterval = 5000; // 5 seconds
+
+        function showIngredientSlide(index) {
+            ingredientSlides.forEach(slide => slide.classList.remove('active'));
+            ingredientSlides[index].classList.add('active');
+        }
+
+        function nextIngredientSlide() {
+            currentIngredientSlide = (currentIngredientSlide + 1) % ingredientSlides.length;
+            showIngredientSlide(currentIngredientSlide);
+        }
+
+        // Start ingredient slider
+        let autoIngredientSlide = setInterval(nextIngredientSlide, ingredientSlideInterval);
+
+        // M-Pesa Slider
+        const mpesaSlides = document.querySelectorAll('.mpesa-slide');
+        let currentMpesaSlide = 0;
+        const mpesaSlideInterval = 5000; // 5 seconds
+
+        function showMpesaSlide(index) {
+            mpesaSlides.forEach(slide => slide.classList.remove('active'));
+            mpesaSlides[index].classList.add('active');
+        }
+
+        function nextMpesaSlide() {
+            currentMpesaSlide = (currentMpesaSlide + 1) % mpesaSlides.length;
+            showMpesaSlide(currentMpesaSlide);
+        }
+
+        // Start mpesa slider
+        let autoMpesaSlide = setInterval(nextMpesaSlide, mpesaSlideInterval);
+    });
+</script>
+
+<!-- Additional Sections from Index -->
+<div class="container" style="margin-top: 5rem; margin-bottom: 3rem;">
+    <div class="row mt-5 mb-3">
+        <div class="col-12 text-center">
+            <h2 class="section-title d-inline-block modern-title" style="font-weight: 800;">
+                <span class="title-icon">🍴</span> Our Promise to You <span class="title-icon">🥄</span>
+            </h2>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-4 mb-4">
+            <div class="feature-image-card chef-slider">
+                <div class="chef-slide active">
+                    <img src="{{ url_for('static', filename='images/pexels-kampus-8629092.jpg') }}" alt="Expert Chef">
+                    <div class="overlay">
+                        <h4>👨‍🍳 Expert <span class="highlight-green">Chef</span></h4>
+                    </div>
                 </div>
-
-                <h1 class="hero-heading">
-                    <span class="heading-line">Experience</span>
-                    <span class="heading-line"><span class="heading-accent">Culinary Excellence</span></span>
-                    <span class="heading-line">at Your Events</span>
-                </h1>
-
-                <p class="hero-text">
-                    Connect with verified master chefs who transform ordinary gatherings into extraordinary culinary experiences. From intimate dinners to grand celebrations, we bring the finest gastronomy to your doorstep.
-                </p>
-
-                <div class="feature-pills">
-                    <div class="pill">
-                        <span class="pill-icon">✓</span>
-                        <span>Verified Chefs</span>
-                    </div>
-                    <div class="pill">
-                        <span class="pill-icon">⚡</span>
-                        <span>Instant Booking</span>
-                    </div>
-                    <div class="pill">
-                        <span class="pill-icon">🔒</span>
-                        <span>Secure Payment</span>
+                <div class="chef-slide">
+                    <img src="{{ url_for('static', filename='images/pexels-klaus-nielsen-6287261.jpg') }}" alt="Professional Chef">
+                    <div class="overlay">
+                        <h4>👨‍🍳 Professional <span class="highlight-green">Chef</span></h4>
                     </div>
                 </div>
-
-                <div class="hero-actions">
-                    {% if current_user.role == 'customer' %}
-                        <a href="{{ url_for('create_event') }}" class="hero-btn btn-primary-hero">
-                            <span>Create Your Event</span>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-                            </svg>
-                        </a>
-                        <a href="{{ url_for('customer_dashboard') }}" class="hero-btn btn-secondary-hero">
-                            <span>View Dashboard</span>
-                        </a>
-                    {% elif current_user.role == 'chef' %}
-                        <a href="{{ url_for('chef_dashboard') }}" class="hero-btn btn-primary-hero">
-                            <span>View Dashboard</span>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-                            </svg>
-                        </a>
-                    {% elif current_user.role == 'admin' %}
-                        <a href="{{ url_for('admin_dashboard') }}" class="hero-btn btn-primary-hero">
-                            <span>Admin Dashboard</span>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-                            </svg>
-                        </a>
-                        <a href="{{ url_for('manage_menu') }}" class="hero-btn btn-secondary-hero">
-                            <span>Manage Menu</span>
-                        </a>
-                    {% endif %}
+                <div class="chef-slide">
+                    <img src="{{ url_for('static', filename='images/pexels-soumia-photography-131641539-14668778.jpg') }}" alt="Skilled Chef">
+                    <div class="overlay">
+                        <h4>👨‍🍳 Skilled <span class="highlight-green">Chef</span></h4>
+                    </div>
                 </div>
-
-                <div class="hero-stats">
-                    <div class="stat-box-hero">
-                        <span class="stat-value-hero">500+</span>
-                        <span class="stat-label-hero">Happy Events</span>
-                    </div>
-                    <div class="stat-box-hero">
-                        <span class="stat-value-hero">50+</span>
-                        <span class="stat-label-hero">Expert Chefs</span>
-                    </div>
-                    <div class="stat-box-hero">
-                        <span class="stat-value-hero">4.9★</span>
-                        <span class="stat-label-hero">Rating</span>
+                <div class="chef-slide">
+                    <img src="{{ url_for('static', filename='images/pexels-tima-miroshnichenko-5794154.jpg') }}" alt="Master Chef">
+                    <div class="overlay">
+                        <h4>👨‍🍳 Master <span class="highlight-green">Chef</span></h4>
                     </div>
                 </div>
             </div>
-
-            <!-- Right Visual -->
-            <div class="hero-right">
-                <div class="visual-card">
-                    <h3 class="card-title-hero">
-                        <span class="title-icon">🎯</span>
-                        <span>How It Works</span>
-                    </h3>
-
-                    <div class="process-list">
-                        <div class="process-item">
-                            <div class="process-num">1</div>
-                            <div class="process-info">
-                                <h4>Plan Your Event</h4>
-                                <p>Tell us about your occasion, guest count, and culinary preferences</p>
-                            </div>
-                        </div>
-
-                        <div class="process-item">
-                            <div class="process-num">2</div>
-                            <div class="process-info">
-                                <h4>Choose Your Menu</h4>
-                                <p>Browse curated menus from professional chefs</p>
-                            </div>
-                        </div>
-
-                        <div class="process-item">
-                            <div class="process-num">3</div>
-                            <div class="process-info">
-                                <h4>Get Matched</h4>
-                                <p>We connect you with the perfect chef in your area</p>
-                            </div>
-                        </div>
-
-                        <div class="process-item">
-                            <div class="process-num">4</div>
-                            <div class="process-info">
-                                <h4>Enjoy & Celebrate</h4>
-                                <p>Secure payment and unforgettable culinary experience</p>
-                            </div>
-                        </div>
+            <div class="feature-description-card mt-3 text-center">
+                <h4 style="color: #333; font-weight: 700; font-size: 0.95rem;">Verified Professional <span class="highlight-green">Chefs</span></h4>
+                <p class="text-muted" style="font-size: 0.9rem;">All our chefs are verified professionals with proven expertise in culinary arts and years of experience.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-image-card ingredient-slider">
+                <div class="ingredient-slide active">
+                    <img src="{{ url_for('static', filename='images/4077114.jpg') }}" alt="Fresh Ingredients">
+                    <div class="overlay">
+                        <h4>🍽️ Premium Cuisine</h4>
                     </div>
                 </div>
-
-                <div class="floating-testimonial">
-                    <div class="testimonial-stars">★★★★★</div>
-                    <p class="testimonial-text">"Amazing experience! The chef was professional and the food was incredible. Highly recommend e-Rugah!"</p>
-                    <div class="testimonial-author">
-                        <div class="author-img">SM</div>
-                        <div class="author-details">
-                            <h5>Sarah Mitchell</h5>
-                            <p>Wedding Planner</p>
-                        </div>
+                <div class="ingredient-slide">
+                    <img src="{{ url_for('static', filename='images/980700.jpg') }}" alt="Quality Produce">
+                    <div class="overlay">
+                        <h4>🍽️ Premium Cuisine</h4>
                     </div>
                 </div>
+                <div class="ingredient-slide">
+                    <img src="{{ url_for('static', filename='images/pexels-andrettibrown-3714083.jpg') }}" alt="Gourmet Ingredients">
+                    <div class="overlay">
+                        <h4>🍽️ Premium Cuisine</h4>
+                    </div>
+                </div>
+                <div class="ingredient-slide">
+                    <img src="{{ url_for('static', filename='images/pexels-anh-nguyen-517648218-23884576.jpg') }}" alt="Fresh Produce">
+                    <div class="overlay">
+                        <h4>🍽️ Premium Cuisine</h4>
+                    </div>
+                </div>
+                <div class="ingredient-slide">
+                    <img src="{{ url_for('static', filename='images/pexels-bertellifotografia-30893234.jpg') }}" alt="Quality Ingredients">
+                    <div class="overlay">
+                        <h4>🍽️ Premium Cuisine</h4>
+                    </div>
+                </div>
+                <div class="ingredient-slide">
+                    <img src="{{ url_for('static', filename='images/pexels-levent-yucelman-455905959-17070067.jpg') }}" alt="Premium Ingredients">
+                    <div class="overlay">
+                        <h4>🍽️ Premium Cuisine</h4>
+                    </div>
+                </div>
+                <div class="ingredient-slide">
+                    <img src="{{ url_for('static', filename='images/pexels-nc-farm-bureau-mark-2383314.jpg') }}" alt="Farm Fresh">
+                    <div class="overlay">
+                        <h4>🍽️ Premium Cuisine</h4>
+                    </div>
+                </div>
+                <div class="ingredient-slide">
+                    <img src="{{ url_for('static', filename='images/pexels-portal-cypr24-eu-2030325-32894088.jpg') }}" alt="Delicious Ingredients">
+                    <div class="overlay">
+                        <h4>🍽️ Premium Cuisine</h4>
+                    </div>
+                </div>
+                <div class="ingredient-slide">
+                    <img src="{{ url_for('static', filename='images/pexels-technobulka-9226262.jpg') }}" alt="Organic Produce">
+                    <div class="overlay">
+                        <h4>🍽️ Premium Cuisine</h4>
+                    </div>
+                </div>
+                <div class="ingredient-slide">
+                    <img src="{{ url_for('static', filename='images/pexels-tomfisk-3680164.jpg') }}" alt="Culinary Ingredients">
+                    <div class="overlay">
+                        <h4>🍽️ Premium Cuisine</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="feature-description-card mt-3 text-center">
+                <h4 style="color: #333; font-weight: 700; font-size: 0.95rem;">Smart Local Matching</h4>
+                <p class="text-muted" style="font-size: 0.9rem;">Find talented chefs in your exact area for fresh ingredients, timely service, and convenient coordination.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-image-card mpesa-slider">
+                <div class="mpesa-slide active">
+                    <img src="{{ url_for('static', filename='images/53462063991d6b9b2901f88fa85ca13c.png') }}" alt="M-Pesa Payment">
+                    <div class="overlay">
+                        <h4>💳 Secure Payments</h4>
+                    </div>
+                </div>
+                <div class="mpesa-slide">
+                    <img src="{{ url_for('static', filename='images/e8b2f635f7549c1e82e9fead5b89931b.png') }}" alt="M-Pesa Integration">
+                    <div class="overlay">
+                        <h4>💰 M-Pesa Integration</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="feature-description-card mt-3 text-center">
+                <h4 style="color: #333; font-weight: 700; font-size: 0.95rem;">Safe & Easy Payments</h4>
+                <p class="text-muted" style="font-size: 0.9rem;">Secure M-PESA integration for hassle-free transactions with instant confirmation.</p>
             </div>
         </div>
     </div>
-</section>
+
+    <div class="row mt-5 mb-4">
+        <div class="col-12 text-center">
+            <h2 class="section-title d-inline-block modern-title">
+                <span class="title-icon">🍴</span> Our Culinary Gallery <span class="title-icon">🍴</span>
+            </h2>
+        </div>
+    </div>
+
+    <div class="food-gallery">
+        <div class="food-gallery-item" data-title="🍽️ Gourmet Excellence">
+            <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_9aaeee7d.jpg') }}" alt="Gourmet Dish">
+        </div>
+        <div class="food-gallery-item" data-title="✨ Fine Dining">
+            <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_a4450b86.jpg') }}" alt="Fine Dining">
+        </div>
+        <div class="food-gallery-item" data-title="🔥 Culinary Artistry">
+            <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_d2787896.jpg') }}" alt="Delicious Meal">
+        </div>
+        <div class="food-gallery-item" data-title="🥗 Fresh & Delicious">
+            <img src="{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}" alt="Fresh Ingredients">
+        </div>
+        <div class="food-gallery-item" data-title="🍽️ Gourmet Delights">
+            <img src="{{ url_for('static', filename='images/pexels-ella-olsson-572949-1640777.jpg') }}" alt="Gourmet Dish">
+        </div>
+        <div class="food-gallery-item" data-title="🥘 Culinary Creations">
+            <img src="{{ url_for('static', filename='images/pexels-manit-seekhao-271238882-12824413.jpg') }}" alt="Culinary Creation">
+        </div>
+    </div>
+
+    <div class="row mt-5 mb-4">
+        <div class="col-12 text-center">
+            <h2 class="section-title d-inline-block modern-title">
+                <span class="title-icon">🥄</span> Why Choose e-Rugah? <span class="title-icon">🥄</span>
+            </h2>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4">
+            <div class="info-card">
+                <h5 style="color: #667eea; font-weight: 700;">
+                    <span class="food-emoji">🍽️</span> Culinary Variety Unleashed
+                </h5>
+                <p class="mb-0">Unleash your taste buds! From homey classics to worldly wonders, our skilled chefs deliver personalized menus that cater to every flavor profile and dietary need.</p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="info-card">
+                <h5 style="color: #667eea; font-weight: 700;">
+                    <span class="food-emoji">💳</span> Crystal Clear Pricing
+                </h5>
+                <p class="mb-0">Transparency you can trust. No sneaky fees—see exactly what you're paying for, based purely on your chosen menu and number of guests.</p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="info-card">
+                <h5 style="color: #667eea; font-weight: 700;">
+                    <span class="food-emoji">🚀</span> Instant Reservations
+                </h5>
+                <p class="mb-0">Chef booked in a flash! Our super-speedy system transforms your <span class="highlight-green">event</span> vision into confirmed bookings with minimal effort.</p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="info-card">
+                <h5 style="color: #667eea; font-weight: 700;">
+                    <span class="food-emoji">🏆</span> Elite Culinary Assurance
+                </h5>
+                <p class="mb-0">Excellence is our standard. Every chef undergoes rigorous screening, guaranteeing premier culinary talent for your unforgettable <span class="highlight-green">events</span>.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    // Parallax effect for orbs
+    // Generate Particles
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 50;
+
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        particlesContainer.appendChild(particle);
+    }
+
+    // Parallax Effect on Mouse Move
     document.addEventListener('mousemove', (e) => {
-        const orbs = document.querySelectorAll('.hero-orb');
+        const orbs = document.querySelectorAll('.orb');
         const mouseX = e.clientX / window.innerWidth;
         const mouseY = e.clientY / window.innerHeight;
 
         orbs.forEach((orb, index) => {
-            const speed = (index + 1) * 25;
+            const speed = (index + 1) * 30;
             const x = (mouseX - 0.5) * speed;
             const y = (mouseY - 0.5) * speed;
             orb.style.transform = `translate(${x}px, ${y}px)`;
         });
     });
 
-    // 3D tilt effect for visual card
-    const visualCard = document.querySelector('.visual-card');
-    if (visualCard) {
-        visualCard.addEventListener('mousemove', (e) => {
-            const rect = visualCard.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 20;
-            const rotateY = (centerX - x) / 20;
-            
-            visualCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    // Smooth Scroll for Scroll Indicator
+    document.querySelector('.scroll-indicator')?.addEventListener('click', () => {
+        window.scrollTo({
+            top: window.innerHeight,
+            behavior: 'smooth'
         });
-        
-        visualCard.addEventListener('mouseleave', () => {
-            visualCard.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+    });
+
+    // Enhanced Mobile Interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        // Touch gesture support for image sliders
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function handleTouchStart(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }
+
+        function handleTouchEnd(e, sliderType) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe(sliderType);
+        }
+
+        function handleSwipe(sliderType) {
+            const swipeThreshold = 50;
+            const swipeDistance = touchStartX - touchEndX;
+
+            if (Math.abs(swipeDistance) > swipeThreshold) {
+                if (swipeDistance > 0) {
+                    // Swipe left - next slide
+                    switch(sliderType) {
+                        case 'hero':
+                            const currentHeroSlide = document.querySelector('.hero-slide.active');
+                            const nextHeroSlide = currentHeroSlide.nextElementSibling || document.querySelector('.hero-slide');
+                            if (nextHeroSlide) {
+                                const slideIndex = Array.from(document.querySelectorAll('.hero-slide')).indexOf(nextHeroSlide);
+                                showSlide(slideIndex);
+                            }
+                            break;
+                        case 'chef':
+                            nextChefSlide();
+                            break;
+                        case 'ingredient':
+                            nextIngredientSlide();
+                            break;
+                        case 'mpesa':
+                            nextMpesaSlide();
+                            break;
+                    }
+                } else {
+                    // Swipe right - previous slide
+                    switch(sliderType) {
+                        case 'hero':
+                            const currentHeroSlide = document.querySelector('.hero-slide.active');
+                            const prevHeroSlide = currentHeroSlide.previousElementSibling || document.querySelector('.hero-slide:last-child');
+                            if (prevHeroSlide) {
+                                const slideIndex = Array.from(document.querySelectorAll('.hero-slide')).indexOf(prevHeroSlide);
+                                showSlide(slideIndex);
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        // Add touch listeners to sliders
+        const heroSection = document.querySelector('.hero-section');
+        if (heroSection) {
+            heroSection.addEventListener('touchstart', handleTouchStart, { passive: true });
+            heroSection.addEventListener('touchend', (e) => handleTouchEnd(e, 'hero'), { passive: true });
+        }
+
+        const chefSlider = document.querySelector('.chef-slider');
+        if (chefSlider) {
+            chefSlider.addEventListener('touchstart', handleTouchStart, { passive: true });
+            chefSlider.addEventListener('touchend', (e) => handleTouchEnd(e, 'chef'), { passive: true });
+        }
+
+        const ingredientSlider = document.querySelector('.ingredient-slider');
+        if (ingredientSlider) {
+            ingredientSlider.addEventListener('touchstart', handleTouchStart, { passive: true });
+            ingredientSlider.addEventListener('touchend', (e) => handleTouchEnd(e, 'ingredient'), { passive: true });
+        }
+
+        const mpesaSlider = document.querySelector('.mpesa-slider');
+        if (mpesaSlider) {
+            mpesaSlider.addEventListener('touchstart', handleTouchStart, { passive: true });
+            mpesaSlider.addEventListener('touchend', (e) => handleTouchEnd(e, 'mpesa'), { passive: true });
+        }
+
+        // Enhanced mobile keyboard handling
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                // Add class to body when input is focused on mobile
+                document.body.classList.add('keyboard-active');
+
+                // Smooth scroll to input
+                setTimeout(() => {
+                    this.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }, 300);
+            });
+
+            input.addEventListener('blur', function() {
+                document.body.classList.remove('keyboard-active');
+            });
+        });
+
+        // Add visual feedback for touch interactions
+        const interactiveElements = document.querySelectorAll('.hero-btn, .slider-dot, .food-gallery-item');
+        interactiveElements.forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform += ' scale(0.95)';
+                this.style.transition = 'transform 0.1s ease';
+            });
+
+            element.addEventListener('touchend', function() {
+                this.style.transform = this.style.transform.replace(' scale(0.95)', '');
+            });
+        });
+
+        // Performance optimization: Lazy load images
+        const images = document.querySelectorAll('img[data-src]');
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove('lazy');
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+
+        images.forEach(img => imageObserver.observe(img));
+
+        // Add loading states for better UX
+        const links = document.querySelectorAll('a[href]');
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.hostname === window.location.hostname) {
+                    // Add loading indicator for internal links
+                    this.innerHTML += ' <i class="fas fa-spinner fa-spin"></i>';
+                }
+            });
+        });
+    });
+
+    // Add 3D Tilt Effect to Glass Cards (Desktop only)
+    if (window.innerWidth > 768) {
+        const cards = document.querySelectorAll('.glass-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+
+                card.style.transform = `translateY(-15px) perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) perspective(1000px) rotateX(0) rotateY(0)';
+            });
         });
     }
+
+    // Button Ripple Effect
+    document.querySelectorAll('.modern-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                background: rgba(255, 255, 255, 0.5);
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s ease-out;
+                pointer-events: none;
+            `;
+            
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+
+    // Add ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 </script>
-
-<div class="row mt-5">
-    <div class="col-md-4 mb-4">
-        <div class="feature-image-card">
-            <img src="{{ url_for('static', filename='images/professional_chef_co_3045a4de.jpg') }}" alt="Professional Chef">
-            <div class="overlay">
-                <h4>👨‍🍳 Expert Chefs</h4>
-            </div>
-        </div>
-        <div class="mt-3 text-center">
-            <h4 style="color: var(--dark-color); font-weight: 700;">Verified Professional Chefs</h4>
-            <p class="text-muted" style="font-size: 1.05rem;">All our chefs are verified professionals with proven expertise in culinary arts and years of experience.</p>
-        </div>
-    </div>
-    <div class="col-md-4 mb-4">
-        <div class="feature-image-card">
-            <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_d952b03d.jpg') }}" alt="Gourmet Food">
-            <div class="overlay">
-                <h4>🍽️ Premium Cuisine</h4>
-            </div>
-        </div>
-        <div class="mt-3 text-center">
-            <h4 style="color: var(--dark-color); font-weight: 700;">Smart Local Matching</h4>
-            <p class="text-muted" style="font-size: 1.05rem;">Find talented chefs in your exact area for fresh ingredients, timely service, and convenient coordination.</p>
-        </div>
-    </div>
-    <div class="col-md-4 mb-4">
-        <div class="feature-image-card">
-            <img src="{{ url_for('static', filename='images/elegant_restaurant_t_fdc83926.jpg') }}" alt="Elegant Setup">
-            <div class="overlay">
-                <h4>✨ Perfect Events</h4>
-            </div>
-        </div>
-        <div class="mt-3 text-center">
-            <h4 style="color: var(--dark-color); font-weight: 700;">Safe & Easy Payments</h4>
-            <p class="text-muted" style="font-size: 1.05rem;">Secure M-PESA integration for hassle-free transactions with instant confirmation.</p>
-        </div>
-    </div>
-</div>
-
-<div class="row mt-5 mb-4">
-    <div class="col-12 text-center">
-        <h2 class="section-title d-inline-block" style="font-weight: 800;">
-            <span class="food-emoji">🍴</span> Our Culinary Gallery <span class="food-emoji">🍴</span>
-        </h2>
-    </div>
-</div>
-
-<div class="food-gallery">
-    <div class="food-gallery-item" data-title="🍽️ Gourmet Excellence">
-        <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_9aaeee7d.jpg') }}" alt="Gourmet Dish">
-    </div>
-    <div class="food-gallery-item" data-title="✨ Fine Dining">
-        <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_a4450b86.jpg') }}" alt="Fine Dining">
-    </div>
-    <div class="food-gallery-item" data-title="🔥 Culinary Artistry">
-        <img src="{{ url_for('static', filename='images/delicious_gourmet_fo_d2787896.jpg') }}" alt="Delicious Meal">
-    </div>
-    <div class="food-gallery-item" data-title="🥗 Fresh & Delicious">
-        <img src="{{ url_for('static', filename='images/modern_kitchen_cooki_28f59968.jpg') }}" alt="Fresh Ingredients">
-    </div>
-</div>
-
-<div class="row mt-5 mb-4">
-    <div class="col-12 text-center">
-        <h2 class="section-title d-inline-block" style="font-weight: 800;">
-            <span class="food-emoji">✨</span> Why Choose e-Rugah? <span class="food-emoji">✨</span>
-        </h2>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6 mb-4">
-        <div class="info-card">
-            <h5 style="color: var(--primary-color); font-weight: 700;">
-                <span class="food-emoji">🍱</span> Diverse Cuisine Options
-            </h5>
-            <p class="mb-0">From traditional favorites to international delicacies, our chefs offer a wide range of cuisines to satisfy every palate and dietary preference.</p>
-        </div>
-    </div>
-    <div class="col-md-6 mb-4">
-        <div class="info-card">
-            <h5 style="color: var(--primary-color); font-weight: 700;">
-                <span class="food-emoji">💰</span> Transparent Pricing
-            </h5>
-            <p class="mb-0">Know exactly what you're paying for. No hidden fees, just straightforward pricing based on your menu selections and guest count.</p>
-        </div>
-    </div>
-    <div class="col-md-6 mb-4">
-        <div class="info-card">
-            <h5 style="color: var(--primary-color); font-weight: 700;">
-                <span class="food-emoji">⚡</span> Quick Booking Process
-            </h5>
-            <p class="mb-0">Book your perfect chef in minutes! Our streamlined process gets you from event planning to confirmation in just a few clicks.</p>
-        </div>
-    </div>
-    <div class="col-md-6 mb-4">
-        <div class="info-card">
-            <h5 style="color: var(--primary-color); font-weight: 700;">
-                <span class="food-emoji">⭐</span> Quality Guaranteed
-            </h5>
-            <p class="mb-0">Every chef on our platform is thoroughly vetted and verified. We ensure only the best culinary professionals serve your events.</p>
-        </div>
-    </div>
-</div>
 {% endblock %}

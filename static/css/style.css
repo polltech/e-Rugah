@@ -90,12 +90,12 @@ body::before {
 }
 
 .navbar {
-    background: rgba(44, 62, 80, 0.85) !important;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.95), rgba(255, 140, 66, 0.95)) !important;
     font-family: 'Roboto', sans-serif;
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(255, 107, 53, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 0.6rem 0;
     position: sticky;
     top: 0;
@@ -113,7 +113,7 @@ body::before {
     left: 0;
     right: 0;
     height: 15px;
-    background: linear-gradient(90deg, #3498db, #2ecc71, #f39c12, #e74c3c, #9b59b6, #3498db);
+    background: linear-gradient(90deg, #ff6b35, #ff8c42, #ffa552, #ffb366, #ffc47a, #ff6b35);
     background-size: 300% auto;
     animation: shimmer 4s linear infinite;
     clip-path: polygon(0% 100%, 10% 80%, 20% 100%, 30% 80%, 40% 100%, 50% 80%, 60% 100%, 70% 80%, 80% 100%, 90% 80%, 100% 100%);
@@ -122,15 +122,10 @@ body::before {
 .navbar-brand {
     font-size: 1.6rem;
     font-weight: 900;
-    background: linear-gradient(135deg, #ff6b35, #f7931e, #ff9f43, #ff6b35);
-    background-size: 300% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: white !important;
     letter-spacing: 2px;
     text-transform: uppercase;
-    animation: shimmer 4s linear infinite;
-    text-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     padding: 0.2rem 0;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
@@ -138,18 +133,19 @@ body::before {
 .navbar-brand .logo {
     height: 32px;
     width: auto;
-    filter: drop-shadow(0 0 10px rgba(255, 107, 53, 0.5));
+    filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
     animation: pulse 2s ease-in-out infinite;
 }
 
 .navbar-brand i {
     animation: pulse 2s ease-in-out infinite;
     display: inline-block;
-    filter: drop-shadow(0 0 10px rgba(255, 107, 53, 0.8));
+    color: white;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
 }
 
 .nav-link {
-    color: rgba(144, 238, 144, 0.95) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
     font-weight: 600;
     margin: 0 0.3rem;
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -168,7 +164,7 @@ body::before {
 }
 
 .nav-link i.bi-door-open {
-    color: #3498db;
+    color: #ffa552;
 }
 
 .nav-link i.bi-person-plus-fill {
@@ -353,7 +349,7 @@ body::before {
     display: flex;
     align-items: center;
     overflow: hidden;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
     margin-top: -76px;
     padding-top: 76px;
 }
@@ -878,7 +874,7 @@ body::before {
 .author-avatar {
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
     color: white;
     border-radius: 50%;
     display: flex;

@@ -1,0 +1,738 @@
+{% extends "base.html" %}
+
+{% block title %}Pending Approval - e-Rugah{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        position: relative;
+        overflow-x: hidden;
+        padding-top: 76px;
+    }
+
+    /* Navbar Override */
+    .navbar {
+        background: #ff6b35 !important;
+        position: fixed !important;
+        top: 0 !important;
+        width: 100% !important;
+        z-index: 1000 !important;
+    }
+
+    /* Animated background particles */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 50%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .pending-container {
+        max-width: 900px;
+        width: 100%;
+        margin: 1rem auto 2rem;
+        padding: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .pending-card {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.8) 0%, rgba(249, 115, 22, 0.6) 100%);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        border-radius: 32px;
+        padding: 3rem;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 107, 107, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pending-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #ff6b6b, #f97316, #fb923c, #fdba74, #ff6b6b);
+        background-size: 200% 100%;
+        animation: gradientBorder 3s ease infinite;
+    }
+
+    @keyframes gradientBorder {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    /* Header Section */
+    .pending-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .pending-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #ff6b35, #f97316);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+        animation: successPulse 2s ease-in-out infinite;
+        position: relative;
+    }
+
+    .pending-icon::after {
+        content: '';
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border: 3px solid rgba(255, 107, 107, 0.3);
+        border-radius: 50%;
+        animation: ripple 2s ease-out infinite;
+    }
+
+    @keyframes successPulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 20px 50px rgba(255, 107, 107, 0.6);
+        }
+    }
+
+    @keyframes ripple {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1.3);
+            opacity: 0;
+        }
+    }
+
+    .pending-icon svg {
+        width: 50px;
+        height: 50px;
+        stroke: white;
+        stroke-width: 3;
+        fill: none;
+    }
+
+    .pending-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.75rem;
+        background: linear-gradient(135deg, #ff6b35, #f97316);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .pending-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.1rem;
+        line-height: 1.6;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Status Grid */
+    .status-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .status-item {
+        background: rgba(255, 107, 107, 0.2);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .status-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--status-color), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .status-item:hover::before {
+        opacity: 1;
+    }
+
+    .status-item.verified {
+        --status-color: #10b981;
+    }
+
+    .status-item.pending {
+        --status-color: #f59e0b;
+    }
+
+    .status-icon {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: rgba(255, 107, 107, 0.1);
+    }
+
+    .status-item.verified .status-icon {
+        background: rgba(255, 107, 107, 0.2);
+    }
+
+    .status-item.pending .status-icon {
+        background: rgba(255, 107, 107, 0.2);
+    }
+
+    .status-icon svg {
+        width: 28px;
+        height: 28px;
+        stroke: white;
+    }
+
+    .status-item.verified .status-icon svg {
+        stroke: #ff6b35;
+    }
+
+    .status-item.pending .status-icon svg {
+        stroke: #ff6b35;
+    }
+
+    .status-label {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+
+    .status-value {
+        font-size: 1rem;
+        color: white;
+        font-weight: 600;
+    }
+
+    /* Info Box */
+    .info-box {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(249, 115, 22, 0.05));
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 107, 107, 0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .info-icon svg {
+        width: 24px;
+        height: 24px;
+        stroke: white;
+    }
+
+    .info-content {
+        flex: 1;
+    }
+
+    .info-title {
+        color: #ff6b35;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-text {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    /* Profile Details */
+    .profile-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-title svg {
+        width: 24px;
+        height: 24px;
+        stroke: white;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .detail-card {
+        background: rgba(255, 107, 107, 0.2);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        border-radius: 12px;
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+    }
+
+    .detail-card:hover {
+        background: rgba(255, 107, 107, 0.3);
+        border-color: rgba(255, 107, 107, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .detail-label {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .detail-label svg {
+        width: 16px;
+        height: 16px;
+        stroke: white;
+    }
+
+    .detail-value {
+        color: white;
+        font-size: 1rem;
+        font-weight: 500;
+        word-break: break-word;
+    }
+
+    /* Meals Section */
+    .meals-card {
+        background: rgba(255, 107, 107, 0.2);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        border-radius: 12px;
+        padding: 1.25rem;
+        grid-column: 1 / -1;
+    }
+
+    .meals-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+    }
+
+    .meal-tag {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(249, 115, 22, 0.2));
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        color: #ff6b35;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .meal-tag:hover {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(249, 115, 22, 0.3));
+        transform: translateY(-2px);
+    }
+
+    .meal-tag svg {
+        width: 16px;
+        height: 16px;
+        stroke: white;
+    }
+
+    /* Actions */
+    .pending-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-pending {
+        padding: 1rem 2rem;
+        border-radius: 14px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-pending::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-pending:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-pending svg {
+        width: 20px;
+        height: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-pending span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-primary-pending {
+        background: linear-gradient(135deg, #ff6b6b, #f97316);
+        color: white;
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+    }
+
+    .btn-primary-pending:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(255, 107, 107, 0.5);
+        color: white;
+    }
+
+    .btn-secondary-pending {
+        background: rgba(255, 107, 107, 0.1);
+        color: white;
+        border: 2px solid rgba(255, 107, 107, 0.2);
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary-pending:hover {
+        background: rgba(255, 107, 107, 0.15);
+        border-color: rgba(255, 107, 107, 0.3);
+        transform: translateY(-3px);
+        color: white;
+    }
+
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .pending-container {
+            padding: 1rem;
+        }
+
+        .pending-card {
+            padding: 1.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .pending-icon {
+            width: 80px;
+            height: 80px;
+        }
+
+        .pending-icon::after {
+            width: 100px;
+            height: 100px;
+        }
+
+        .pending-title {
+            font-size: 1.5rem;
+        }
+
+        .pending-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .status-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .status-item {
+            padding: 1rem;
+        }
+
+        .details-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .detail-card {
+            padding: 1rem;
+        }
+
+        .meals-card {
+            padding: 1rem;
+        }
+
+        .meal-tag {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+        }
+
+        .info-box {
+            padding: 1rem;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .info-icon {
+            margin-bottom: 0.5rem;
+        }
+
+        .pending-actions {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn-pending {
+            width: 100%;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="pending-container">
+    <div class="pending-card">
+        <!-- Header -->
+        <div class="pending-header">
+            <div class="pending-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h1 class="pending-title">Verification Complete!</h1>
+            <p class="pending-subtitle">
+                Thank you for completing your registration. Your account is currently under review by our admin team.
+            </p>
+        </div>
+
+        <!-- Status Grid -->
+        <div class="status-grid">
+            <div class="status-item verified">
+                <div class="status-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <div class="status-label">Email Status</div>
+                <div class="status-value">Verified</div>
+            </div>
+
+            <div class="status-item verified">
+                <div class="status-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                </div>
+                <div class="status-label">Phone Status</div>
+                <div class="status-value">Verified</div>
+            </div>
+
+            <div class="status-item pending">
+                <div class="status-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div class="status-label">Account Status</div>
+                <div class="status-value">Pending Approval</div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <div class="info-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+            </div>
+            <div class="info-content">
+                <div class="info-title">What happens next?</div>
+                <div class="info-text">
+                    Our admin team will review your profile and verify your credentials. You'll receive an email notification once your account is approved. This process typically takes 24-48 hours.
+                </div>
+            </div>
+        </div>
+
+        {% if chef %}
+        <!-- Profile Details -->
+        <div class="profile-section">
+            <h2 class="section-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                Your Profile Details
+            </h2>
+            
+            <div class="details-grid">
+                <div class="detail-card">
+                    <div class="detail-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Full Name
+                    </div>
+                    <div class="detail-value">{{ chef.name }}</div>
+                </div>
+
+                <div class="detail-card">
+                    <div class="detail-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        Email Address
+                    </div>
+                    <div class="detail-value">{{ current_user.email }}</div>
+                </div>
+
+                <div class="detail-card">
+                    <div class="detail-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                        Phone Number
+                    </div>
+                    <div class="detail-value">{{ chef.phone }}</div>
+                </div>
+
+                <div class="detail-card">
+                    <div class="detail-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        Location
+                    </div>
+                    <div class="detail-value">{{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}</div>
+                </div>
+
+                <div class="meals-card">
+                    <div class="detail-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                            <line x1="6" y1="1" x2="6" y2="4"></line>
+                            <line x1="10" y1="1" x2="10" y2="4"></line>
+                            <line x1="14" y1="1" x2="14" y2="4"></line>
+                        </svg>
+                        Meals Offered
+                    </div>
+                    <div class="meals-tags">
+                        {% set meals = chef.meals_offered.split(',') %}
+                        {% set unique_meals = [] %}
+                        {% for meal in meals %}
+                            {% set meal_clean = meal.strip() %}
+                            {% if meal_clean and meal_clean not in unique_meals %}
+                                {% set _ = unique_meals.append(meal_clean) %}
+                                <span class="meal-tag">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
+                                    {{ meal_clean|title }}
+                                </span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="pending-actions">
+            <a href="{{ url_for('index') }}" class="btn-pending btn-primary-pending">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Go to Home</span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="btn-pending btn-secondary-pending">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,2035 @@
+{% extends "base.html" %}
+
+{% block title %}M-Pesa Settings - e-Rugah Admin{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-orange: #ff6b35;
+        --secondary-orange: #f7931e;
+        --light-orange: #ff8c42;
+        --dark-orange: #e55a2b;
+        --accent-orange: #ff9f43;
+        --shadow-primary: 0 10px 30px rgba(255, 107, 53, 0.2);
+        --shadow-secondary: 0 4px 16px rgba(0, 0, 0, 0.1);
+        --shadow-glow: 0 0 20px rgba(255, 107, 53, 0.1);
+        --border-radius: 16px;
+        --transition-fast: 0.2s ease;
+        --transition-normal: 0.3s ease;
+        --transition-slow: 0.5s ease;
+    }
+
+    body {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.05), rgba(247, 147, 30, 0.05), rgba(255, 159, 67, 0.03));
+        background-image:
+            radial-gradient(circle at 10% 20%, rgba(255, 107, 53, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 90% 80%, rgba(247, 147, 30, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(255, 159, 67, 0.03) 0%, transparent 70%);
+        min-height: 100vh;
+        color: #333;
+        font-family: 'Poppins', sans-serif;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* Advanced floating particles system */
+    .floating-particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .particle {
+        position: absolute;
+        border-radius: 50%;
+        animation: particleFloat 12s ease-in-out infinite;
+        box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+    }
+
+    .particle:nth-child(1) {
+        width: 4px; height: 4px;
+        background: radial-gradient(circle, rgba(255, 107, 53, 0.8), rgba(247, 147, 30, 0.4));
+        top: 15%; left: 15%; animation-delay: 0s;
+    }
+    .particle:nth-child(2) {
+        width: 6px; height: 6px;
+        background: radial-gradient(circle, rgba(255, 140, 66, 0.7), rgba(255, 193, 7, 0.3));
+        top: 25%; left: 85%; animation-delay: 1.5s;
+    }
+    .particle:nth-child(3) {
+        width: 3px; height: 3px;
+        background: radial-gradient(circle, rgba(255, 87, 34, 0.9), rgba(244, 67, 54, 0.5));
+        top: 65%; left: 25%; animation-delay: 3s;
+    }
+    .particle:nth-child(4) {
+        width: 5px; height: 5px;
+        background: radial-gradient(circle, rgba(255, 152, 0, 0.6), rgba(255, 235, 59, 0.4));
+        top: 85%; left: 75%; animation-delay: 4.5s;
+    }
+    .particle:nth-child(5) {
+        width: 4px; height: 4px;
+        background: radial-gradient(circle, rgba(255, 107, 53, 0.7), rgba(156, 39, 176, 0.3));
+        top: 45%; left: 95%; animation-delay: 6s;
+    }
+    .particle:nth-child(6) {
+        width: 7px; height: 7px;
+        background: radial-gradient(circle, rgba(255, 87, 34, 0.8), rgba(76, 175, 80, 0.4));
+        top: 75%; left: 45%; animation-delay: 7.5s;
+    }
+    .particle:nth-child(7) {
+        width: 3px; height: 3px;
+        background: radial-gradient(circle, rgba(255, 193, 7, 0.9), rgba(33, 150, 243, 0.5));
+        top: 35%; left: 65%; animation-delay: 9s;
+    }
+    .particle:nth-child(8) {
+        width: 5px; height: 5px;
+        background: radial-gradient(circle, rgba(156, 39, 176, 0.7), rgba(255, 107, 53, 0.3));
+        top: 55%; left: 85%; animation-delay: 10.5s;
+    }
+
+    @keyframes particleFloat {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg) scale(1);
+            opacity: 0.4;
+        }
+        25% {
+            transform: translateY(-20px) rotate(90deg) scale(1.2);
+            opacity: 0.8;
+        }
+        50% {
+            transform: translateY(-10px) rotate(180deg) scale(0.8);
+            opacity: 0.6;
+        }
+        75% {
+            transform: translateY(-25px) rotate(270deg) scale(1.1);
+            opacity: 0.9;
+        }
+    }
+
+    /* Advanced gradient overlays */
+    .gradient-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg,
+            rgba(255, 107, 53, 0.05) 0%,
+            rgba(247, 147, 30, 0.03) 25%,
+            rgba(255, 193, 7, 0.05) 50%,
+            rgba(255, 87, 34, 0.03) 75%,
+            rgba(255, 107, 53, 0.05) 100%);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    /* Ultra-modern card styling with 3D effects */
+    .card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(25px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.6) !important;
+        border-radius: 20px !important;
+        box-shadow:
+            0 15px 35px rgba(255, 107, 53, 0.2),
+            0 5px 15px rgba(0, 0, 0, 0.1),
+            0 0 25px rgba(255, 107, 53, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        animation: slideInUp 0.8s ease-out, cardPulse 4s ease-in-out infinite !important;
+        transform-style: preserve-3d !important;
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg,
+            rgba(255, 107, 53, 0.3),
+            rgba(247, 147, 30, 0.2),
+            rgba(255, 193, 7, 0.3),
+            rgba(255, 87, 34, 0.2),
+            rgba(255, 107, 53, 0.3));
+        background-size: 400% 400%;
+        animation: borderGlow 8s ease infinite;
+        border-radius: 22px;
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .card:hover::before {
+        opacity: 1;
+    }
+
+    .card:hover {
+        transform: translateY(-8px) rotateX(2deg) rotateY(-1deg) scale(1.02) !important;
+        box-shadow:
+            0 25px 60px rgba(255, 107, 53, 0.3),
+            0 10px 30px rgba(0, 0, 0, 0.15),
+            0 0 40px rgba(255, 107, 53, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    }
+
+    @keyframes borderGlow {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    @keyframes cardPulse {
+        0%, 100% {
+            box-shadow:
+                0 15px 35px rgba(255, 107, 53, 0.2),
+                0 5px 15px rgba(0, 0, 0, 0.1),
+                0 0 25px rgba(255, 107, 53, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+        50% {
+            box-shadow:
+                0 18px 40px rgba(255, 107, 53, 0.25),
+                0 8px 20px rgba(0, 0, 0, 0.12),
+                0 0 30px rgba(255, 107, 53, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.05), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .card:hover::before {
+        left: 100%;
+    }
+
+    /* Modern card headers */
+    .card-header {
+        background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange)) !important;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3) !important;
+        padding: 1.5rem !important;
+        color: white !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3));
+        animation: shimmer 3s ease-in-out infinite;
+    }
+
+    .card-body {
+        background: rgba(255, 107, 107, 0.02) !important;
+        padding: 2rem !important;
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes shimmer {
+        0%, 100% { background-position: -1000px 0; }
+        50% { background-position: 1000px 0; }
+    }
+
+    /* Ultra-modern form controls with advanced effects */
+    .form-control, .form-select {
+        background: rgba(255, 255, 255, 0.85) !important;
+        border: 2px solid rgba(255, 107, 53, 0.4) !important;
+        color: #333 !important;
+        border-radius: 16px !important;
+        padding: 1rem 1.25rem !important;
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) !important;
+        backdrop-filter: blur(15px) saturate(180%) !important;
+        box-shadow:
+            0 6px 20px rgba(255, 107, 53, 0.12),
+            0 2px 8px rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+        position: relative;
+        overflow: hidden;
+        font-size: 0.95rem !important;
+        font-weight: 500 !important;
+    }
+
+    .form-control::before, .form-select::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 107, 53, 0.1),
+            transparent);
+        transition: left 0.8s ease;
+    }
+
+    .form-control:focus::before, .form-select:focus::before {
+        left: 100%;
+    }
+
+    .form-control:focus, .form-select:focus {
+        background: rgba(255, 255, 255, 0.95) !important;
+        border-color: var(--primary-orange) !important;
+        color: #333 !important;
+        box-shadow:
+            0 0 0 5px rgba(255, 107, 53, 0.15),
+            0 12px 35px rgba(255, 107, 53, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+        transform: translateY(-3px) scale(1.02);
+        outline: none;
+        animation: inputFocusPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes inputFocusPulse {
+        0%, 100% {
+            box-shadow:
+                0 0 0 5px rgba(255, 107, 53, 0.15),
+                0 12px 35px rgba(255, 107, 53, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        50% {
+            box-shadow:
+                0 0 0 7px rgba(255, 107, 53, 0.2),
+                0 15px 40px rgba(255, 107, 53, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+    }
+
+    /* Input validation states */
+    .form-control:valid {
+        border-color: #198754 !important;
+        box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1) !important;
+    }
+
+    .form-control:invalid {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+    }
+
+    .form-control::placeholder {
+        color: rgba(51, 51, 51, 0.5) !important;
+    }
+
+    /* Ultra-modern buttons with advanced effects */
+    .btn {
+        border-radius: 16px !important;
+        padding: 0.875rem 2rem !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
+        letter-spacing: 0.5px !important;
+        text-transform: uppercase !important;
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        box-shadow:
+            0 6px 20px rgba(255, 107, 53, 0.25),
+            0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 2px solid transparent !important;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+        z-index: 0;
+    }
+
+    .btn:active::after {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange), var(--accent-orange)) !important;
+        border: none !important;
+        color: white !important;
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-primary::before {
+        background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.6),
+            transparent);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-5px) scale(1.08) rotateX(5deg) !important;
+        box-shadow:
+            0 15px 35px rgba(255, 107, 53, 0.4),
+            0 5px 15px rgba(0, 0, 0, 0.2) !important;
+        background: linear-gradient(135deg, var(--secondary-orange), var(--primary-orange), var(--light-orange)) !important;
+    }
+
+    .btn-primary:active {
+        transform: translateY(-2px) scale(1.05) !important;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #495057) !important;
+        border: none !important;
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-3px) scale(1.05) !important;
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3) !important;
+    }
+
+    .btn-outline-danger {
+        border: 2px solid #dc3545 !important;
+        color: #dc3545 !important;
+        background: transparent !important;
+    }
+
+    .btn-outline-danger:hover {
+        background: linear-gradient(135deg, #dc3545, #c82333) !important;
+        color: white !important;
+        transform: translateY(-3px) scale(1.05) !important;
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3) !important;
+    }
+
+    /* Modern badges */
+    .badge {
+        border-radius: 20px !important;
+        padding: 0.5rem 1rem !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .badge:hover {
+        transform: scale(1.05) !important;
+    }
+
+    /* Ultra-modern alerts with enhanced effects */
+    .alert {
+        border-radius: 16px !important;
+        border: 2px solid transparent !important;
+        box-shadow:
+            0 8px 25px rgba(0, 0, 0, 0.15),
+            0 0 20px rgba(255, 107, 53, 0.1) !important;
+        backdrop-filter: blur(15px) saturate(180%) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        animation: alertSlideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) !important;
+    }
+
+    .alert::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent);
+        animation: alertShimmer 3s ease-in-out infinite;
+    }
+
+    .alert-success {
+        background: rgba(25, 135, 84, 0.1) !important;
+        border-color: rgba(25, 135, 84, 0.3) !important;
+        color: #0f5132 !important;
+    }
+
+    .alert-danger {
+        background: rgba(220, 53, 69, 0.1) !important;
+        border-color: rgba(220, 53, 69, 0.3) !important;
+        color: #842029 !important;
+    }
+
+    .alert-warning {
+        background: rgba(255, 193, 7, 0.1) !important;
+        border-color: rgba(255, 193, 7, 0.3) !important;
+        color: #664d03 !important;
+    }
+
+    @keyframes alertSlideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-100%) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+
+    @keyframes alertShimmer {
+        0%, 100% { left: -100%; }
+        50% { left: 100%; }
+    }
+
+    /* Progress indicators */
+    .progress-container {
+        position: relative;
+        margin: 1rem 0;
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange)) !important;
+        border-radius: 10px !important;
+        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3) !important;
+        animation: progressFill 2s ease-out !important;
+    }
+
+    @keyframes progressFill {
+        from { width: 0%; }
+        to { width: var(--progress-width, 100%); }
+    }
+
+    /* Enhanced badges */
+    .badge {
+        border-radius: 20px !important;
+        padding: 0.5rem 1rem !important;
+        font-weight: 600 !important;
+        font-size: 0.85rem !important;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1) !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .badge:hover {
+        transform: scale(1.1) translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .badge::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .badge:hover::before {
+        left: 100%;
+    }
+
+    /* Ultra-modern page header with advanced effects */
+    .page-header {
+        background: linear-gradient(135deg,
+            var(--primary-orange) 0%,
+            var(--secondary-orange) 25%,
+            var(--accent-orange) 50%,
+            var(--light-orange) 75%,
+            var(--primary-orange) 100%);
+        background-size: 400% 400%;
+        color: white;
+        padding: 3rem 2.5rem;
+        border-radius: 24px;
+        margin-bottom: 2rem;
+        box-shadow:
+            0 20px 60px rgba(255, 107, 53, 0.4),
+            0 8px 25px rgba(0, 0, 0, 0.2),
+            0 0 40px rgba(255, 107, 53, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        animation: slideInUp 0.8s ease-out, headerFloat 8s ease-in-out infinite, headerGlow 4s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+        transform-style: preserve-3d;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        background-size: 30px 30px;
+        animation: grainMove 20s linear infinite;
+        opacity: 0.3;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.3),
+            rgba(255, 255, 255, 0.6),
+            rgba(255, 255, 255, 0.3));
+        background-size: 200% auto;
+        animation: shimmer 3s linear infinite;
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 800;
+        font-size: 2.2rem;
+        text-shadow:
+            0 2px 10px rgba(0, 0, 0, 0.3),
+            0 0 20px rgba(255, 255, 255, 0.2);
+        letter-spacing: -0.02em;
+        position: relative;
+        z-index: 2;
+        animation: textGlow 3s ease-in-out infinite alternate;
+    }
+
+    .page-header .btn {
+        position: relative;
+        z-index: 2;
+        animation: buttonFloat 2s ease-in-out infinite;
+    }
+
+    @keyframes headerFloat {
+        0%, 100% { transform: translateY(0px) rotateX(0deg); }
+        33% { transform: translateY(-5px) rotateX(1deg); }
+        66% { transform: translateY(3px) rotateX(-0.5deg); }
+    }
+
+    @keyframes headerGlow {
+        0%, 100% {
+            box-shadow:
+                0 20px 60px rgba(255, 107, 53, 0.4),
+                0 8px 25px rgba(0, 0, 0, 0.2),
+                0 0 40px rgba(255, 107, 53, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        50% {
+            box-shadow:
+                0 25px 70px rgba(255, 107, 53, 0.5),
+                0 12px 35px rgba(0, 0, 0, 0.3),
+                0 0 50px rgba(255, 107, 53, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+    }
+
+    @keyframes grainMove {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        25% { transform: translate(-10px, -5px) rotate(90deg); }
+        50% { transform: translate(5px, -10px) rotate(180deg); }
+        75% { transform: translate(-5px, 5px) rotate(270deg); }
+    }
+
+    @keyframes textGlow {
+        0%, 100% { text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.2); }
+        50% { text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 107, 53, 0.3); }
+    }
+
+    @keyframes buttonFloat {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-3px); }
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+    }
+
+    /* Advanced interactive elements */
+    .magnetic-element {
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        cursor: pointer;
+    }
+
+    .magnetic-element:hover {
+        transform: scale(1.05);
+    }
+
+    /* Enhanced loading animations */
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 107, 53, 0.1);
+        border-left: 4px solid var(--primary-orange);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+    }
+
+    .pulse-loader {
+        width: 20px;
+        height: 20px;
+        background: var(--primary-orange);
+        border-radius: 50%;
+        animation: pulseLoader 1.5s ease-in-out infinite;
+        margin: 0 auto;
+    }
+
+    @keyframes pulseLoader {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.2);
+            opacity: 0.7;
+        }
+    }
+
+    /* Success checkmark animation */
+    .checkmark {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        animation: checkmarkBounce 0.6s ease-out;
+    }
+
+    .checkmark::after {
+        content: '✓';
+        color: white;
+        font-size: 30px;
+        font-weight: bold;
+        animation: checkmarkDraw 0.8s ease-out 0.2s both;
+    }
+
+    @keyframes checkmarkBounce {
+        0% { transform: scale(0); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes checkmarkDraw {
+        0% { opacity: 0; transform: scale(0) rotate(180deg); }
+        100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    /* Enhanced tooltips */
+    .tooltip-inner {
+        background: rgba(0, 0, 0, 0.9) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 8px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        font-size: 0.85rem !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .tooltip-arrow::before {
+        border-top-color: rgba(0, 0, 0, 0.9) !important;
+    }
+
+    /* Advanced form validation feedback */
+    .form-feedback {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        padding: 0.5rem;
+        font-size: 0.8rem;
+        border-radius: 8px;
+        margin-top: 0.25rem;
+        animation: feedbackSlideIn 0.3s ease-out;
+        z-index: 10;
+    }
+
+    .form-feedback.valid {
+        background: rgba(25, 135, 84, 0.1);
+        border: 1px solid rgba(25, 135, 84, 0.3);
+        color: #198754;
+    }
+
+    .form-feedback.invalid {
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid rgba(220, 53, 69, 0.3);
+        color: #dc3545;
+    }
+
+    @keyframes feedbackSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Ultra-Comprehensive Responsive Design */
+
+    /* Large Desktop (1440px+) */
+    @media (min-width: 1440px) {
+        .container {
+            max-width: 1400px !important;
+        }
+
+        .page-header {
+            padding: 4rem 3rem !important;
+        }
+
+        .page-header h2 {
+            font-size: 2.8rem !important;
+        }
+
+        .card-body {
+            padding: 3rem !important;
+        }
+
+        .form-control, .form-select {
+            padding: 1.25rem 1.5rem !important;
+            font-size: 1.1rem !important;
+        }
+    }
+
+    /* Desktop (1200px - 1439px) */
+    @media (min-width: 1200px) and (max-width: 1439px) {
+        .container {
+            max-width: 1140px !important;
+        }
+
+        .page-header {
+            padding: 3.5rem 2.5rem !important;
+        }
+
+        .card-body {
+            padding: 2.5rem !important;
+        }
+    }
+
+    /* Large Tablet (992px - 1199px) */
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .container {
+            max-width: 960px !important;
+        }
+
+        .page-header {
+            padding: 3rem 2rem !important;
+        }
+
+        .page-header h2 {
+            font-size: 2.4rem !important;
+        }
+
+        .card-body {
+            padding: 2rem !important;
+        }
+
+        .row {
+            --bs-gutter-x: 1.5rem !important;
+        }
+
+        .col-md-6 {
+            flex: 0 0 auto;
+            width: 50%;
+        }
+    }
+
+    /* Medium Tablet (768px - 991px) */
+    @media (min-width: 768px) and (max-width: 991px) {
+        .container {
+            max-width: 720px !important;
+        }
+
+        .page-header {
+            padding: 2.5rem 1.5rem !important;
+            margin-bottom: 2rem !important;
+        }
+
+        .page-header h2 {
+            font-size: 2rem !important;
+        }
+
+        .card-body {
+            padding: 1.75rem !important;
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem !important;
+            font-size: 0.95rem !important;
+        }
+
+        .form-control, .form-select {
+            padding: 1rem 1.25rem !important;
+            font-size: 0.95rem !important;
+        }
+
+        .input-group-text {
+            padding: 1rem 0.75rem !important;
+        }
+
+        /* Stack environment cards vertically */
+        .row .col-md-6 {
+            margin-bottom: 1rem !important;
+        }
+
+        .row .col-md-6:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        /* Adjust help section layout */
+        .help-text .row .col-md-6 {
+            margin-bottom: 1.5rem !important;
+        }
+    }
+
+    /* Small Tablet/Mobile (576px - 767px) */
+    @media (min-width: 576px) and (max-width: 767px) {
+        .container {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+
+        .page-header {
+            padding: 2rem 1.25rem !important;
+            margin-bottom: 1.75rem !important;
+            border-radius: 16px !important;
+        }
+
+        .page-header h2 {
+            font-size: 1.75rem !important;
+            text-align: center !important;
+        }
+
+        .page-header .btn {
+            margin-top: 1rem !important;
+            width: auto !important;
+            min-width: 150px !important;
+        }
+
+        .card {
+            margin-bottom: 1.5rem !important;
+            border-radius: 16px !important;
+        }
+
+        .card-body {
+            padding: 1.5rem !important;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem !important;
+        }
+
+        .card-header h5 {
+            font-size: 1.1rem !important;
+        }
+
+        /* Stack all form elements vertically */
+        .row {
+            --bs-gutter-x: 0 !important;
+        }
+
+        .row > * {
+            flex: 0 0 100% !important;
+            width: 100% !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .row > *:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        .btn {
+            width: 100% !important;
+            margin-bottom: 0.75rem !important;
+            padding: 0.875rem 1.5rem !important;
+            font-size: 0.95rem !important;
+        }
+
+        .form-control, .form-select {
+            padding: 0.875rem 1rem !important;
+            font-size: 0.9rem !important;
+        }
+
+        .input-group-text {
+            padding: 0.875rem 0.75rem !important;
+            font-size: 0.9rem !important;
+        }
+
+        /* Environment selection cards */
+        .form-check.p-3 {
+            padding: 1rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .form-check .form-check-label {
+            font-size: 0.9rem !important;
+        }
+
+        /* Help section improvements */
+        .help-text {
+            padding: 1.25rem !important;
+        }
+
+        .help-text .row .col-md-6 {
+            margin-bottom: 1.25rem !important;
+        }
+
+        .help-text .badge {
+            display: block !important;
+            margin-bottom: 0.5rem !important;
+            text-align: center !important;
+        }
+
+        /* Floating particles - reduced for performance */
+        .floating-particles {
+            opacity: 0.3;
+        }
+
+        .particle {
+            animation-duration: 20s !important;
+        }
+    }
+
+    /* Mobile (320px - 575px) */
+    @media (max-width: 575px) {
+        body {
+            font-size: 0.9rem !important;
+        }
+
+        .container {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+
+        .page-header {
+            padding: 1.5rem 1rem !important;
+            margin-bottom: 1.5rem !important;
+            border-radius: 12px !important;
+        }
+
+        .page-header h2 {
+            font-size: 1.5rem !important;
+            line-height: 1.3 !important;
+        }
+
+        .page-header .btn {
+            padding: 0.625rem 1.25rem !important;
+            font-size: 0.85rem !important;
+            margin-top: 0.75rem !important;
+        }
+
+        .card {
+            margin-bottom: 1.25rem !important;
+            border-radius: 12px !important;
+        }
+
+        .card-body {
+            padding: 1.25rem !important;
+        }
+
+        .card-header {
+            padding: 1rem 1.25rem !important;
+        }
+
+        .card-header h5 {
+            font-size: 1rem !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Form improvements */
+        .form-label {
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .form-control, .form-select {
+            padding: 0.75rem 0.875rem !important;
+            font-size: 0.85rem !important;
+            border-radius: 10px !important;
+        }
+
+        .input-group-text {
+            padding: 0.75rem 0.625rem !important;
+            font-size: 0.8rem !important;
+        }
+
+        .input-group .btn {
+            padding: 0.75rem 0.875rem !important;
+            font-size: 0.8rem !important;
+        }
+
+        /* Environment selection */
+        .form-check.p-3 {
+            padding: 0.875rem !important;
+            border-radius: 10px !important;
+        }
+
+        .form-check .form-check-label {
+            font-size: 0.85rem !important;
+        }
+
+        .form-check .form-check-label small {
+            display: block !important;
+            margin-top: 0.25rem !important;
+            font-size: 0.75rem !important;
+        }
+
+        /* Button improvements */
+        .btn {
+            width: 100% !important;
+            margin-bottom: 0.5rem !important;
+            padding: 0.75rem 1.25rem !important;
+            font-size: 0.9rem !important;
+            border-radius: 10px !important;
+        }
+
+        .btn:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        /* Help section mobile optimization */
+        .help-text {
+            padding: 1rem !important;
+            font-size: 0.85rem !important;
+        }
+
+        .help-text h6 {
+            font-size: 1rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .help-text ol {
+            padding-left: 1.25rem !important;
+        }
+
+        .help-text li {
+            margin-bottom: 0.75rem !important;
+            line-height: 1.4 !important;
+        }
+
+        .help-text .badge {
+            font-size: 0.75rem !important;
+            padding: 0.375rem 0.625rem !important;
+        }
+
+        /* Alert improvements */
+        .alert {
+            padding: 0.875rem 1rem !important;
+            font-size: 0.85rem !important;
+            border-radius: 10px !important;
+        }
+
+        /* Badge improvements */
+        .badge {
+            font-size: 0.75rem !important;
+            padding: 0.375rem 0.75rem !important;
+        }
+
+        /* Table responsive improvements */
+        .table-responsive {
+            font-size: 0.8rem !important;
+        }
+
+        .table th, .table td {
+            padding: 0.5rem !important;
+        }
+
+        /* Disable heavy animations on mobile for performance */
+        .floating-particles {
+            display: none !important;
+        }
+
+        .card::before {
+            display: none !important;
+        }
+
+        /* Reduce animation complexity */
+        .card, .btn, .form-control {
+            animation-duration: 0.3s !important;
+        }
+
+        /* Improve touch targets */
+        .form-check-input {
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+            margin-right: 0.75rem !important;
+        }
+
+        .btn-close {
+            width: 1rem !important;
+            height: 1rem !important;
+        }
+    }
+
+    /* Extra Small Mobile (320px - 375px) */
+    @media (max-width: 375px) {
+        .container {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+
+        .page-header {
+            padding: 1.25rem 0.875rem !important;
+        }
+
+        .page-header h2 {
+            font-size: 1.35rem !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .card-header {
+            padding: 0.875rem 1rem !important;
+        }
+
+        .form-control, .form-select {
+            padding: 0.625rem 0.75rem !important;
+            font-size: 0.8rem !important;
+        }
+
+        .btn {
+            padding: 0.625rem 1rem !important;
+            font-size: 0.85rem !important;
+        }
+
+        .help-text {
+            padding: 0.875rem !important;
+        }
+
+        .alert {
+            padding: 0.75rem 0.875rem !important;
+            font-size: 0.8rem !important;
+        }
+    }
+
+    /* Landscape Mobile (orientation: landscape) and (max-height: 500px) */
+    @media (orientation: landscape) and (max-height: 500px) {
+        .page-header {
+            padding: 1rem 1.5rem !important;
+        }
+
+        .page-header h2 {
+            font-size: 1.4rem !important;
+        }
+
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .card-header {
+            padding: 0.75rem 1rem !important;
+        }
+
+        .form-control, .form-select {
+            padding: 0.5rem 0.75rem !important;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem !important;
+        }
+
+        /* Reduce vertical spacing */
+        .mb-3, .mb-4 {
+            margin-bottom: 1rem !important;
+        }
+
+        .card {
+            margin-bottom: 1rem !important;
+        }
+    }
+
+    /* High DPI/Retina displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .card {
+            box-shadow:
+                0 15px 35px rgba(255, 107, 53, 0.2),
+                0 5px 15px rgba(0, 0, 0, 0.1),
+                0 0 25px rgba(255, 107, 53, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .btn {
+            box-shadow:
+                0 6px 20px rgba(255, 107, 53, 0.25),
+                0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+    }
+
+    /* Accessibility enhancements */
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        .card {
+            border: 2px solid #000 !important;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #000 !important;
+        }
+
+        .btn {
+            border: 2px solid #000 !important;
+        }
+    }
+</style>
+
+<body>
+    <!-- Floating Particles -->
+    <div class="floating-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Gradient Overlay -->
+    <div class="gradient-overlay"></div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2><i class="bi bi-phone-fill"></i> M-Pesa API Settings</h2>
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-light">
+                            <i class="bi bi-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                <i class="bi bi-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Current Status Card -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle-fill"></i> Current Status
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <strong class="text-primary">Environment:</strong>
+                                    <span class="badge bg-{{ 'success' if mpesa_config.environment == 'production' else 'warning' }} ms-2">
+                                        {{ mpesa_config.environment|upper }}
+                                    </span>
+                                </div>
+                                <div class="mb-3">
+                                    <strong class="text-primary">Consumer Key:</strong>
+                                    <span class="text-muted ms-2">{{ '●●●●●●●●' + (mpesa_config.consumer_key[-4:] if mpesa_config.consumer_key and mpesa_config.consumer_key != 'test_key' else 'Not Set') }}</span>
+                                </div>
+                                <div class="mb-0">
+                                    <strong class="text-primary">Business Shortcode:</strong>
+                                    <span class="text-muted ms-2">{{ mpesa_config.shortcode or 'Not Set' }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <strong class="text-primary">Configuration Status:</strong>
+                                    {% if mpesa_config.consumer_key and mpesa_config.consumer_key != 'test_key' %}
+                                        <span class="badge bg-success ms-2">Configured</span>
+                                    {% else %}
+                                        <span class="badge bg-danger ms-2">Not Configured (Using Simulation)</span>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-0">
+                                    <strong class="text-primary">Last Updated:</strong>
+                                    <span class="text-muted ms-2">{{ mpesa_config.updated_at.strftime('%Y-%m-%d %H:%M') if mpesa_config.updated_at else 'Never' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuration Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-gear-fill"></i> Configure M-Pesa API</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin_mpesa_settings') }}" id="mpesaForm">
+                            <!-- Environment Selection -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-primary mb-3">
+                                    <i class="bi bi-globe"></i> Environment
+                                </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check p-3 border rounded" style="background: rgba(40, 167, 69, 0.1); border-color: rgba(40, 167, 69, 0.3);">
+                                            <input class="form-check-input" type="radio" name="environment" id="sandbox" value="sandbox"
+                                                {{ 'checked' if mpesa_config.environment == 'sandbox' else '' }}>
+                                            <label class="form-check-label fw-bold" for="sandbox">
+                                                <i class="bi bi-tools text-success"></i> Sandbox
+                                                <br><small class="text-muted">For testing (recommended for development)</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check p-3 border rounded" style="background: rgba(220, 53, 69, 0.1); border-color: rgba(220, 53, 69, 0.3);">
+                                            <input class="form-check-input" type="radio" name="environment" id="production" value="production"
+                                                {{ 'checked' if mpesa_config.environment == 'production' else '' }}>
+                                            <label class="form-check-label fw-bold" for="production">
+                                                <i class="bi bi-rocket-takeoff text-danger"></i> Production
+                                                <br><small class="text-muted">Live payments (use with caution)</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Consumer Key -->
+                            <div class="mb-4">
+                                <label for="consumer_key" class="form-label fw-bold text-primary">
+                                    <i class="bi bi-key-fill"></i> Consumer Key
+                                    <i class="bi bi-question-circle text-muted ms-1" data-bs-toggle="tooltip"
+                                        title="Get this from your Safaricom Daraja portal"></i>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: rgba(255, 107, 53, 0.1); border-color: rgba(255, 107, 53, 0.3);">
+                                        <i class="bi bi-key"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="consumer_key" name="consumer_key"
+                                            value="{{ mpesa_config.consumer_key if mpesa_config.consumer_key != 'test_key' else '' }}"
+                                            placeholder="Enter your M-Pesa Consumer Key">
+                                </div>
+                            </div>
+
+                            <!-- Consumer Secret -->
+                            <div class="mb-4">
+                                <label for="consumer_secret" class="form-label fw-bold text-primary">
+                                    <i class="bi bi-shield-lock-fill"></i> Consumer Secret
+                                    <i class="bi bi-question-circle text-muted ms-1" data-bs-toggle="tooltip"
+                                        title="Get this from your Safaricom Daraja portal"></i>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: rgba(255, 107, 53, 0.1); border-color: rgba(255, 107, 53, 0.3);">
+                                        <i class="bi bi-shield-lock"></i>
+                                    </span>
+                                    <input type="password" class="form-control" id="consumer_secret" name="consumer_secret"
+                                            value="{{ mpesa_config.consumer_secret if mpesa_config.consumer_secret != 'test_secret' else '' }}"
+                                            placeholder="Enter your M-Pesa Consumer Secret">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('consumer_secret')"
+                                            style="border-color: rgba(255, 107, 53, 0.3);">
+                                        <i class="bi bi-eye" id="consumer_secret_icon"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Business Shortcode -->
+                            <div class="mb-4">
+                                <label for="shortcode" class="form-label fw-bold text-primary">
+                                    <i class="bi bi-shop"></i> Business Shortcode
+                                    <i class="bi bi-question-circle text-muted ms-1" data-bs-toggle="tooltip"
+                                        title="Your M-Pesa Paybill or Till number"></i>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: rgba(255, 107, 53, 0.1); border-color: rgba(255, 107, 53, 0.3);">
+                                        <i class="bi bi-shop"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="shortcode" name="shortcode"
+                                            value="{{ mpesa_config.shortcode if mpesa_config.shortcode != '174379' else '' }}"
+                                            placeholder="e.g., 174379">
+                                </div>
+                            </div>
+
+                            <!-- Passkey -->
+                            <div class="mb-4">
+                                <label for="passkey" class="form-label fw-bold text-primary">
+                                    <i class="bi bi-lock-fill"></i> Passkey
+                                    <i class="bi bi-question-circle text-muted ms-1" data-bs-toggle="tooltip"
+                                        title="Lipa Na M-Pesa Online Passkey from Daraja portal"></i>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: rgba(255, 107, 53, 0.1); border-color: rgba(255, 107, 53, 0.3);">
+                                        <i class="bi bi-lock"></i>
+                                    </span>
+                                    <input type="password" class="form-control" id="passkey" name="passkey"
+                                            value="{{ mpesa_config.passkey if mpesa_config.passkey != 'test_passkey' else '' }}"
+                                            placeholder="Enter your M-Pesa Passkey">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('passkey')"
+                                            style="border-color: rgba(255, 107, 53, 0.3);">
+                                        <i class="bi bi-eye" id="passkey_icon"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Callback URL -->
+                            <div class="mb-4">
+                                <label for="callback_url" class="form-label fw-bold text-primary">
+                                    <i class="bi bi-webhook"></i> Callback URL
+                                    <i class="bi bi-question-circle text-muted ms-1" data-bs-toggle="tooltip"
+                                        title="URL where M-Pesa will send payment notifications"></i>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: rgba(255, 107, 53, 0.1); border-color: rgba(255, 107, 53, 0.3);">
+                                        <i class="bi bi-webhook"></i>
+                                    </span>
+                                    <input type="url" class="form-control" id="callback_url" name="callback_url"
+                                            value="{{ mpesa_config.callback_url }}"
+                                            placeholder="https://yourdomain.com/mpesa/callback">
+                                </div>
+                                <small class="form-text" style="color: rgba(51, 51, 51, 0.7);">
+                                    Current callback endpoint: <code style="background: rgba(0,0,0,0.1); padding: 2px 4px; border-radius: 4px;">{{ request.url_root }}mpesa/callback</code>
+                                </small>
+                            </div>
+
+                            <!-- API URLs -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="api_url" class="form-label fw-bold text-primary">
+                                        <i class="bi bi-link-45deg"></i> OAuth API URL
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="background: rgba(255, 107, 53, 0.1); border-color: rgba(255, 107, 53, 0.3);">
+                                            <i class="bi bi-link-45deg"></i>
+                                        </span>
+                                        <input type="url" class="form-control" id="api_url" name="api_url"
+                                                value="{{ mpesa_config.api_url }}"
+                                                placeholder="https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="stk_url" class="form-label fw-bold text-primary">
+                                        <i class="bi bi-send"></i> STK Push API URL
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="background: rgba(255, 107, 53, 0.1); border-color: rgba(255, 107, 53, 0.3);">
+                                            <i class="bi bi-send"></i>
+                                        </span>
+                                        <input type="url" class="form-control" id="stk_url" name="stk_url"
+                                                value="{{ mpesa_config.stk_url }}"
+                                                placeholder="https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Buttons -->
+                            <div class="d-flex gap-3 flex-wrap">
+                                <button type="submit" class="btn btn-primary flex-fill" id="saveBtn">
+                                    <i class="bi bi-save"></i> Save Configuration
+                                </button>
+                                <button type="button" class="btn btn-info" onclick="testConnection()" id="testBtn">
+                                    <i class="bi bi-wifi"></i> Test Connection
+                                </button>
+                                <button type="button" class="btn btn-outline-danger" onclick="resetToDefaults()" id="resetBtn">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Reset to Defaults
+                                </button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+
+                <!-- Help Section -->
+                <div class="card mt-4">
+                    <div class="card-header bg-info">
+                        <h5 class="mb-0"><i class="bi bi-book-half"></i> Setup Guide</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="bi bi-key-fill"></i> How to get your M-Pesa API credentials:
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ol class="mb-0">
+                                        <li class="mb-2"><i class="bi bi-1-circle text-primary me-2"></i>Visit <a href="https://developer.safaricom.co.ke/" target="_blank" class="text-decoration-none fw-bold">Safaricom Daraja Portal</a></li>
+                                        <li class="mb-2"><i class="bi bi-2-circle text-primary me-2"></i>Create an account or log in</li>
+                                        <li class="mb-2"><i class="bi bi-3-circle text-primary me-2"></i>Create a new app (Sandbox or Production)</li>
+                                        <li class="mb-2"><i class="bi bi-4-circle text-primary me-2"></i>Copy your <strong>Consumer Key</strong> and <strong>Consumer Secret</strong></li>
+                                    </ol>
+                                </div>
+                                <div class="col-md-6">
+                                    <ol start="5" class="mb-0">
+                                        <li class="mb-2"><i class="bi bi-5-circle text-primary me-2"></i>Get your <strong>Business Shortcode</strong> and <strong>Passkey</strong></li>
+                                        <li class="mb-2"><i class="bi bi-6-circle text-primary me-2"></i>Configure your <strong>Callback URL</strong> in the Daraja portal</li>
+                                        <li class="mb-2"><i class="bi bi-7-circle text-primary me-2"></i>Paste all credentials here and save</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="bi bi-link-45deg"></i> Default URLs:
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded mb-2" style="background: rgba(40, 167, 69, 0.1); border-color: rgba(40, 167, 69, 0.3);">
+                                        <strong class="text-success">Sandbox OAuth:</strong><br>
+                                        <code class="small text-muted">https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials</code>
+                                    </div>
+                                    <div class="p-3 border rounded" style="background: rgba(40, 167, 69, 0.1); border-color: rgba(40, 167, 69, 0.3);">
+                                        <strong class="text-success">Sandbox STK Push:</strong><br>
+                                        <code class="small text-muted">https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest</code>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded mb-2" style="background: rgba(220, 53, 69, 0.1); border-color: rgba(220, 53, 69, 0.3);">
+                                        <strong class="text-danger">Production OAuth:</strong><br>
+                                        <code class="small text-muted">https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials</code>
+                                    </div>
+                                    <div class="p-3 border rounded" style="background: rgba(220, 53, 69, 0.1); border-color: rgba(220, 53, 69, 0.3);">
+                                        <strong class="text-danger">Production STK Push:</strong><br>
+                                        <code class="small text-muted">https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning border-0" style="background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107;">
+                            <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                            <strong class="text-warning">Important Note:</strong> If credentials are not configured, the system will use simulation mode for testing.
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const icon = document.getElementById(fieldId + '_icon');
+
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+
+function testConnection() {
+    const consumerKey = document.getElementById('consumer_key').value;
+    const consumerSecret = document.getElementById('consumer_secret').value;
+
+    if (!consumerKey || !consumerSecret) {
+        showModernAlert('Please enter Consumer Key and Consumer Secret first', 'warning');
+        return;
+    }
+
+    // Show loading
+    const btn = document.getElementById('testBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Testing Connection...';
+    btn.disabled = true;
+    btn.style.transform = 'scale(0.95)';
+
+    fetch('{{ url_for("test_mpesa_connection") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            consumer_key: consumerKey,
+            consumer_secret: consumerSecret,
+            api_url: document.getElementById('api_url').value
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        btn.style.transform = '';
+
+        if (data.success) {
+            showModernAlert('✅ Connection successful! M-Pesa API is reachable.', 'success');
+        } else {
+            showModernAlert('❌ Connection failed: ' + data.message, 'danger');
+        }
+    })
+    .catch(error => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        btn.style.transform = '';
+        showModernAlert('❌ Error testing connection: ' + error, 'danger');
+    });
+}
+
+function resetToDefaults() {
+    if (confirm('Are you sure you want to reset to default sandbox values? This will clear all current settings.')) {
+        // Add loading animation
+        const btn = document.getElementById('resetBtn');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Resetting...';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            document.getElementById('sandbox').checked = true;
+            document.getElementById('consumer_key').value = '';
+            document.getElementById('consumer_secret').value = '';
+            document.getElementById('shortcode').value = '174379';
+            document.getElementById('passkey').value = '';
+            document.getElementById('callback_url').value = '{{ request.url_root }}mpesa/callback';
+            document.getElementById('api_url').value = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
+            document.getElementById('stk_url').value = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+
+            btn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i> Reset to Defaults';
+            btn.disabled = false;
+
+            showModernAlert('✅ Settings reset to default sandbox values!', 'success');
+        }, 1000);
+    }
+}
+
+function showModernAlert(message, type = 'info') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-radius: 12px; backdrop-filter: blur(10px);';
+    alertDiv.innerHTML = `
+        <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alertDiv);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
+// Form submission with loading state
+document.getElementById('mpesaForm').addEventListener('submit', function(e) {
+    const saveBtn = document.getElementById('saveBtn');
+    const originalText = saveBtn.innerHTML;
+
+    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving Configuration...';
+    saveBtn.disabled = true;
+    saveBtn.style.transform = 'scale(0.95)';
+
+    // Re-enable after 3 seconds (in case of slow response)
+    setTimeout(() => {
+        if (saveBtn.disabled) {
+            saveBtn.innerHTML = originalText;
+            saveBtn.disabled = false;
+            saveBtn.style.transform = '';
+        }
+    }, 3000);
+});
+
+// Advanced responsive initialization and device detection
+document.addEventListener('DOMContentLoaded', function() {
+    // Device and viewport detection
+    const isMobile = window.innerWidth <= 768;
+    const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
+    const isDesktop = window.innerWidth > 1024;
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    // Performance optimizations for mobile devices
+    if (isMobile) {
+        // Reduce animation complexity on mobile
+        document.documentElement.style.setProperty('--transition-fast', '0.15s');
+        document.documentElement.style.setProperty('--transition-normal', '0.2s');
+
+        // Disable heavy background effects
+        const particles = document.querySelector('.floating-particles');
+        if (particles) {
+            particles.style.display = 'none';
+        }
+
+        // Simplify card animations
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.animationDuration = '0.3s';
+        });
+    }
+
+    // Initialize tooltips with responsive behavior
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        const tooltip = new bootstrap.Tooltip(tooltipTriggerEl, {
+            delay: isMobile ? { show: 300, hide: 100 } : { show: 200, hide: 100 },
+            placement: isMobile ? 'top' : 'auto'
+        });
+        return tooltip;
+    });
+
+    // Enhanced form validation with responsive feedback
+    const inputs = document.querySelectorAll('input[required], select[required]');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+
+        input.addEventListener('input', function() {
+            clearFieldValidation(this);
+        });
+
+        // Touch device optimizations
+        if (isTouchDevice) {
+            input.addEventListener('touchstart', function() {
+                this.focus();
+            });
+        }
+    });
+
+    function validateField(field) {
+        const value = field.value.trim();
+        const isValid = value !== '';
+        const feedbackClass = isValid ? 'valid' : 'invalid';
+        const color = isValid ? '#198754' : '#dc3545';
+
+        field.style.borderColor = color;
+        field.style.boxShadow = `0 0 0 3px ${color}20`;
+
+        // Add visual feedback for mobile
+        if (isMobile) {
+            field.style.transform = isValid ? 'scale(1.02)' : 'scale(0.98)';
+            setTimeout(() => {
+                field.style.transform = '';
+            }, 200);
+        }
+
+        // Add feedback message for required fields
+        let feedback = field.parentNode.querySelector('.form-feedback');
+        if (!feedback) {
+            feedback = document.createElement('div');
+            feedback.className = 'form-feedback';
+            field.parentNode.appendChild(feedback);
+        }
+
+        if (!isValid) {
+            feedback.textContent = field.getAttribute('data-error') || 'This field is required';
+            feedback.className = 'form-feedback invalid';
+            feedback.style.display = 'block';
+        } else {
+            feedback.style.display = 'none';
+        }
+    }
+
+    function clearFieldValidation(field) {
+        if (field.style.borderColor === 'rgb(220, 53, 69)' || field.style.borderColor === '#dc3545') {
+            field.style.borderColor = '';
+            field.style.boxShadow = '';
+            const feedback = field.parentNode.querySelector('.form-feedback');
+            if (feedback) {
+                feedback.style.display = 'none';
+            }
+        }
+    }
+
+    // Responsive button behavior
+    document.querySelectorAll('.btn').forEach(btn => {
+        if (isTouchDevice) {
+            btn.addEventListener('touchstart', function() {
+                this.style.transform += ' scale(0.95)';
+            });
+
+            btn.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    this.style.transform = this.style.transform.replace(' scale(0.95)', '');
+                }, 150);
+            });
+        }
+    });
+
+    // Smooth scrolling with responsive behavior
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const offset = isMobile ? 80 : 100;
+                const targetPosition = target.offsetTop - offset;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Responsive viewport height handling
+    function setVH() {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    setVH();
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', () => {
+        setTimeout(setVH, 100);
+    });
+
+    // Enhanced mobile menu behavior
+    if (isMobile) {
+        // Close mobile keyboard on form submission
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', () => {
+                document.activeElement.blur();
+            });
+        });
+
+        // Prevent zoom on input focus for iOS
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        }
+    }
+
+    // Dynamic content loading for better performance
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Apply lazy loading animations
+    document.querySelectorAll('.card').forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+        observer.observe(card);
+    });
+
+    // Responsive image loading
+    document.querySelectorAll('img').forEach(img => {
+        img.setAttribute('loading', 'lazy');
+        if (isMobile) {
+            img.style.maxWidth = '100%';
+            img.style.height = 'auto';
+        }
+    });
+
+    // Touch gesture support
+    if (isTouchDevice) {
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndY = e.changedTouches[0].screenY;
+            const diff = touchStartY - touchEndY;
+
+            // Swipe gestures for navigation
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    // Swipe up - scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        });
+    }
+
+    // Battery-aware performance adjustments
+    if ('getBattery' in navigator) {
+        navigator.getBattery().then(battery => {
+            if (battery.level < 0.2 && !battery.charging) {
+                // Reduce animations for low battery
+                document.documentElement.style.setProperty('--transition-fast', '0.01ms');
+                document.documentElement.style.setProperty('--transition-normal', '0.01ms');
+                document.querySelectorAll('.floating-particles').forEach(el => {
+                    el.style.display = 'none';
+                });
+            }
+        });
+    }
+
+    // Network-aware loading
+    if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+            // Reduce visual effects for slow connections
+            document.querySelectorAll('.floating-particles, .gradient-overlay').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Dish Database - e-Rugah Admin</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #f7931e;
+            --light-orange: #ff8c42;
+            --dark-orange: #e55a2b;
+            --accent-orange: #ff9f43;
+            --bg-dark: #1a1a2e;
+            --bg-card: #16213e;
+            --bg-card-hover: #1a2332;
+            --text-light: #ffffff;
+            --text-muted: #e0e7ff;
+            --shadow-primary: 0 8px 32px rgba(255, 107, 53, 0.4);
+            --shadow-secondary: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-glow: 0 0 20px rgba(255, 107, 53, 0.1);
+            --border-radius: 12px;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.05), rgba(247, 147, 30, 0.05), rgba(255, 159, 67, 0.03));
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255, 107, 53, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(247, 147, 30, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 159, 67, 0.03) 0%, transparent 70%);
+            min-height: 100vh;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 159, 67, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grain 8s steps(10) infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Floating particles */
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.6), rgba(247, 147, 30, 0.4));
+            border-radius: 50%;
+            animation: particleFloat 8s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { top: 20%; left: 80%; animation-delay: 1s; }
+        .particle:nth-child(3) { top: 60%; left: 20%; animation-delay: 2s; }
+        .particle:nth-child(4) { top: 80%; left: 70%; animation-delay: 3s; }
+        .particle:nth-child(5) { top: 40%; left: 90%; animation-delay: 4s; }
+        .particle:nth-child(6) { top: 70%; left: 40%; animation-delay: 5s; }
+        .particle:nth-child(7) { top: 30%; left: 60%; animation-delay: 6s; }
+        .particle:nth-child(8) { top: 90%; left: 30%; animation-delay: 7s; }
+
+        .navbar {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.95), rgba(255, 140, 66, 0.95)) !important;
+            font-family: 'Roboto', sans-serif;
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 8px 32px rgba(255, 107, 53, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-in;
+            transition: all 0.3s ease;
+            border-radius: 0 0 15px 15px;
+            overflow: hidden;
+            min-height: 50px;
+        }
+
+        .navbar::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42, #ffa552, #ffb366, #ffc47a, #ff6b35);
+            background-size: 300% auto;
+            animation: shimmer 4s linear infinite;
+            clip-path: polygon(0% 100%, 10% 80%, 20% 100%, 30% 80%, 40% 100%, 50% 80%, 60% 100%, 70% 80%, 80% 100%, 90% 80%, 100% 100%);
+        }
+
+        .navbar-brand {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: white !important;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .navbar-brand .logo {
+            height: 32px;
+            width: auto;
+            filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .navbar-brand i {
+            animation: pulse 2s ease-in-out infinite;
+            display: inline-block;
+            color: white;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.95) !important;
+            font-weight: 600;
+            margin: 0 0.3rem;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            padding: 0.5rem 1rem !important;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-link i {
+            margin-right: 0.4rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.9), rgba(247, 147, 30, 0.9));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .nav-link:hover::after {
+            width: 70%;
+        }
+
+        .container-fluid {
+            padding: 1rem;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange), var(--accent-orange));
+            background-size: 200% auto;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4), 0 0 20px rgba(255, 107, 53, 0.2);
+            animation: slideIn 0.6s ease-out, shimmer 8s linear infinite, float 6s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 25px 25px;
+            animation: grain 15s linear infinite;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-header p {
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        @keyframes headerSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-alert {
+            background: rgba(255, 107, 53, 0.08);
+            border: 2px solid var(--primary-orange);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.8s ease-out, pulse 4s ease-in-out infinite;
+        }
+
+        .info-alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .info-alert:hover {
+            border-color: var(--secondary-orange);
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            background: rgba(255, 107, 53, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .info-alert i {
+            color: #000;
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+            transition: var(--transition-fast);
+        }
+
+        .info-alert:hover i {
+            color: #333;
+            transform: scale(1.1);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .form-card, .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            padding: 1rem;
+            box-shadow:
+                0 10px 30px rgba(255, 107, 53, 0.2),
+                0 0 20px rgba(255, 107, 53, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -1px 0 rgba(255, 107, 53, 0.1);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.8s ease-out, cardFloat 6s ease-in-out infinite;
+        }
+
+        .form-card::before, .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange), var(--accent-orange));
+        }
+
+        .form-card:hover, .info-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 70px rgba(255, 107, 53, 0.25), 0 0 30px rgba(255, 107, 53, 0.15);
+        }
+
+        .form-card h3, .info-card h3 {
+            color: var(--primary-orange);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            color: #333;
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-control::before, .form-select::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .form-control:focus::before, .form-select:focus::before {
+            left: 100%;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: var(--primary-orange);
+            color: #333;
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1), 0 8px 25px rgba(255, 107, 53, 0.15);
+            transform: translateY(-3px) scale(1.02);
+            animation: inputGlow 2s ease-in-out infinite;
+        }
+
+        .form-control::placeholder {
+            color: #6c757d;
+        }
+
+        .form-control:invalid {
+            border-color: #dc3545;
+        }
+
+        .form-control:valid {
+            border-color: #28a745;
+        }
+
+        .ingredient-row {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            animation: slideIn 0.4s ease-out;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+            box-shadow:
+                0 5px 18px rgba(255, 107, 53, 0.1),
+                0 0 12px rgba(255, 107, 53, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ingredient-row::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .ingredient-row:hover::before {
+            left: 100%;
+        }
+
+        .ingredient-row:hover {
+            border-color: rgba(255, 107, 53, 0.4);
+            box-shadow:
+                0 10px 30px rgba(255, 107, 53, 0.2),
+                0 0 20px rgba(255, 107, 53, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            transform: translateY(-4px) scale(1.01);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-15px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 8px 25px rgba(255, 107, 53, 0.15), 0 0 15px rgba(255, 107, 53, 0.1);
+            }
+            50% {
+                box-shadow: 0 8px 25px rgba(255, 107, 53, 0.25), 0 0 25px rgba(255, 107, 53, 0.2);
+            }
+        }
+
+        @keyframes inputGlow {
+            0%, 100% {
+                box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1), 0 8px 25px rgba(255, 107, 53, 0.15);
+            }
+            50% {
+                box-shadow: 0 0 0 6px rgba(255, 107, 53, 0.15), 0 10px 30px rgba(255, 107, 53, 0.25);
+            }
+        }
+
+        @keyframes cardFloat {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translateY(-10px) rotate(90deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-5px) rotate(180deg);
+                opacity: 0.8;
+            }
+            75% {
+                transform: translateY(-15px) rotate(270deg);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-15px) scale(0.95);
+            }
+        }
+
+        .ingredient-row .row {
+            align-items: end;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange), var(--accent-orange));
+            border: none;
+            padding: 0.875rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.4), 0 0 25px rgba(255, 107, 53, 0.2);
+            animation: bounceIn 0.6s ease;
+        }
+
+        .btn-primary:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-success::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-success:hover::before {
+            left: 100%;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-danger::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-danger:hover::before {
+            left: 100%;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+        }
+
+        .dish-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .dish-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 6px 20px rgba(255, 107, 53, 0.12),
+                0 0 15px rgba(255, 107, 53, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            animation: cardFloat 8s ease-in-out infinite;
+        }
+
+        .dish-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-orange), var(--secondary-orange));
+            opacity: 0;
+            transition: var(--transition-fast);
+        }
+
+        .dish-item:hover::before {
+            opacity: 1;
+        }
+
+        .dish-item:hover {
+            border-color: var(--primary-orange);
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.15);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .dish-info h5 {
+            color: var(--primary-orange);
+            margin: 0 0 0.5rem 0;
+            font-weight: 600;
+        }
+
+        .dish-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .ingredient-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(247, 147, 30, 0.15));
+            color: var(--primary-orange);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        .ingredient-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .ingredient-badge:hover::before {
+            left: 100%;
+        }
+
+        .ingredient-badge:hover {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.25), rgba(247, 147, 30, 0.25));
+            transform: translateY(-2px) scale(1.08);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+            color: var(--secondary-orange);
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary-orange), var(--secondary-orange));
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--secondary-orange), var(--primary-orange));
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        /* Ultra-Comprehensive Responsive Design for Custom Dish Database */
+
+        /* Large Desktop (1440px+) */
+        @media (min-width: 1440px) {
+            .container-fluid {
+                padding: 3rem !important;
+            }
+
+            .page-header {
+                padding: 3rem !important;
+                font-size: 2.5rem !important;
+            }
+
+            .form-card, .info-card {
+                padding: 3rem !important;
+            }
+        }
+
+        /* Desktop (1200px - 1439px) */
+        @media (min-width: 1200px) and (max-width: 1439px) {
+            .container-fluid {
+                padding: 2.5rem !important;
+            }
+
+            .page-header {
+                padding: 2.5rem !important;
+            }
+
+            .form-card, .info-card {
+                padding: 2.5rem !important;
+            }
+        }
+
+        /* Large Tablet (992px - 1199px) */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .container-fluid {
+                padding: 2rem !important;
+            }
+
+            .page-header {
+                padding: 2rem !important;
+                font-size: 2rem !important;
+            }
+
+            .form-card, .info-card {
+                padding: 2rem !important;
+            }
+
+            .main-content {
+                gap: 2rem !important;
+            }
+        }
+
+        /* Medium Tablet (768px - 991px) */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .container-fluid {
+                padding: 1.5rem !important;
+            }
+
+            .page-header {
+                padding: 1.75rem !important;
+                font-size: 1.75rem !important;
+                text-align: center !important;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem !important;
+            }
+
+            .form-card, .info-card {
+                padding: 1.5rem !important;
+            }
+
+            .navbar-brand {
+                font-size: 1.25rem !important;
+            }
+
+            .dish-item {
+                padding: 1rem !important;
+            }
+
+            .ingredient-row {
+                padding: 1rem !important;
+            }
+        }
+
+        /* Small Tablet/Mobile (576px - 767px) */
+        @media (min-width: 576px) and (max-width: 767px) {
+            .container-fluid {
+                padding: 1rem !important;
+            }
+
+            .page-header {
+                padding: 1.5rem 1rem !important;
+                font-size: 1.5rem !important;
+                text-align: center !important;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+
+            .form-card, .info-card {
+                padding: 1.25rem !important;
+                border-radius: 16px !important;
+            }
+
+            .form-card h3, .info-card h3 {
+                font-size: 1.1rem !important;
+                margin-bottom: 1rem !important;
+            }
+
+            .row.mb-3 {
+                margin-bottom: 1rem !important;
+            }
+
+            .ingredient-row {
+                padding: 0.875rem !important;
+                border-radius: 12px !important;
+                margin-bottom: 0.75rem !important;
+            }
+
+            .ingredient-row .row {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .dish-item {
+                padding: 0.875rem !important;
+                border-radius: 12px !important;
+                margin-bottom: 0.75rem !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.75rem !important;
+            }
+
+            .dish-info h5 {
+                font-size: 1rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            .dish-info p {
+                font-size: 0.85rem !important;
+            }
+
+            .btn {
+                padding: 0.5rem 0.75rem !important;
+                font-size: 0.8rem !important;
+            }
+
+            .table-responsive {
+                font-size: 0.8rem !important;
+            }
+
+            .floating-particles {
+                opacity: 0.3 !important;
+            }
+        }
+
+        /* Mobile (320px - 575px) */
+        @media (max-width: 575px) {
+            body {
+                font-size: 0.9rem !important;
+            }
+
+            .container-fluid {
+                padding: 0.75rem !important;
+            }
+
+            .page-header {
+                padding: 1.25rem 0.875rem !important;
+                font-size: 1.35rem !important;
+                text-align: center !important;
+                border-radius: 12px !important;
+            }
+
+            .main-content {
+                gap: 0.75rem !important;
+            }
+
+            .form-card, .info-card {
+                padding: 1rem !important;
+                border-radius: 12px !important;
+            }
+
+            .form-card h3, .info-card h3 {
+                font-size: 1rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+
+            .form-label {
+                font-size: 0.85rem !important;
+                font-weight: 600 !important;
+                margin-bottom: 0.375rem !important;
+            }
+
+            .form-control, .form-select {
+                padding: 0.625rem 0.75rem !important;
+                font-size: 0.8rem !important;
+                border-radius: 8px !important;
+            }
+
+            .input-group-text {
+                padding: 0.625rem 0.5rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            .btn {
+                padding: 0.5rem 0.625rem !important;
+                font-size: 0.8rem !important;
+                border-radius: 8px !important;
+            }
+
+            .ingredient-row {
+                padding: 0.75rem !important;
+                border-radius: 10px !important;
+                margin-bottom: 0.625rem !important;
+            }
+
+            .ingredient-row .col-md-3,
+            .ingredient-row .col-md-2,
+            .ingredient-row .col-md-1 {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .dish-item {
+                padding: 0.75rem !important;
+                border-radius: 10px !important;
+                margin-bottom: 0.625rem !important;
+            }
+
+            .dish-info h5 {
+                font-size: 0.95rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            .dish-info p {
+                font-size: 0.8rem !important;
+            }
+
+            .dish-info small {
+                font-size: 0.7rem !important;
+            }
+
+            .ingredient-badge {
+                font-size: 0.75rem !important;
+                padding: 0.25rem 0.5rem !important;
+                margin: 0.125rem !important;
+            }
+
+            .info-alert {
+                padding: 1rem !important;
+                border-radius: 10px !important;
+                font-size: 0.8rem !important;
+            }
+
+            .alert {
+                padding: 0.625rem 0.75rem !important;
+                font-size: 0.8rem !important;
+                border-radius: 8px !important;
+            }
+
+            .table-responsive {
+                font-size: 0.75rem !important;
+                border-radius: 8px !important;
+            }
+
+            .table th, .table td {
+                padding: 0.375rem 0.25rem !important;
+            }
+
+            /* Disable heavy animations on mobile */
+            .floating-particles {
+                display: none !important;
+            }
+
+            .card::before {
+                display: none !important;
+            }
+
+            /* Improve touch targets */
+            .btn {
+                min-height: 44px !important;
+            }
+
+            .form-control, .form-select {
+                min-height: 40px !important;
+            }
+
+            .remove-ingredient {
+                min-width: 40px !important;
+                min-height: 40px !important;
+            }
+        }
+
+        /* Extra Small Mobile (320px - 375px) */
+        @media (max-width: 375px) {
+            .container-fluid {
+                padding: 0.625rem !important;
+            }
+
+            .page-header {
+                padding: 1rem 0.75rem !important;
+                font-size: 1.25rem !important;
+            }
+
+            .form-card, .info-card {
+                padding: 0.875rem !important;
+            }
+
+            .form-control, .form-select {
+                padding: 0.5rem 0.625rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            .btn {
+                padding: 0.4rem 0.5rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            .dish-item {
+                padding: 0.625rem !important;
+            }
+
+            .info-alert {
+                padding: 0.875rem !important;
+                font-size: 0.75rem !important;
+            }
+        }
+
+        /* Landscape Mobile (orientation: landscape) and (max-height: 500px) */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .container-fluid {
+                padding: 0.75rem !important;
+            }
+
+            .page-header {
+                padding: 1rem 1rem !important;
+                font-size: 1.3rem !important;
+            }
+
+            .main-content {
+                gap: 1rem !important;
+            }
+
+            .form-card, .info-card {
+                padding: 1rem !important;
+            }
+
+            .ingredient-row {
+                padding: 0.75rem !important;
+            }
+
+            .dish-item {
+                padding: 0.75rem !important;
+            }
+
+            /* Reduce vertical spacing */
+            .mb-3 {
+                margin-bottom: 1rem !important;
+            }
+
+            .ingredient-row {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .dish-item {
+                margin-bottom: 0.5rem !important;
+            }
+        }
+
+        /* High DPI/Retina displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .form-card, .info-card {
+                box-shadow:
+                    0 15px 35px rgba(255, 107, 53, 0.2),
+                    0 5px 15px rgba(0, 0, 0, 0.1),
+                    0 0 25px rgba(255, 107, 53, 0.1),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+            }
+
+            .dish-item, .ingredient-row {
+                box-shadow:
+                    0 6px 20px rgba(255, 107, 53, 0.12),
+                    0 2px 8px rgba(0, 0, 0, 0.08),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .form-card, .info-card {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                background: white !important;
+                color: black !important;
+            }
+
+            .btn {
+                display: none !important;
+            }
+
+            .floating-particles {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Particles -->
+    <div class="floating-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('admin_dashboard') }}">
+                <i class="fas fa-utensils"></i> e-Rugah Admin
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_create_dish') }}">
+                            <i class="fas fa-plus-circle"></i> Create Dish
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_custom_dish_database') }}">
+                            <i class="fas fa-database"></i> Custom Dish DB
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-database"></i> Custom Dish Database</h1>
+            <p>Feed the database with dishes that customers can search for in the Custom Menu</p>
+        </div>
+
+        <!-- Info Alert -->
+        <div class="info-alert" style="color: #000;">
+            <i class="fas fa-info-circle"></i>
+            <strong>What is this?</strong> This database stores dishes that customers can search for when creating events.
+            When a customer searches for a dish in the "Custom Menu" modal, the system looks here.
+            This is separate from the main menu items.
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Form Section -->
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Add Custom Dish</h3>
+                
+                <form method="POST" id="dishForm">
+                    <!-- Basic Info -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Dish Name *</label>
+                            <input type="text" class="form-control" name="name" required
+                                   placeholder="e.g., Pilau, Chicken Curry"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="Enter the name of the dish as it will appear in the menu">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Base Servings *</label>
+                            <input type="number" class="form-control" name="base_servings" required
+                                   placeholder="20" min="1"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="Number of people this recipe serves by default">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Markup % *</label>
+                            <input type="number" class="form-control" name="markup" required
+                                   placeholder="55" step="0.01" min="0"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="Percentage markup for pricing calculation">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="description" rows="2" 
+                                  placeholder="Describe the dish..."></textarea>
+                    </div>
+
+                    <!-- Ingredients Section -->
+                    <h5 class="mt-4 mb-3" style="color: var(--primary-orange); font-weight: 600;">
+                        <i class="fas fa-leaf"></i> Ingredients
+                    </h5>
+                    
+                    <div id="ingredientsContainer">
+                        <div class="ingredient-row">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-label">Ingredient Name *</label>
+                                    <input type="text" class="form-control" name="ingredient_name[]" required
+                                           placeholder="e.g., Rice"
+                                           data-bs-toggle="tooltip" data-bs-placement="top"
+                                           title="Name of the ingredient">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Unit *</label>
+                                    <input type="text" class="form-control" name="unit[]" required
+                                           placeholder="kg, L, pcs"
+                                           data-bs-toggle="tooltip" data-bs-placement="top"
+                                           title="Unit of measurement (kg, L, pieces, etc.)">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Unit Price (KES) *</label>
+                                    <input type="number" class="form-control" name="unit_price[]" required
+                                           placeholder="120" step="0.01" min="0"
+                                           data-bs-toggle="tooltip" data-bs-placement="top"
+                                           title="Cost per unit in Kenyan Shillings">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Quantity Needed *</label>
+                                    <input type="number" class="form-control" name="quantity[]" required
+                                           placeholder="4.0" step="0.01" min="0"
+                                           data-bs-toggle="tooltip" data-bs-placement="top"
+                                           title="Amount needed for base servings">
+                                </div>
+                                <div class="col-md-1">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button type="button" class="btn btn-danger w-100 remove-ingredient"
+                                            onclick="removeIngredient(this)"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="Remove this ingredient">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-success mb-3" onclick="addIngredient()">
+                        <i class="fas fa-plus"></i> Add Another Ingredient
+                    </button>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                            <i class="fas fa-save"></i> Add to Database
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Info Section -->
+            <div>
+                <!-- Existing Dishes -->
+                <div class="info-card mb-3">
+                    <h3><i class="fas fa-list"></i> Dishes in Database ({{ dishes|length }})</h3>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="dishSearch" placeholder="Search dishes..."
+                               data-bs-toggle="tooltip" data-bs-placement="top" title="Filter dishes by name">
+                    </div>
+                    <div class="dish-list scrollbar" id="dishList">
+                        {% if dishes %}
+                            {% for dish in dishes %}
+                                <div class="dish-item">
+                                    <div class="dish-info">
+                                        <h5>{{ dish.name }}</h5>
+                                        <p>{{ dish.description or 'No description' }}</p>
+                                        <small style="color: #444; font-weight: 600;">
+                                            <i class="fas fa-users"></i> {{ dish.base_servings }} servings |
+                                            <i class="fas fa-percentage"></i> {{ dish.markup }}% markup
+                                        </small>
+                                    </div>
+                                    <form method="POST" action="{{ url_for('admin_delete_custom_dish', dish_id=dish.id) }}" 
+                                          onsubmit="return confirm('Delete {{ dish.name }}?');" style="margin: 0;">
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p style="text-align: center; color: #333; padding: 1.5rem; font-weight: 600;">
+                                <i class="fas fa-inbox" style="font-size: 2.5rem; display: block; margin-bottom: 1rem; color: var(--primary-orange);"></i>
+                                No dishes in database yet.<br>Add your first dish above!
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Ingredient Library -->
+                <div class="info-card">
+                    <h3><i class="fas fa-book"></i> Ingredient Library ({{ ingredients|length }})</h3>
+                    <div style="max-height: 200px; overflow-y: auto;" class="scrollbar">
+                        {% if ingredients %}
+                            {% for ingredient in ingredients %}
+                                <span class="ingredient-badge">
+                                    {{ ingredient.name }} ({{ ingredient.unit }})
+                                </span>
+                            {% endfor %}
+                        {% else %}
+                            <p style="text-align: center; color: #333; padding: 1rem; font-weight: 600;">
+                                No ingredients yet
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Add loading state to form submission
+            const form = document.getElementById('dishForm');
+            const submitBtn = document.getElementById('submitBtn');
+
+            form.addEventListener('submit', function(e) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Dish...';
+            });
+
+            // Dish search functionality
+            const dishSearch = document.getElementById('dishSearch');
+            const dishList = document.getElementById('dishList');
+
+            dishSearch.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const dishItems = dishList.querySelectorAll('.dish-item');
+
+                dishItems.forEach(item => {
+                    const dishName = item.querySelector('h5').textContent.toLowerCase();
+                    if (dishName.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                        item.style.animation = 'fadeIn 0.3s ease';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Add fadeIn animation and staggered dish item animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+
+                @keyframes staggerFadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px) scale(0.95);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Add staggered animation to dish items
+            const dishItems = document.querySelectorAll('.dish-item');
+            dishItems.forEach((item, index) => {
+                item.style.animation = `staggerFadeIn 0.6s ease-out ${index * 0.1}s both`;
+            });
+
+            // Add staggered animation to ingredient rows
+            const ingredientRows = document.querySelectorAll('.ingredient-row');
+            ingredientRows.forEach((row, index) => {
+                row.style.animation = `slideIn 0.5s ease-out ${index * 0.05}s both`;
+            });
+        });
+
+        function addIngredient() {
+            const container = document.getElementById('ingredientsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'ingredient-row';
+            newRow.innerHTML = `
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label">Ingredient Name *</label>
+                        <input type="text" class="form-control" name="ingredient_name[]" required
+                               placeholder="e.g., Rice"
+                               data-bs-toggle="tooltip" data-bs-placement="top"
+                               title="Name of the ingredient">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Unit *</label>
+                        <input type="text" class="form-control" name="unit[]" required
+                               placeholder="kg, L, pcs"
+                               data-bs-toggle="tooltip" data-bs-placement="top"
+                               title="Unit of measurement (kg, L, pieces, etc.)">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Unit Price (KES) *</label>
+                        <input type="number" class="form-control" name="unit_price[]" required
+                               placeholder="120" step="0.01" min="0"
+                               data-bs-toggle="tooltip" data-bs-placement="top"
+                               title="Cost per unit in Kenyan Shillings">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Quantity Needed *</label>
+                        <input type="number" class="form-control" name="quantity[]" required
+                               placeholder="4.0" step="0.01" min="0"
+                               data-bs-toggle="tooltip" data-bs-placement="top"
+                               title="Amount needed for base servings">
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label">&nbsp;</label>
+                        <button type="button" class="btn btn-danger w-100 remove-ingredient"
+                                onclick="removeIngredient(this)"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                title="Remove this ingredient">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newRow);
+
+            // Re-initialize tooltips for new elements
+            var tooltipTriggerList = [].slice.call(newRow.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        }
+
+        function removeIngredient(button) {
+            const container = document.getElementById('ingredientsContainer');
+            if (container.children.length > 1) {
+                const row = button.closest('.ingredient-row');
+                row.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    row.remove();
+                }, 250);
+            } else {
+                // Show modern alert
+                showAlert('At least one ingredient is required!', 'warning');
+            }
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

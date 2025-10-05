@@ -10,6 +10,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), nullable=False)
+    email_verified = db.Column(db.Boolean, default=False)
+    sms_verified = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     chef = db.relationship('Chef', backref='user', uselist=False, lazy=True)
@@ -91,7 +93,65 @@ class OTP(db.Model):
     is_used = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+class VerificationCode(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.String(120), nullable=False)  # email or phone
+    code = db.Column(db.String(4), nullable=False)
+    type = db.Column(db.String(10), nullable=False)  # 'email' or 'sms'
+    expires_at = db.Column(db.DateTime, nullable=False)
+    is_used = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Dish(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    base_servings = db.Column(db.Integer, nullable=False)
+    markup = db.Column(db.Float, nullable=False)  # percentage
+    description = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    dish_ingredients = db.relationship('DishIngredient', backref='dish', lazy=True)
+
+class Ingredient(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    unit = db.Column(db.String(20), nullable=False)  # e.g., kg, g, pcs
+    unit_price = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class DishIngredient(db.Model):
+    """Junction table linking dishes to their ingredients"""
+    id = db.Column(db.Integer, primary_key=True)
+    dish_id = db.Column(db.Integer, db.ForeignKey('dish.id'), nullable=False)
+    ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredient.id'), nullable=False)
+    quantity_for_base_servings = db.Column(db.Float, nullable=False)
+    
+    ingredient = db.relationship('Ingredient', backref='dish_ingredients', lazy=True)
+
 class SystemConfig(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     key = db.Column(db.String(50), unique=True, nullable=False)
     value = db.Column(db.String(200), nullable=False)
+
+class MpesaConfig(db.Model):
+    """Stores M-Pesa API configuration"""
+    id = db.Column(db.Integer, primary_key=True)
+    environment = db.Column(db.String(20), default='sandbox')  # 'sandbox' or 'production'
+    consumer_key = db.Column(db.String(200), default='test_key')
+    consumer_secret = db.Column(db.String(200), default='test_secret')
+    shortcode = db.Column(db.String(50), default='174379')
+    passkey = db.Column(db.String(200), default='test_passkey')
+    callback_url = db.Column(db.String(200), default='https://yourapp.repl.co/mpesa/callback')
+    api_url = db.Column(db.String(200), default='https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials')
+    stk_url = db.Column(db.String(200), default='https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class PasswordResetCode(db.Model):
+    """Stores password reset codes"""
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), nullable=False)
+    code = db.Column(db.String(6), nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=False)
+    is_used = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

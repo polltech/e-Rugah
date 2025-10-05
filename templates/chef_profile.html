@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Chef Profile - {{ chef.name }}{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        min-height: 100vh;
+        color: white;
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.8) 0%, rgba(249, 115, 22, 0.6) 100%);
+        padding: 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        animation: fadeInUp 1s ease-out;
+        text-align: center;
+    }
+
+    .profile-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid rgba(255, 107, 107, 0.5);
+        margin-bottom: 1rem;
+    }
+
+    .profile-details {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: fadeInUp 1s ease-out 0.2s both;
+    }
+
+    .gallery-section {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: fadeInUp 1s ease-out 0.4s both;
+    }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .gallery-item {
+        background: rgba(255, 107, 107, 0.05);
+        border: 1px solid rgba(255, 107, 107, 0.2);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover {
+        transform: scale(1.05);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .gallery-item .card-body {
+        padding: 0.75rem;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="profile-header">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button onclick="history.back()" class="btn btn-outline-light">
+            <i class="bi bi-arrow-left"></i> Back to Chefs
+        </button>
+    </div>
+    {% if chef.photo_url %}
+    <img src="{{ url_for('static', filename=chef.photo_url) }}" alt="Chef Photo" class="profile-photo" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
+    {% endif %}
+    <h2>{{ chef.name }}</h2>
+    <p>Professional Chef</p>
+</div>
+
+<div class="profile-details">
+    <h4>Chef Details</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong>Name:</strong> {{ chef.name }}</p>
+            <p><strong>Phone:</strong> {{ chef.phone }}</p>
+            <p><strong>Location:</strong> {{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Specialties:</strong> {{ chef.meals_offered.replace(',', ', ') }}</p>
+            <p><strong>About:</strong> {{ chef.about or 'No description available.' }}</p>
+            <p><strong>Status:</strong>
+                {% if chef.is_approved %}
+                <span class="badge bg-success">Approved</span>
+                {% else %}
+                <span class="badge bg-warning">Pending Approval</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="gallery-section">
+    <h4>Portfolio Gallery</h4>
+    <div class="gallery-grid">
+        {% if images %}
+            {% for image in images %}
+            <div class="gallery-item">
+                <img src="{{ url_for('static', filename='images/chefs/' + image) }}" alt="Portfolio Image">
+                <div class="card-body">
+                    <p class="card-text small">Portfolio Image</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="gallery-item">
+                <img src="{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}" alt="Portfolio Image">
+                <div class="card-body">
+                    <p class="card-text small">No portfolio images yet</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Settings - e-Rugah{% endblock %}
+
+{% block content %}
+<style>
+    body { background: linear-gradient(135deg, #ffe4b5, #ffedd5); color: white; text-shadow: 0 0 5px rgba(0,0,0,0.5); animation: fadeIn 0.5s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .bi { color: #ff6b35; }
+    
+    /* Card hover effect with left-to-right color slide */
+    .dashboard-card { 
+        position: relative; 
+        overflow: hidden; 
+        background: rgba(255, 140, 66, 0.3); 
+        border: 1px solid rgba(255, 107, 53, 0.4); 
+        backdrop-filter: blur(10px); 
+        box-shadow: 0 8px 32px rgba(255, 107, 53, 0.2); 
+        transition: all 0.3s ease; 
+        animation: slideUp 0.6s ease-out; 
+    }
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(255, 107, 53, 0.6), rgba(255, 140, 66, 0.6));
+        transition: left 0.5s ease;
+        z-index: 0;
+    }
+    .dashboard-card:hover::before {
+        left: 0;
+    }
+    .dashboard-card > * {
+        position: relative;
+        z-index: 1;
+    }
+    .dashboard-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(255, 107, 53, 0.4); }
+    
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    
+    /* All buttons same orange color with left-to-right hover */
+    .btn { 
+        position: relative; 
+        overflow: hidden; 
+        transition: all 0.3s ease; 
+        border: none; 
+        background: linear-gradient(45deg, #ff6b35, #ff8c42); 
+        color: white;
+    }
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, #ff8c42, #ffa552);
+        transition: left 0.4s ease;
+        z-index: 0;
+    }
+    .btn:hover::before {
+        left: 0;
+    }
+    .btn > * {
+        position: relative;
+        z-index: 1;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5); }
+    
+    /* Outline button style */
+    .btn-outline-secondary { 
+        background: transparent !important; 
+        border: 1px solid rgba(255, 107, 53, 0.6) !important; 
+        color: white !important; 
+    }
+    .btn-outline-secondary::before {
+        background: linear-gradient(90deg, rgba(255, 107, 53, 0.3), rgba(255, 140, 66, 0.3)) !important;
+    }
+    
+    .form-control { background: rgba(255, 140, 66, 0.25); border: 1px solid rgba(255, 107, 53, 0.4); color: white; }
+    .form-control::placeholder { color: rgba(255, 255, 255, 0.7); }
+    .form-text { color: rgba(255, 255, 255, 0.8); }
+    .alert { background: rgba(255, 140, 66, 0.25); border: 1px solid rgba(255, 107, 53, 0.4); color: white; }
+    .hr { border-color: rgba(255, 107, 53, 0.4); }
+</style>
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="mb-0" style="font-size: 1.1rem;"><i class="bi bi-gear"></i> System Settings</h5>
+            <p class="mb-0 mt-1 small" style="font-size: 0.8rem; color: rgba(0, 0, 0, 0.8);">Configure email and SMS settings for chef verification</p>
+        </div>
+        <div>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary btn-sm" style="font-size: 0.75rem; padding: 0.25rem;">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-card">
+    <form method="POST">
+        <h6 class="mb-3" style="font-size: 0.9rem;"><i class="bi bi-percent"></i> Payment Settings</h6>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label for="deposit_percentage" class="form-label">Deposit Percentage (%)</label>
+                <input type="number" class="form-control" id="deposit_percentage" name="deposit_percentage"
+                       value="{{ settings.get('deposit_percentage', '30') }}" min="0" max="100" required>
+                <div class="form-text">Percentage of total booking amount required as deposit</div>
+            </div>
+        </div>
+
+        <hr class="my-3">
+
+        <h6 class="mb-3" style="font-size: 0.9rem;"><i class="bi bi-envelope"></i> Gmail Settings (for Email Verification)</h6>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="gmail_user" class="form-label">Gmail Username</label>
+                <input type="email" class="form-control" id="gmail_user" name="gmail_user"
+                       value="{{ settings.get('gmail_user', '') }}" placeholder="your-email@gmail.com" required>
+                <div class="form-text">The Gmail address used to send verification emails</div>
+            </div>
+            <div class="col-md-6">
+                <label for="gmail_password" class="form-label">Gmail App Password</label>
+                <input type="password" class="form-control" id="gmail_password" name="gmail_password"
+                       value="{{ settings.get('gmail_password', '') }}" placeholder="App Password" required>
+                <div class="form-text">Generate an App Password from your Google Account settings</div>
+            </div>
+        </div>
+
+        <hr class="my-3">
+
+        <h6 class="mb-3" style="font-size: 0.9rem;"><i class="bi bi-chat-dots"></i> SMS Settings (for SMS Verification)</h6>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="sms_provider" class="form-label">SMS Provider</label>
+                <select class="form-control" id="sms_provider" name="sms_provider">
+                    <option value="">-- Select Provider --</option>
+                    <option value="twilio" {% if settings.get('sms_provider', '') == 'twilio' %}selected{% endif %}>Twilio</option>
+                    <option value="africastalking" {% if settings.get('sms_provider', '') == 'africastalking' %}selected{% endif %}>Africa's Talking</option>
+                    <option value="nexmo" {% if settings.get('sms_provider', '') == 'nexmo' %}selected{% endif %}>Nexmo/Vonage</option>
+                    <option value="messagebird" {% if settings.get('sms_provider', '') == 'messagebird' %}selected{% endif %}>MessageBird</option>
+                    <option value="custom" {% if settings.get('sms_provider', '') == 'custom' %}selected{% endif %}>Custom API</option>
+                </select>
+                <div class="form-text">Choose your SMS service provider</div>
+            </div>
+            <div class="col-md-6">
+                <label for="sms_sender_id" class="form-label">Sender ID / Phone Number</label>
+                <input type="text" class="form-control" id="sms_sender_id" name="sms_sender_id"
+                       value="{{ settings.get('sms_sender_id', '') }}" placeholder="e-Rugah or +1234567890">
+                <div class="form-text">Sender name or phone number (provider dependent)</div>
+            </div>
+        </div>
+
+        <div class="row mb-3 g-3 align-items-center">
+            <div class="col-md-6 col-12">
+                <label for="sms_api_key" class="form-label">API Key / Account SID</label>
+                <input type="text" class="form-control" id="sms_api_key" name="sms_api_key"
+                       value="{{ settings.get('sms_api_key', '') }}" placeholder="Your API Key">
+                <div class="form-text">API Key, Account SID, or Username from your provider</div>
+            </div>
+            <div class="col-md-6 col-12">
+                <label for="sms_api_secret" class="form-label">API Secret / Auth Token (Optional)</label>
+                <input type="password" class="form-control" id="sms_api_secret" name="sms_api_secret"
+                       value="{{ settings.get('sms_api_secret', '') }}" placeholder="API Secret">
+                <div class="form-text">Required for Twilio, Nexmo. Optional for others</div>
+            </div>
+        </div>
+
+        <div class="form-check form-switch mb-4">
+            <input class="form-check-input" type="checkbox" role="switch" id="sms_verification_enabled" name="{{ SMS_VERIFICATION_KEY }}"
+                   value="true" {% if settings.get(SMS_VERIFICATION_KEY, 'true') == 'true' %}checked{% endif %}>
+            <label class="form-check-label" for="sms_verification_enabled">Enable SMS verification for new chef registrations</label>
+        </div>
+
+        <hr class="my-3">
+
+        <h6 class="mb-3" style="font-size: 0.9rem;"><i class="bi bi-share"></i> Social Media Links</h6>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="facebook_link" class="form-label">Facebook Link</label>
+                <input type="url" class="form-control" id="facebook_link" name="facebook_link"
+                       value="{{ settings.get('facebook_link', '#') }}" placeholder="https://facebook.com/yourpage">
+                <div class="form-text">Link to your Facebook page</div>
+            </div>
+            <div class="col-md-6">
+                <label for="twitter_link" class="form-label">Twitter Link</label>
+                <input type="url" class="form-control" id="twitter_link" name="twitter_link"
+                       value="{{ settings.get('twitter_link', '#') }}" placeholder="https://twitter.com/yourhandle">
+                <div class="form-text">Link to your Twitter profile</div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="instagram_link" class="form-label">Instagram Link</label>
+                <input type="url" class="form-control" id="instagram_link" name="instagram_link"
+                       value="{{ settings.get('instagram_link', '#') }}" placeholder="https://instagram.com/yourhandle">
+                <div class="form-text">Link to your Instagram profile</div>
+            </div>
+            <div class="col-md-6">
+                <label for="linkedin_link" class="form-label">LinkedIn Link</label>
+                <input type="url" class="form-control" id="linkedin_link" name="linkedin_link"
+                       value="{{ settings.get('linkedin_link', '#') }}" placeholder="https://linkedin.com/in/yourprofile">
+                <div class="form-text">Link to your LinkedIn profile</div>
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            <strong>Setup Instructions:</strong>
+            <ul class="mb-0 mt-2">
+                <li><strong>Gmail:</strong> Enable 2FA, then generate an App Password in Google Account settings</li>
+                <li><strong>SMS Providers:</strong>
+                    <ul>
+                        <li><strong>Twilio:</strong> Get Account SID, Auth Token, and Phone Number from twilio.com</li>
+                        <li><strong>Africa's Talking:</strong> Get API Key and Username from africastalking.com</li>
+                        <li><strong>Nexmo/Vonage:</strong> Get API Key and Secret from vonage.com</li>
+                        <li><strong>MessageBird:</strong> Get API Key from messagebird.com</li>
+                    </ul>
+                </li>
+                <li>Email verification is required. SMS verification is optional and can be toggled on/off</li>
+            </ul>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-sm" style="font-size: 0.75rem; padding: 0.25rem;">
+                <i class="bi bi-save"></i> Save Settings
+            </button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.25rem;">
+                <i class="bi bi-x"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

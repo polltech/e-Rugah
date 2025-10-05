@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Menu Calculator - e-Rugah{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-calculator"></i> Menu Price Calculator</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="dish_id" class="form-label">Select Dish</label>
+                                <select class="form-select" id="dish_id" name="dish_id" required>
+                                    <option value="">Choose a dish...</option>
+                                    {% for dish in dishes %}
+                                        <option value="{{ dish.id }}" {% if selected_dish and selected_dish.id == dish.id %}selected{% endif %}>{{ dish.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="guests" class="form-label">Number of Guests</label>
+                                <input type="number" class="form-control" id="guests" name="guests" min="1" value="{{ guests or 1 }}" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success"><i class="bi bi-calculator"></i> Calculate Price</button>
+                    </div>
+                </form>
+
+                {% if breakdown %}
+                <hr>
+                <h5 class="text-success">Price Breakdown for {{ selected_dish.name }} ({{ guests }} guests)</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Ingredient</th>
+                                <th>Quantity</th>
+                                <th>Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in breakdown %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td>{{ "%.2f"|format(item.scaled_quantity) }} {{ item.unit }}</td>
+                                <td>KES {{ "%.2f"|format(item.cost) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-info">
+                                <th colspan="2">Total Ingredient Cost</th>
+                                <th>KES {{ "%.2f"|format(total_cost) }}</th>
+                            </tr>
+                            <tr class="table-success">
+                                <th colspan="2">Selling Price (with {{ "%.1f"|format(selected_dish.markup) }}% markup)</th>
+                                <th>KES {{ "%.2f"|format(selling_price) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="alert alert-info">
+                    <strong>Base servings:</strong> {{ selected_dish.base_servings }}<br>
+                    <strong>Description:</strong> {{ selected_dish.description or 'No description available.' }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

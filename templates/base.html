@@ -9,6 +9,65 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+
+    <style>
+        /* Modern Liquid Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 140, 66, 0.1));
+            border-radius: 10px;
+            margin: 2px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ff6b35, #ff8c42, #ffa552, #ffb366);
+            background-size: 200% 200%;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            animation: liquidFlow 3s ease-in-out infinite;
+            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #e65a2e, #ff7a35, #ff9945, #ffa552);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5);
+            transform: scale(1.1);
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 140, 66, 0.1));
+            border-radius: 10px;
+        }
+
+        @keyframes liquidFlow {
+            0%, 100% {
+                background-position: 0% 50%;
+                border-radius: 10px 10px 10px 10px;
+            }
+            25% {
+                background-position: 100% 0%;
+                border-radius: 15px 5px 15px 5px;
+            }
+            50% {
+                background-position: 100% 100%;
+                border-radius: 5px 15px 5px 15px;
+            }
+            75% {
+                background-position: 0% 100%;
+                border-radius: 10px 10px 10px 10px;
+            }
+        }
+
+        /* Firefox scrollbar styling */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #ff6b35 rgba(255, 107, 53, 0.1);
+        }
+    </style>
 </head>
 <body class="food-pattern">
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -25,7 +84,9 @@
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}"><i class="bi bi-house-door"></i> Home</a></li>
                         {% if current_user.role == 'admin' %}
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_menu') }}"><i class="bi bi-card-list"></i> Menu</a></li>
+                            {% if request.endpoint not in ['admin_custom_dish_database', 'admin_create_dish'] %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_create_dish') }}"><i class="bi bi-plus-circle"></i> Create Dish</a></li>
+                            {% endif %}
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('reports') }}"><i class="bi bi-graph-up"></i> Reports</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('config') }}"><i class="bi bi-gear"></i> Config</a></li>
                         {% elif current_user.role == 'chef' %}
@@ -63,19 +124,582 @@
         </div>
     </main>
 
-    <footer>
-        <div class="container text-center">
+    <style>
+        .modern-footer {
+            background: linear-gradient(135deg, #ff6b35 0%, #f97316 50%, #ea580c 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            color: white;
+            padding: 1.5rem 0 0.75rem;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modern-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42, #ffa552, #ffb366, #ffc47a, #ff6b35);
+            background-size: 400% 400%;
+            animation: waveGradient 6s ease infinite;
+        }
+
+        .modern-footer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(120, 219, 226, 0.1) 0%, transparent 50%);
+            animation: float 10s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes waveGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(1deg); }
+            66% { transform: translateY(5px) rotate(-1deg); }
+        }
+
+        .footer-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42);
+            transition: width 0.3s ease;
+        }
+
+        .footer-link:hover::after {
+            width: 100%;
+        }
+
+        .social-icon {
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            display: inline-block;
+            position: relative;
+            overflow: visible;
+            border-radius: 50%;
+            padding: 8px;
+            margin: 0 2px;
+        }
+
+        .social-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.4) 0%, rgba(255, 107, 53, 0.1) 50%, transparent 100%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: -1;
+        }
+
+        .social-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: all 0.4s ease;
+            z-index: -2;
+            opacity: 0.7;
+        }
+
+        .social-icon:hover::before {
+            width: 150%;
+            height: 150%;
+            animation: ripple 0.8s ease-out;
+        }
+
+        .social-icon:hover::after {
+            transform: translate(-50%, -50%) scale(1.5);
+            opacity: 0;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-10px) scale(1.4) rotateY(180deg);
+            filter: drop-shadow(0 12px 30px rgba(255, 107, 53, 0.8)) brightness(1.3) saturate(1.2);
+            box-shadow: 0 0 25px rgba(255, 107, 53, 0.8);
+            animation: iconBounce 0.6s ease;
+        }
+
+        .social-icon.facebook {
+            background: linear-gradient(45deg, #1877f2, #42a5f5);
+            color: white;
+        }
+        .social-icon.twitter {
+            background: linear-gradient(45deg, #000000, #333333);
+            color: white;
+        }
+        .social-icon.instagram {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white;
+        }
+        .social-icon.linkedin {
+            background: linear-gradient(45deg, #0077b5, #42a5f5);
+            color: white;
+        }
+
+        .social-icon.facebook:hover {
+            background: linear-gradient(45deg, #42a5f5, #1976d2);
+            color: white !important;
+            box-shadow: 0 0 25px rgba(66, 165, 245, 0.8);
+            animation: facebookPulse 0.6s ease;
+        }
+        .social-icon.twitter:hover {
+            background: linear-gradient(45deg, #333333, #000000);
+            color: white !important;
+            box-shadow: 0 0 25px rgba(51, 51, 51, 0.8);
+            animation: twitterShake 0.5s ease;
+        }
+        .social-icon.instagram:hover {
+            background: linear-gradient(45deg, #bc1888, #cc2366, #dc2743, #e6683c, #f09433);
+            color: white !important;
+            box-shadow: 0 0 25px rgba(252, 175, 69, 0.8);
+            animation: instagramSpin 0.7s ease;
+        }
+        .social-icon.linkedin:hover {
+            background: linear-gradient(45deg, #42a5f5, #1976d2);
+            color: white !important;
+            box-shadow: 0 0 25px rgba(66, 165, 245, 0.8);
+            animation: linkedinGlow 0.8s ease;
+        }
+
+        @keyframes facebookPulse {
+            0%, 100% { transform: translateY(-10px) scale(1.4) rotateY(180deg); }
+            50% { transform: translateY(-15px) scale(1.6) rotateY(180deg); }
+        }
+
+        @keyframes twitterShake {
+            0%, 100% { transform: translateY(-10px) scale(1.4) rotateY(180deg); }
+            10%, 30%, 50%, 70%, 90% { transform: translateY(-10px) scale(1.4) rotateY(180deg) translateX(-2px); }
+            20%, 40%, 60%, 80% { transform: translateY(-10px) scale(1.4) rotateY(180deg) translateX(2px); }
+        }
+
+        @keyframes instagramSpin {
+            0% { transform: translateY(-10px) scale(1.4) rotateY(0deg); }
+            100% { transform: translateY(-10px) scale(1.4) rotateY(360deg); }
+        }
+
+        @keyframes linkedinGlow {
+            0%, 100% { transform: translateY(-10px) scale(1.4) rotateY(180deg); filter: drop-shadow(0 12px 30px rgba(0, 119, 181, 0.8)) brightness(1.3) saturate(1.2); }
+            50% { transform: translateY(-10px) scale(1.5) rotateY(180deg); filter: drop-shadow(0 16px 40px rgba(0, 119, 181, 1)) brightness(1.5) saturate(1.5); }
+        }
+
+        @keyframes ripple {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        @keyframes iconBounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(-10px) scale(1.4) rotateY(180deg); }
+            40% { transform: translateY(-15px) scale(1.5) rotateY(180deg); }
+            60% { transform: translateY(-12px) scale(1.45) rotateY(180deg); }
+        }
+
+        /* Floating WhatsApp Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            text-decoration: none;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            animation: whatsappPulse 2s infinite;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 12px 35px rgba(37, 211, 102, 0.6);
+            background: linear-gradient(135deg, #128c7e, #25d366);
+        }
+
+        .whatsapp-float::after {
+            content: 'Contact Us';
+            position: absolute;
+            right: 75px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .whatsapp-float:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes whatsappPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Event Card Animations */
+        .event-card {
+            text-align: center;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            flex: 1;
+            min-width: 80px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .event-card:hover::before {
+            left: 100%;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 107, 107, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-icon {
+            font-size: 1.2rem;
+            margin-bottom: 0.1rem;
+            transition: all 0.4s ease;
+            display: inline-block;
+        }
+
+        .event-card[data-event="weddings"] .event-icon { color: #ff6b6b; }
+        .event-card[data-event="birthdays"] .event-icon { color: #feca57; }
+        .event-card[data-event="corporate"] .event-icon { color: #48dbfb; }
+        .event-card[data-event="dining"] .event-icon { color: #ff9ff3; }
+        .event-card[data-event="anniversaries"] .event-icon { color: #a855f7; }
+        .event-card[data-event="more"] .event-icon { color: #54a0ff; }
+
+        .event-card:hover .event-icon {
+            transform: scale(1.3) rotate(10deg);
+            filter: brightness(1.2);
+        }
+
+        .event-card[data-event="weddings"]:hover .event-icon { animation: heartBeat 0.6s ease; }
+        .event-card[data-event="birthdays"]:hover .event-icon { animation: balloonBounce 0.8s ease; }
+        .event-card[data-event="corporate"]:hover .event-icon { animation: briefcaseGlow 0.7s ease; }
+        .event-card[data-event="dining"]:hover .event-icon { animation: housePulse 0.5s ease; }
+        .event-card[data-event="anniversaries"]:hover .event-icon { animation: gemSparkle 0.8s ease; }
+        .event-card[data-event="more"]:hover .event-icon { animation: dotsWiggle 1s ease; }
+
+        .event-text {
+            color: #e0e7ff;
+            font-size: 0.7rem;
+            margin: 0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .event-card:hover .event-text {
+            color: #ffffff;
+            font-weight: 600;
+            transform: translateY(-1px);
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1.3) rotate(10deg); }
+            25% { transform: scale(1.4) rotate(5deg); }
+            50% { transform: scale(1.5) rotate(15deg); }
+            75% { transform: scale(1.35) rotate(8deg); }
+        }
+
+        @keyframes balloonBounce {
+            0%, 100% { transform: scale(1.3) rotate(10deg) translateY(0); }
+            25% { transform: scale(1.4) rotate(-5deg) translateY(-3px); }
+            50% { transform: scale(1.5) rotate(15deg) translateY(-6px); }
+            75% { transform: scale(1.35) rotate(-8deg) translateY(-3px); }
+        }
+
+        @keyframes briefcaseGlow {
+            0% { transform: scale(1.3) rotate(10deg); filter: brightness(1.2) drop-shadow(0 0 5px rgba(72, 219, 251, 0.5)); }
+            50% { transform: scale(1.4) rotate(-5deg); filter: brightness(1.4) drop-shadow(0 0 15px rgba(72, 219, 251, 0.8)); }
+            100% { transform: scale(1.3) rotate(10deg); filter: brightness(1.2) drop-shadow(0 0 5px rgba(72, 219, 251, 0.5)); }
+        }
+
+        @keyframes housePulse {
+            0%, 100% { transform: scale(1.3) rotate(10deg); }
+            50% { transform: scale(1.5) rotate(-10deg); }
+        }
+
+        @keyframes gemSparkle {
+            0%, 100% { transform: scale(1.3) rotate(10deg); filter: brightness(1.2) hue-rotate(0deg); }
+            25% { transform: scale(1.4) rotate(5deg); filter: brightness(1.4) hue-rotate(90deg); }
+            50% { transform: scale(1.5) rotate(15deg); filter: brightness(1.6) hue-rotate(180deg); }
+            75% { transform: scale(1.35) rotate(8deg); filter: brightness(1.3) hue-rotate(270deg); }
+        }
+
+        @keyframes dotsWiggle {
+            0%, 100% { transform: scale(1.3) rotate(10deg); }
+            25% { transform: scale(1.4) rotate(-5deg) translateX(2px); }
+            50% { transform: scale(1.5) rotate(15deg) translateX(-2px); }
+            75% { transform: scale(1.35) rotate(-8deg) translateX(1px); }
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            text-decoration: none;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            animation: backToTopPulse 3s infinite;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+        }
+
+        .back-to-top::after {
+            content: 'Back to Top';
+            position: absolute;
+            right: 75px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .back-to-top:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes backToTopPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                bottom: 15px;
+                right: 15px;
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+
+            .whatsapp-float::after {
+                display: none;
+            }
+
+            .back-to-top {
+                bottom: 80px;
+                left: 15px;
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+
+            .back-to-top::after {
+                display: none;
+            }
+
+            .event-card {
+                min-width: 70px;
+                padding: 0.4rem;
+            }
+
+            .event-icon {
+                font-size: 1rem;
+            }
+
+            .event-text {
+                font-size: 0.65rem;
+            }
+        }
+
+        .footer-section {
+            animation: fadeInUp 1s ease-out both;
+        }
+
+        .footer-section:nth-child(1) { animation-delay: 0.1s; }
+        .footer-section:nth-child(2) { animation-delay: 0.3s; }
+        .footer-section:nth-child(3) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <footer class="modern-footer">
+        <div class="container position-relative">
             <div class="row">
-                <div class="col-md-12">
-                    <h5 style="color: var(--accent-color); margin-bottom: 1rem;"><i class="bi bi-fire"></i> e-Rugah</h5>
-                    <p class="mb-2">Connecting Events with Professional Chefs</p>
-                    <p class="mb-0" style="font-size: 0.9rem; opacity: 0.8;">&copy; 2025 e-Rugah. Bringing the taste of excellence to your events.</p>
+                <div class="col-lg-4 col-md-6 mb-2 footer-section">
+                    <h5 style="color: #ff6b6b; margin-bottom: 0.75rem; font-weight: 700; font-size: 1.1rem;"><i class="bi bi-fire" style="color: #ff6b6b;"></i> e-Rugah</h5>
+                    <p style="color: #e0e7ff; line-height: 1.4; margin-bottom: 0.75rem; font-size: 0.85rem;">Seamlessly connecting event hosts with expert local chefs. Elevate your celebrations with culinary mastery.</p>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="{% if settings %}{{ settings.get('facebook_link', '#') }}{% else %}#{% endif %}" class="social-icon facebook" style="font-size: 1rem;"><i class="bi bi-facebook"></i></a>
+                        <a href="{% if settings %}{{ settings.get('twitter_link', '#') }}{% else %}#{% endif %}" class="social-icon twitter" style="font-size: 1rem;"><i class="bi bi-twitter"></i></a>
+                        <a href="{% if settings %}{{ settings.get('instagram_link', '#') }}{% else %}#{% endif %}" class="social-icon instagram" style="font-size: 1rem;"><i class="bi bi-instagram"></i></a>
+                        <a href="{% if settings %}{{ settings.get('linkedin_link', '#') }}{% else %}#{% endif %}" class="social-icon linkedin" style="font-size: 1rem;"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-2 footer-section">
+                    <h6 style="color: #ff6b6b; margin-bottom: 0.75rem; font-weight: 600; font-size: 0.95rem;">Event Types We Cater</h6>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.25rem;">
+                        <div class="event-card" data-event="weddings">
+                            <i class="bi bi-heart-fill event-icon"></i>
+                            <p class="event-text">Weddings</p>
+                        </div>
+                        <div class="event-card" data-event="birthdays">
+                            <i class="bi bi-balloon-fill event-icon"></i>
+                            <p class="event-text">Birthdays</p>
+                        </div>
+                        <div class="event-card" data-event="corporate">
+                            <i class="bi bi-briefcase-fill event-icon"></i>
+                            <p class="event-text">Corporate</p>
+                        </div>
+                        <div class="event-card" data-event="dining">
+                            <i class="bi bi-house-heart-fill event-icon"></i>
+                            <p class="event-text">Private Dining</p>
+                        </div>
+                        <div class="event-card" data-event="anniversaries">
+                            <i class="bi bi-gem event-icon"></i>
+                            <p class="event-text">Anniversaries</p>
+                        </div>
+                        <div class="event-card" data-event="more">
+                            <i class="bi bi-three-dots event-icon"></i>
+                            <p class="event-text">AND MORE...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-2 footer-section">
+                    <h6 style="color: #ff6b6b; margin-bottom: 0.75rem; font-weight: 600; font-size: 0.95rem;">Contact Info</h6>
+                    <p style="color: #e0e7ff; margin-bottom: 0.1rem; font-size: 0.85rem;"><i class="bi bi-envelope" style="margin-right: 0.5rem;"></i> info@erugah.com</p>
+                    <p style="color: #e0e7ff; margin-bottom: 0.1rem; font-size: 0.85rem;"><i class="bi bi-telephone" style="margin-right: 0.5rem;"></i> +254 700 123 456</p>
+                    <p style="color: #e0e7ff; margin-bottom: 0.75rem; font-size: 0.85rem;"><i class="bi bi-geo-alt" style="margin-right: 0.5rem;"></i> Nairobi, Kenya</p>
+                </div>
+            </div>
+            <hr style="border-color: rgba(255, 255, 255, 0.1); margin: 2rem 0;">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p style="color: #a0aec0; font-size: 0.9rem; margin: 0;">&copy; {{ year }} e-Rugah. Crafting unforgettable dining experiences.</p>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- Floating Back to Top Button -->
+    <a href="#" class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">
+        <i class="bi bi-arrow-up-circle-fill"></i>
+    </a>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/254700123456?text=Hello%20e-Rugah,%20I%20need%20help%20with%20my%20event!" class="whatsapp-float" target="_blank">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Back to Top Script -->
+    <script>
+        window.addEventListener('scroll', function() {
+            const backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+    </script>
+
     {% block scripts %}{% endblock %}
 </body>
 </html>

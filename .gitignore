@@ -64,12 +64,7 @@ ehthumbs.db
 Thumbs.db
 Desktop.ini
 
-# Zencoder
-.zencoder/
-.zen/
-*.zen
-zencoder.log
-zencoder-*.log
+
 
 # Logs
 *.log
@@ -138,7 +133,6 @@ credentials.json
 
 # Backup files
 *.bak
-*.backup
 *.old
 *.orig
 *~
