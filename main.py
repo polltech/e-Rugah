@@ -19,6 +19,12 @@ from otp import generate_otp, verify_otp
 from verification import send_email_code, send_sms_code, verify_code, is_sms_verification_enabled, SMS_VERIFICATION_KEY, send_password_reset_email, verify_password_reset_code, mark_reset_code_used
 
 app = Flask(__name__)
+
+# Serve files from the reviews directory
+@app.route('/reviews/<path:filename>')
+def serve_review_image(filename):
+    from flask import send_from_directory
+    return send_from_directory(os.path.join(os.getcwd(), 'reviews'), filename)
 app.config['SECRET_KEY'] = os.getenv('SESSION_SECRET', 'dev-secret-key-change-in-production')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///erugah.db'
 app.config['SQLALCHEMY_BINDS'] = {
