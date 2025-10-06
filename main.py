@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file, session
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file, session, send_from_directory
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta
@@ -19,12 +19,6 @@ from otp import generate_otp, verify_otp
 from verification import send_email_code, send_sms_code, verify_code, is_sms_verification_enabled, SMS_VERIFICATION_KEY, send_password_reset_email, verify_password_reset_code, mark_reset_code_used
 
 app = Flask(__name__)
-
-# Serve files from the reviews directory
-@app.route('/reviews/<path:filename>')
-def serve_review_image(filename):
-    from flask import send_from_directory
-    return send_from_directory(os.path.join(os.getcwd(), 'reviews'), filename)
 app.config['SECRET_KEY'] = os.getenv('SESSION_SECRET', 'dev-secret-key-change-in-production')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///erugah.db'
 app.config['SQLALCHEMY_BINDS'] = {
@@ -71,6 +65,10 @@ def index():
         return render_template('index.html')
     else:
         return render_template('welcome.html')
+        
+@app.route('/reviews/<path:filename>')
+def reviews_files(filename):
+    return send_from_directory('reviews', filename)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -1517,4 +1515,4 @@ def init_db():
 
 if __name__ == '__main__':
     init_db()
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=True)
