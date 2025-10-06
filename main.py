@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file, session, send_from_directory
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 from functools import wraps
 import os
@@ -12,7 +13,7 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 
-from models import db, User, Chef, Event, MenuItem, Booking, Payment, OTP, SystemConfig, Dish, Ingredient, DishIngredient, MpesaConfig, PasswordResetCode
+from models import db, User, Chef, Event, MenuItem, Booking, Payment, OTP, SystemConfig, Dish, Ingredient, DishIngredient, MpesaConfig, PasswordResetCode, Review, VerificationCode
 from custom_dish_models import CustomDish, CustomIngredient, CustomDishIngredient
 from payments import initiate_mpesa_stk, handle_mpesa_callback
 from otp import generate_otp, verify_otp
@@ -1485,6 +1486,91 @@ def admin_images():
             images[sec] = {'files': [], 'url_prefix': url_prefix}
 
     return render_template('admin_images.html', images=images)
+
+# Review Routes
+@app.route('/api/reviews', methods=['GET'])
+def get_reviews():
+    """Get all approved reviews"""
+    reviews = Review.query.filter_by(is_approved=True).order_by(Review.created_at.desc()).all()
+    return jsonify([{
+        'id': r.id,
+        'customer_name': r.customer_name,
+        'event_type': r.event_type,
+        'rating': r.rating,
+        'review_text': r.review_text,
+        'created_at': r.created_at.strftime('%Y-%m-%d')
+    } for r in reviews])
+
+@app.route('/api/reviews', methods=['POST'])
+def submit_review():
+    """Submit a new review"""
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        if not all(k in data for k in ['customer_name', 'event_type', 'rating', 'review_text']):
+            return jsonify({'success': False, 'message': 'All fields are required'}), 400
+        
+        # Validate rating
+        rating = int(data['rating'])
+        if rating < 1 or rating > 5:
+            return jsonify({'success': False, 'message': 'Rating must be between 1 and 5'}), 400
+        
+        # Create new review
+        review = Review(
+            customer_name=data['customer_name'],
+            event_type=data['event_type'],
+            rating=rating,
+            review_text=data['review_text'],
+            is_approved=False  # Requires admin approval
+        )
+        
+        db.session.add(review)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Thank you for your review! It will be published after admin approval.'
+        })
+    except Exception as e:
+        db.session.rollback()
+        print(f"[ERROR] Failed to submit review: {e}")
+        return jsonify({'success': False, 'message': 'Failed to submit review. Please try again.'}), 500
+
+@app.route('/admin/reviews')
+@role_required('admin')
+def admin_reviews():
+    """Admin page to manage reviews"""
+    pending_reviews = Review.query.filter_by(is_approved=False).order_by(Review.created_at.desc()).all()
+    approved_reviews = Review.query.filter_by(is_approved=True).order_by(Review.created_at.desc()).all()
+    return render_template('admin_reviews.html', 
+                         pending_reviews=pending_reviews,
+                         approved_reviews=approved_reviews)
+
+@app.route('/admin/reviews/<int:review_id>/approve', methods=['POST'])
+@role_required('admin')
+def approve_review(review_id):
+    """Approve a review"""
+    review = Review.query.get_or_404(review_id)
+    review.is_approved = True
+    db.session.commit()
+    flash('Review approved successfully!', 'success')
+    return redirect(url_for('admin_reviews'))
+
+@app.route('/admin/reviews/<int:review_id>/delete', methods=['POST'])
+@role_required('admin')
+def delete_review(review_id):
+    """Delete a review"""
+    review = Review.query.get_or_404(review_id)
+    db.session.delete(review)
+    db.session.commit()
+    flash('Review deleted successfully!', 'success')
+    return redirect(url_for('admin_reviews'))
+
+@app.route('/test-reviews')
+def test_reviews():
+    """Test page for reviews API"""
+    return render_template('test_reviews.html')
 
 def init_db():
     with app.app_context():

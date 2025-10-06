@@ -155,3 +155,13 @@ class PasswordResetCode(db.Model):
     expires_at = db.Column(db.DateTime, nullable=False)
     is_used = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Review(db.Model):
+    """Stores customer reviews"""
+    id = db.Column(db.Integer, primary_key=True)
+    customer_name = db.Column(db.String(100), nullable=False)
+    event_type = db.Column(db.String(100), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)  # 1-5 stars
+    review_text = db.Column(db.Text, nullable=False)
+    is_approved = db.Column(db.Boolean, default=False)  # Admin approval
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

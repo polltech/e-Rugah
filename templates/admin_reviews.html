@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Reviews - e-Rugah{% endblock %}
+
+{% block content %}
+<style>
+    body { 
+        background: linear-gradient(135deg, #ffe4b5, #ffedd5); 
+        color: white; 
+        text-shadow: 0 0 5px rgba(0,0,0,0.5); 
+        animation: fadeIn 0.5s ease-in; 
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    
+    .reviews-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .page-header {
+        background: rgba(255, 140, 66, 0.3);
+        border: 1px solid rgba(255, 107, 53, 0.4);
+        backdrop-filter: blur(10px);
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(255, 107, 53, 0.2);
+    }
+
+    .page-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        color: #fff;
+    }
+
+    .tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+        padding: 0.75rem 1.5rem;
+        background: rgba(255, 140, 66, 0.3);
+        border: 1px solid rgba(255, 107, 53, 0.4);
+        color: white;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .tab-btn:hover {
+        background: rgba(255, 107, 53, 0.6);
+        transform: translateY(-2px);
+    }
+
+    .tab-btn.active {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+    }
+
+    .reviews-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .review-card {
+        background: rgba(255, 140, 66, 0.3);
+        border: 1px solid rgba(255, 107, 53, 0.4);
+        backdrop-filter: blur(10px);
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(255, 107, 53, 0.2);
+        transition: all 0.3s ease;
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp { 
+        from { transform: translateY(20px); opacity: 0; } 
+        to { transform: translateY(0); opacity: 1; } 
+    }
+
+    .review-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(255, 107, 53, 0.4);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+    }
+
+    .review-stars {
+        color: #ffd700;
+        font-size: 1.2rem;
+    }
+
+    .review-date {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .review-text {
+        color: white;
+        margin: 1rem 0;
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+
+    .review-author {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 1rem 0;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .author-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .author-info {
+        flex: 1;
+    }
+
+    .author-name {
+        font-weight: 600;
+        color: white;
+    }
+
+    .event-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: rgba(255, 107, 53, 0.4);
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+
+    .review-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        flex: 1;
+    }
+
+    .btn-approve {
+        background: linear-gradient(135deg, #4caf50, #66bb6a);
+        color: white;
+    }
+
+    .btn-approve:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #f44336, #e57373);
+        color: white;
+    }
+
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .status-approved {
+        background: rgba(76, 175, 80, 0.3);
+        color: #4caf50;
+    }
+
+    .status-pending {
+        background: rgba(255, 193, 7, 0.3);
+        color: #ffc107;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: rgba(255, 140, 66, 0.3);
+        border: 1px solid rgba(255, 107, 53, 0.4);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 1rem;
+    }
+
+    .back-btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+    }
+
+    @media (max-width: 768px) {
+        .reviews-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="reviews-container">
+    <a href="{{ url_for('admin_dashboard') }}" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <div class="page-header">
+        <h1><i class="fas fa-star"></i> Manage Reviews</h1>
+        <p style="margin: 0.5rem 0 0 0; color: rgba(255, 255, 255, 0.8);">
+            Review and approve customer feedback
+        </p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('pending')">
+            Pending Reviews ({{ pending_reviews|length }})
+        </button>
+        <button class="tab-btn" onclick="showTab('approved')">
+            Approved Reviews ({{ approved_reviews|length }})
+        </button>
+    </div>
+
+    <!-- Pending Reviews -->
+    <div id="pending-tab" class="tab-content">
+        {% if pending_reviews %}
+        <div class="reviews-grid">
+            {% for review in pending_reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-stars">
+                        {% for i in range(review.rating) %}
+                        <i class="fas fa-star"></i>
+                        {% endfor %}
+                        {% for i in range(5 - review.rating) %}
+                        <i class="far fa-star"></i>
+                        {% endfor %}
+                    </div>
+                    <span class="status-badge status-pending">Pending</span>
+                </div>
+                <div class="review-date">
+                    <i class="far fa-clock"></i> {{ review.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                </div>
+                <p class="review-text">"{{ review.review_text }}"</p>
+                <div class="review-author">
+                    <div class="author-icon">{{ review.customer_name[0].upper() }}</div>
+                    <div class="author-info">
+                        <div class="author-name">{{ review.customer_name }}</div>
+                        <span class="event-badge">{{ review.event_type }}</span>
+                    </div>
+                </div>
+                <div class="review-actions">
+                    <form method="POST" action="{{ url_for('approve_review', review_id=review.id) }}" style="flex: 1;">
+                        <button type="submit" class="btn btn-approve">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ url_for('delete_review', review_id=review.id) }}" 
+                          onsubmit="return confirm('Are you sure you want to delete this review?')" style="flex: 1;">
+                        <button type="submit" class="btn btn-delete">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>No Pending Reviews</h3>
+            <p>All reviews have been processed!</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Approved Reviews -->
+    <div id="approved-tab" class="tab-content" style="display: none;">
+        {% if approved_reviews %}
+        <div class="reviews-grid">
+            {% for review in approved_reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-stars">
+                        {% for i in range(review.rating) %}
+                        <i class="fas fa-star"></i>
+                        {% endfor %}
+                        {% for i in range(5 - review.rating) %}
+                        <i class="far fa-star"></i>
+                        {% endfor %}
+                    </div>
+                    <span class="status-badge status-approved">Approved</span>
+                </div>
+                <div class="review-date">
+                    <i class="far fa-clock"></i> {{ review.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                </div>
+                <p class="review-text">"{{ review.review_text }}"</p>
+                <div class="review-author">
+                    <div class="author-icon">{{ review.customer_name[0].upper() }}</div>
+                    <div class="author-info">
+                        <div class="author-name">{{ review.customer_name }}</div>
+                        <span class="event-badge">{{ review.event_type }}</span>
+                    </div>
+                </div>
+                <div class="review-actions">
+                    <form method="POST" action="{{ url_for('delete_review', review_id=review.id) }}" 
+                          onsubmit="return confirm('Are you sure you want to delete this review?')" style="flex: 1;">
+                        <button type="submit" class="btn btn-delete">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-star"></i>
+            <h3>No Approved Reviews</h3>
+            <p>Start approving reviews to see them here!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function showTab(tab) {
+        // Hide all tabs
+        document.getElementById('pending-tab').style.display = 'none';
+        document.getElementById('approved-tab').style.display = 'none';
+
+        // Remove active class from all buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Show selected tab
+        if (tab === 'pending') {
+            document.getElementById('pending-tab').style.display = 'block';
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        } else {
+            document.getElementById('approved-tab').style.display = 'block';
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        }
+    }
+</script>
+{% endblock %}

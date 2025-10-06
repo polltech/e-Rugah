@@ -1683,421 +1683,459 @@
         </div>
     </div>
 
-    <div class="reviews-slider-container">
-        <div class="reviews-slider">
-            <!-- Review Cards - Using the 13 images from the reviews folder -->
-            <div class="review-card">
-                <div class="review-image">
-                    <img src="{{ url_for('reviews_files', filename='pexels-alee-abdullahi-dc__shot-2148582901-34143331.jpg') }}" alt="Customer">
-                </div>
-                <div class="review-content">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">"The chef was amazing! The food was delicious and the presentation was beautiful. Will definitely book again for our next event."</p>
-                    <h5 class="review-name">Sarah Johnson</h5>
-                    <p class="review-event">Birthday Party</p>
+    <!-- Reviews Slider Section -->
+    <div class="reviews-section">
+        <div class="reviews-slider-wrapper">
+            <button class="slider-nav-btn prev-btn" id="prevReviewWelcome">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div class="reviews-slider" id="reviewsSliderWelcome">
+                <!-- Reviews will be loaded dynamically -->
+                <div class="review-card loading-card">
+                    <div class="loading-spinner"></div>
+                    <p>Loading reviews...</p>
                 </div>
             </div>
 
-            <div class="review-card">
-                <div class="review-image">
-                    <img src="{{ url_for('reviews_files', filename='pexels-george-ikwegbu-596824-2379429.jpg') }}" alt="Customer">
-                </div>
-                <div class="review-content">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">"e-Rugah made our anniversary dinner special. The chef was professional and the food was exceptional. Highly recommend!"</p>
-                    <h5 class="review-name">Michael Thompson</h5>
-                    <p class="review-event">Anniversary Dinner</p>
-                </div>
-            </div>
-
-            <div class="review-card">
-                <div class="review-image">
-                    <img src="{{ url_for('reviews_files', filename='pexels-godisable-jacob-226636-905243.jpg') }}" alt="Customer">
-                </div>
-                <div class="review-content">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">"We hired a chef for our family reunion and it was the best decision ever. Everyone loved the food and the service was impeccable."</p>
-                    <h5 class="review-name">Emily Davis</h5>
-                    <p class="review-event">Family Reunion</p>
-                </div>
-            </div>
-
-            <div class="review-card">
-                <div class="review-image">
-                    <img src="{{ url_for('reviews_files', filename='pexels-godisable-jacob-226636-947422.jpg') }}" alt="Customer">
-                </div>
-                <div class="review-content">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">"The booking process was so easy and the chef was fantastic. The food was delicious and everyone at our corporate event was impressed."</p>
-                    <h5 class="review-name">Jessica Wilson</h5>
-                    <p class="review-event">Corporate Event</p>
-                </div>
-            </div>
-
-            <!-- Duplicate cards for seamless continuous sliding -->
-            <div class="review-card">
-                <div class="review-image">
-                    <img src="{{ url_for('reviews_files', filename='pexels-alee-abdullahi-dc__shot-2148582901-34143331.jpg') }}" alt="Customer">
-                </div>
-                <div class="review-content">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">"The chef was amazing! The food was delicious and the presentation was beautiful. Will definitely book again for our next event."</p>
-                    <h5 class="review-name">Sarah Johnson</h5>
-                    <p class="review-event">Birthday Party</p>
-                </div>
-            </div>
-
-            <div class="review-card">
-                <div class="review-image">
-                    <img src="{{ url_for('reviews_files', filename='pexels-george-ikwegbu-596824-2379429.jpg') }}" alt="Customer">
-                </div>
-                <div class="review-content">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">"e-Rugah made our anniversary dinner special. The chef was professional and the food was exceptional. Highly recommend!"</p>
-                    <h5 class="review-name">Michael Thompson</h5>
-                    <p class="review-event">Anniversary Dinner</p>
-                </div>
-            </div>
-
-            <div class="review-card">
-                <div class="review-image">
-                    <img src="{{ url_for('reviews_files', filename='pexels-godisable-jacob-226636-905243.jpg') }}" alt="Customer">
-                </div>
-                <div class="review-content">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">"We hired a chef for our family reunion and it was the best decision ever. Everyone loved the food and the service was impeccable."</p>
-                    <h5 class="review-name">Emily Davis</h5>
-                    <p class="review-event">Family Reunion</p>
-                </div>
-            </div>
-
-            <div class="review-card">
-                <div class="review-image">
-                    <img src="{{ url_for('reviews_files', filename='pexels-godisable-jacob-226636-947422.jpg') }}" alt="Customer">
-                </div>
-                <div class="review-content">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">"The booking process was so easy and the chef was fantastic. The food was delicious and everyone at our corporate event was impressed."</p>
-                    <h5 class="review-name">Jessica Wilson</h5>
-                    <p class="review-event">Corporate Event</p>
-                </div>
-            </div>
-
+            <button class="slider-nav-btn next-btn" id="nextReviewWelcome">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
-        
     </div>
 </div>
 
 <style>
-    /* Reviews Slider Styles */
-    .reviews-slider-container {
-        position: relative;
-        width: 100%;
-        overflow: hidden;
-        padding: 30px 0;
-        margin-bottom: 40px;
-        background: linear-gradient(to right, rgba(255,255,255,0.02), rgba(255,255,255,0.1), rgba(255,255,255,0.02));
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        animation: glow 5s infinite alternate;
+    /* Reviews Slider Styles - Same as index.html */
+    .reviews-section {
+        padding: 2rem 0;
     }
-    
-    @keyframes glow {
-        0% { box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        100% { box-shadow: 0 15px 40px rgba(255, 107, 53, 0.1); }
+
+    .reviews-slider-wrapper {
+        position: relative;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 60px;
     }
 
     .reviews-slider {
         display: flex;
         gap: 20px;
-        padding: 10px;
-        animation: continuousSlide 60s linear infinite;
-        will-change: transform;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        padding: 20px 0;
+        scrollbar-width: none;
     }
 
-    @keyframes continuousSlide {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-50%);
-        }
+    .reviews-slider::-webkit-scrollbar {
+        display: none;
     }
 
     .review-card {
-        flex: 0 0 250px;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        overflow: hidden;
+        min-width: 220px;
+        max-width: 220px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 1rem;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-        transform: translateZ(0);
-        animation: float 6s ease-in-out infinite;
-    }
-
-    @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-        100% { transform: translateY(0px); }
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     .review-card:hover {
-        transform: translateY(-15px) scale(1.05);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-        z-index: 10;
-    }
-
-    .review-image {
-        height: 120px;
-        overflow: hidden;
-    }
-
-    .review-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
-        filter: brightness(0.95);
-    }
-
-    .review-card:hover .review-image img {
-        transform: scale(1.15);
-        filter: brightness(1.05);
-    }
-    
-    .review-image::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0));
-        z-index: 1;
-        opacity: 0.7;
-        transition: opacity 0.3s ease;
-    }
-    
-    .review-card:hover .review-image::before {
-        opacity: 0.3;
-    }
-
-    .review-content {
-        padding: 20px;
-        position: relative;
-    }
-    
-    .review-content::before {
-        content: '"';
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        font-size: 60px;
-        color: rgba(247, 147, 30, 0.1);
-        font-family: Georgia, serif;
-        line-height: 1;
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
 
     .review-stars {
-        color: #f7931e;
-        font-size: 18px;
-        margin-bottom: 10px;
-        display: inline-block;
-        position: relative;
-        z-index: 1;
+        color: #ffd700;
+        font-size: 0.8rem;
+        margin-bottom: 0.6rem;
     }
-    
-    .review-stars::after {
-        content: '★★★★★';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 0;
-        color: #f7931e;
-        overflow: hidden;
-        transition: width 0.5s ease-in-out;
-    }
-    
-    .review-card:hover .review-stars::after {
-        width: 100%;
+
+    .review-stars i {
+        margin-right: 2px;
     }
 
     .review-text {
-        font-size: 14px;
-        color: #2c3e50;
-        margin-bottom: 15px;
-        line-height: 1.6;
-        position: relative;
-        z-index: 1;
+        color: #333;
+        font-size: 0.75rem;
+        line-height: 1.4;
+        margin-bottom: 0.8rem;
         font-style: italic;
-        transition: color 0.3s ease;
-    }
-    
-    .review-card:hover .review-text {
-        color: #000;
     }
 
-    .review-name {
-        font-weight: 700;
-        color: #ff6b35;
-        margin-bottom: 5px;
-        font-size: 16px;
-        transition: transform 0.3s ease, color 0.3s ease;
-        display: inline-block;
-    }
-    
-    .review-card:hover .review-name {
-        transform: translateX(5px);
-        color: #e84118;
+    .review-footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        padding-top: 0.6rem;
     }
 
-    .review-event {
-        font-size: 12px;
-        color: #6ab04c;
+    .review-author {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .author-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+
+    .author-name {
         font-weight: 600;
-        margin: 0;
-        transition: transform 0.3s ease;
+        color: #333;
+        margin-bottom: 0.2rem;
+        font-size: 0.8rem;
+    }
+
+    .event-badge {
         display: inline-block;
+        padding: 0.15rem 0.5rem;
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(255, 140, 66, 0.2));
+        color: #ff6b35;
+        border-radius: 12px;
+        font-size: 0.65rem;
+        font-weight: 500;
     }
-    
-    .review-card:hover .review-event {
-        transform: translateX(5px);
+
+    .slider-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        z-index: 10;
     }
-    
 
+    .slider-nav-btn:hover {
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+    }
 
+    .prev-btn {
+        left: 0;
+    }
+
+    .next-btn {
+        right: 0;
+    }
+
+    .loading-card, .no-reviews, .error-card {
+        min-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem;
+        text-align: center;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255, 107, 53, 0.2);
+        border-top-color: #ff6b35;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
+        .reviews-slider-wrapper {
+            padding: 0 50px;
+        }
+
         .review-card {
-            flex: 0 0 calc(100% - 40px);
+            min-width: 200px;
+            max-width: 200px;
+            padding: 0.9rem;
+        }
+
+        .slider-nav-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .reviews-slider-wrapper {
+            padding: 0 40px;
+        }
+
+        .review-card {
+            min-width: 190px;
+            max-width: 190px;
+            padding: 0.85rem;
+        }
+
+        .review-text {
+            font-size: 0.7rem;
+        }
+
+        .author-name {
+            font-size: 0.75rem;
+        }
+
+        .event-badge {
+            font-size: 0.6rem;
         }
     }
 </style>
 
 <script>
-    // Generate Particles
-    const particlesContainer = document.getElementById('particles');
-    const particleCount = 50;
+    // Reviews Slider Functionality for Welcome Page
+    document.addEventListener('DOMContentLoaded', () => {
+        // Generate Particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 50;
 
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 15 + 's';
-        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-        particlesContainer.appendChild(particle);
-    }
-
-    // Parallax Effect on Mouse Move
-    document.addEventListener('mousemove', (e) => {
-        const orbs = document.querySelectorAll('.orb');
-        const mouseX = e.clientX / window.innerWidth;
-        const mouseY = e.clientY / window.innerHeight;
-
-        orbs.forEach((orb, index) => {
-            const speed = (index + 1) * 30;
-            const x = (mouseX - 0.5) * speed;
-            const y = (mouseY - 0.5) * speed;
-            orb.style.transform = `translate(${x}px, ${y}px)`;
-        });
-    });
-
-    // Smooth Scroll for Scroll Indicator
-    document.querySelector('.scroll-indicator')?.addEventListener('click', () => {
-        window.scrollTo({
-            top: window.innerHeight,
-            behavior: 'smooth'
-        });
-    });
-
-    // Add 3D Tilt Effect to Glass Cards
-    const cards = document.querySelectorAll('.glass-card');
-    cards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 10;
-            const rotateY = (centerX - x) / 10;
-            
-            card.style.transform = `translateY(-15px) perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'translateY(0) perspective(1000px) rotateX(0) rotateY(0)';
-        });
-    });
-
-    // Button Ripple Effect
-    document.querySelectorAll('.modern-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.cssText = `
-                position: absolute;
-                width: ${size}px;
-                height: ${size}px;
-                left: ${x}px;
-                top: ${y}px;
-                background: rgba(255, 255, 255, 0.5);
-                border-radius: 50%;
-                transform: scale(0);
-                animation: ripple 0.6s ease-out;
-                pointer-events: none;
-            `;
-            
-            this.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
-        });
-    });
-
-    // Add ripple animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes ripple {
-            to {
-                transform: scale(4);
-                opacity: 0;
+        if (particlesContainer) {
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
             }
         }
-    `;
-    document.head.appendChild(style);
 
-    // Reviews Slider Functionality - Continuous Sliding
-    document.addEventListener('DOMContentLoaded', function() {
-        const sliderContainer = document.querySelector('.reviews-slider-container');
-        const slider = document.querySelector('.reviews-slider');
+        // Parallax Effect on Mouse Move
+        document.addEventListener('mousemove', (e) => {
+            const orbs = document.querySelectorAll('.orb');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
 
-        if (!slider) return;
-
-        // Pause animation on hover
-        sliderContainer.addEventListener('mouseenter', function() {
-            slider.style.animationPlayState = 'paused';
+            orbs.forEach((orb, index) => {
+                const speed = (index + 1) * 30;
+                const x = (mouseX - 0.5) * speed;
+                const y = (mouseY - 0.5) * speed;
+                orb.style.transform = `translate(${x}px, ${y}px)`;
+            });
         });
 
-        sliderContainer.addEventListener('mouseleave', function() {
-            slider.style.animationPlayState = 'running';
+        // Smooth Scroll for Scroll Indicator
+        document.querySelector('.scroll-indicator')?.addEventListener('click', () => {
+            window.scrollTo({
+                top: window.innerHeight,
+                behavior: 'smooth'
+            });
         });
 
-        // Pause on touch for mobile
-        sliderContainer.addEventListener('touchstart', function() {
-            slider.style.animationPlayState = 'paused';
+        // Add 3D Tilt Effect to Glass Cards
+        const cards = document.querySelectorAll('.glass-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.transform = `translateY(-15px) perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) perspective(1000px) rotateX(0) rotateY(0)';
+            });
+        });
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Button Ripple Effect
+        document.querySelectorAll('.modern-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.5);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                `;
+                
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+        const reviewsSlider = document.getElementById('reviewsSliderWelcome');
+        const prevBtn = document.getElementById('prevReviewWelcome');
+        const nextBtn = document.getElementById('nextReviewWelcome');
+
+        let autoSlideInterval;
+        let currentScrollPosition = 0;
+
+        // Fetch and display reviews
+        async function loadReviews() {
+            console.log('Loading reviews (Welcome page)...');
+            
+            try {
+                const response = await fetch('/api/reviews');
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const reviews = await response.json();
+                console.log('Loaded reviews:', reviews.length);
+
+                // Clear loading state
+                reviewsSlider.innerHTML = '';
+
+                if (reviews.length === 0) {
+                    reviewsSlider.innerHTML = `
+                        <div class="review-card no-reviews">
+                            <i class="fas fa-star" style="font-size: 3rem; color: #ffd700; margin-bottom: 1rem;"></i>
+                            <p>No reviews yet. Be the first to share your experience!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                reviewsSlider.innerHTML = reviews.map(review => `
+                    <div class="review-card">
+                        <div class="review-stars">
+                            ${'<i class="fas fa-star"></i>'.repeat(review.rating)}
+                            ${'<i class="far fa-star"></i>'.repeat(5 - review.rating)}
+                        </div>
+                        <p class="review-text">"${review.review_text}"</p>
+                        <div class="review-footer">
+                            <div class="review-author">
+                                <div class="author-icon">${review.customer_name.charAt(0).toUpperCase()}</div>
+                                <div>
+                                    <div class="author-name">${review.customer_name}</div>
+                                    <div class="event-badge">${review.event_type}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                startAutoSlide();
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                reviewsSlider.innerHTML = `
+                    <div class="review-card error-card">
+                        <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #ff6b6b; margin-bottom: 1rem;"></i>
+                        <p>Failed to load reviews. Please try again later.</p>
+                        <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Slider navigation
+        function slideNext() {
+            const cardWidth = reviewsSlider.querySelector('.review-card')?.offsetWidth || 0;
+            const gap = 20;
+            const scrollAmount = cardWidth + gap;
+            const maxScroll = reviewsSlider.scrollWidth - reviewsSlider.clientWidth;
+
+            currentScrollPosition += scrollAmount;
+            if (currentScrollPosition > maxScroll) {
+                currentScrollPosition = 0;
+            }
+
+            reviewsSlider.scrollTo({
+                left: currentScrollPosition,
+                behavior: 'smooth'
+            });
+        }
+
+        function slidePrev() {
+            const cardWidth = reviewsSlider.querySelector('.review-card')?.offsetWidth || 0;
+            const gap = 20;
+            const scrollAmount = cardWidth + gap;
+
+            currentScrollPosition -= scrollAmount;
+            if (currentScrollPosition < 0) {
+                currentScrollPosition = reviewsSlider.scrollWidth - reviewsSlider.clientWidth;
+            }
+
+            reviewsSlider.scrollTo({
+                left: currentScrollPosition,
+                behavior: 'smooth'
+            });
+        }
+
+        // Auto-slide functionality
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(slideNext, 5000);
+        }
+
+        function stopAutoSlide() {
+            clearInterval(autoSlideInterval);
+        }
+
+        // Event listeners for navigation
+        nextBtn?.addEventListener('click', () => {
+            stopAutoSlide();
+            slideNext();
+            startAutoSlide();
         });
 
-        sliderContainer.addEventListener('touchend', function() {
-            setTimeout(() => {
-                slider.style.animationPlayState = 'running';
-            }, 1000); // Resume after 1 second
+        prevBtn?.addEventListener('click', () => {
+            stopAutoSlide();
+            slidePrev();
+            startAutoSlide();
         });
+
+        // Pause auto-slide on hover
+        reviewsSlider?.addEventListener('mouseenter', stopAutoSlide);
+        reviewsSlider?.addEventListener('mouseleave', startAutoSlide);
+
+        // Load reviews on page load
+        loadReviews();
     });
 </script>
 {% endblock %}
