@@ -95,8 +95,8 @@
             <i class="bi bi-arrow-left"></i> Back to Chefs
         </button>
     </div>
-    {% if chef.photo_url %}
-    <img src="{{ url_for('static', filename=chef.photo_url) }}" alt="Chef Photo" class="profile-photo" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
+    {% if chef.photo_path %}
+    <img src="{{ url_for('static', filename=chef.photo_path) }}" alt="Chef Photo" class="profile-photo" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
     {% endif %}
     <h2>{{ chef.name }}</h2>
     <p>Professional Chef</p>

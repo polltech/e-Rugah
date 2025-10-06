@@ -23,6 +23,15 @@
     .modern-dashboard {
         animation: fadeInUp 0.6s ease-out;
         position: relative;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .modern-dashboard {
+            padding: 1.5rem 1rem;
+        }
     }
 
     /* Floating Background Elements */
@@ -74,11 +83,11 @@
         background: var(--primary-gradient);
         background-size: 200% auto;
         color: white;
-        padding: 2.5rem 2rem;
-        border-radius: 30px;
+        padding: 2rem 2rem;
+        border-radius: 25px;
         margin-bottom: 2rem;
-        box-shadow: 0 25px 70px rgba(255, 107, 53, 0.5),
-                    0 10px 30px rgba(255, 107, 53, 0.3),
+        box-shadow: 0 20px 60px rgba(255, 107, 53, 0.4),
+                    0 8px 25px rgba(255, 107, 53, 0.25),
                     inset 0 1px 0 rgba(255, 255, 255, 0.3);
         animation: slideIn 0.6s ease-out, gradientShift 8s ease infinite;
         position: relative;
@@ -144,17 +153,20 @@
     }
 
     .dashboard-header h2 {
-        font-size: 2.2rem;
-        font-weight: 900;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(255, 255, 255, 0.2);
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 0.4rem;
+        text-shadow: 0 3px 15px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 255, 255, 0.2);
         position: relative;
         z-index: 1;
-        letter-spacing: -1px;
+        letter-spacing: -0.5px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
 
     .dashboard-header p {
-        font-size: 1.2rem;
+        font-size: 1rem;
         opacity: 0.95;
         margin-bottom: 0;
         position: relative;
@@ -162,9 +174,8 @@
         font-weight: 500;
     }
 
-    .dashboard-header i {
-        font-size: 2.5rem;
-        margin-right: 1rem;
+    .dashboard-header h2 i {
+        font-size: 2rem;
         animation: pulse 2s ease-in-out infinite;
         filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
     }
@@ -179,12 +190,12 @@
         background: var(--success-gradient);
         background-size: 200% auto;
         border: none;
-        padding: 1.3rem 3rem;
-        font-weight: 800;
-        font-size: 1.15rem;
-        border-radius: 60px;
-        box-shadow: 0 15px 40px rgba(16, 185, 129, 0.5),
-                    0 5px 15px rgba(16, 185, 129, 0.3),
+        padding: 0.9rem 2rem;
+        font-weight: 700;
+        font-size: 1rem;
+        border-radius: 50px;
+        box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4),
+                    0 4px 12px rgba(255, 107, 53, 0.25),
                     inset 0 1px 0 rgba(255, 255, 255, 0.3);
         transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         position: relative;
@@ -193,10 +204,10 @@
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 0.85rem;
+        gap: 0.6rem;
         z-index: 1;
         border: 2px solid rgba(255, 255, 255, 0.3);
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
     }
 
     .create-event-btn::before {
@@ -231,7 +242,7 @@
     }
 
     .create-event-btn i {
-        font-size: 1.6rem;
+        font-size: 1.3rem;
         animation: rotate 3s linear infinite;
         filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
     }
@@ -254,10 +265,10 @@
     .events-card {
         background: var(--glass-bg);
         backdrop-filter: blur(20px);
-        border-radius: 30px;
-        padding: 2rem;
-        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12),
-                    0 10px 30px rgba(0, 0, 0, 0.08),
+        border-radius: 25px;
+        padding: 1.75rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1),
+                    0 8px 25px rgba(0, 0, 0, 0.06),
                     inset 0 1px 0 rgba(255, 255, 255, 0.5);
         transition: all 0.4s ease;
         position: relative;
@@ -286,119 +297,114 @@
     }
 
     .events-card h3 {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         font-weight: 800;
         color: #ff6b35;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 0.75rem;
     }
 
     .events-card h3 i {
-        font-size: 2rem;
+        font-size: 1.6rem;
         animation: pulse 2s ease-in-out infinite;
     }
 
-    /* Ultra-Modern Table Styling */
+    .events-card h4 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #ff6b35;
+        margin-bottom: 1.25rem;
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .events-card h4 i {
+        font-size: 1.4rem;
+    }
+
+    /* SIMPLE TABLE - GUARANTEED ALIGNMENT */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        margin-top: 1.5rem;
+    }
+
     .modern-table {
         width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 1rem;
+        border-collapse: collapse;
+        table-layout: fixed;
     }
 
     .modern-table thead th {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
         color: white;
-        padding: 1.4rem 1.2rem;
-        font-weight: 800;
+        padding: 1.2rem 1rem;
+        font-weight: 700;
         text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 1.5px;
+        font-size: 0.8rem;
+        letter-spacing: 1.2px;
+        text-align: left;
         border: none;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
     }
 
     .modern-table thead th:first-child {
-        border-radius: 20px 0 0 20px;
+        border-radius: 15px 0 0 0;
     }
 
     .modern-table thead th:last-child {
-        border-radius: 0 20px 20px 0;
+        border-radius: 0 15px 0 0;
     }
 
     .modern-table thead th i {
         margin-right: 0.5rem;
-        font-size: 1rem;
-    }
-
-    .modern-table tbody tr {
-        background: rgba(255, 107, 107, 0.05);
-        box-shadow: 0 5px 20px rgba(255, 107, 53, 0.1);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 20px;
-        position: relative;
-    }
-
-    .modern-table tbody tr::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 5px;
-        background: var(--primary-gradient);
-        border-radius: 20px 0 0 20px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .modern-table tbody tr:hover::before {
-        opacity: 1;
-    }
-
-    .modern-table tbody tr:hover {
-        transform: translateX(8px) scale(1.02);
-        box-shadow: 0 10px 35px rgba(255, 107, 53, 0.25);
-        background: linear-gradient(90deg, rgba(255, 107, 107, 0.1), rgba(249, 115, 22, 0.1));
     }
 
     .modern-table tbody td {
-        padding: 1.5rem 1.2rem;
-        border: none;
-        vertical-align: middle;
-        font-weight: 600;
+        padding: 1.2rem 1rem;
         color: white;
+        font-size: 0.9rem;
+        text-align: left;
+        background: rgba(255, 107, 107, 0.05);
+        border: none;
+        border-bottom: 0.75rem solid transparent;
     }
 
     .modern-table tbody td:first-child {
-        border-radius: 20px 0 0 20px;
         font-weight: 800;
         color: #ff6b35;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
-    .modern-table tbody td:last-child {
-        border-radius: 0 20px 20px 0;
+    .modern-table tbody tr:hover td {
+        background: rgba(255, 107, 107, 0.15);
+    }
+
+    .modern-table .action-btn,
+    .modern-table .status-badge {
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
     }
 
     /* Action Buttons with Gradient */
     .action-btn {
-        padding: 0.75rem 1.8rem;
-        border-radius: 30px;
+        padding: 0.65rem 1.4rem;
+        border-radius: 25px;
         font-weight: 700;
-        font-size: 0.95rem;
+        font-size: 0.85rem;
         border: none;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.5rem;
         position: relative;
         overflow: hidden;
+        white-space: nowrap;
     }
 
     .action-btn::before {
@@ -422,44 +428,56 @@
     .action-btn-primary {
         background: var(--primary-gradient);
         color: white;
-        box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
     }
 
     .action-btn-primary:hover {
-        transform: translateY(-4px) scale(1.05);
-        box-shadow: 0 8px 30px rgba(255, 107, 53, 0.6);
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 6px 25px rgba(255, 107, 53, 0.5);
+        color: white;
+    }
+
+    .action-btn-warning {
+        background: var(--warning-gradient);
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 140, 66, 0.3);
+    }
+
+    .action-btn-warning:hover {
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 6px 25px rgba(255, 140, 66, 0.5);
         color: white;
     }
 
     .status-badge {
-        padding: 0.6rem 1.5rem;
-        border-radius: 30px;
+        padding: 0.55rem 1.2rem;
+        border-radius: 25px;
         font-weight: 700;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         display: inline-flex;
         align-items: center;
-        gap: 0.6rem;
-        letter-spacing: 0.5px;
+        gap: 0.5rem;
+        letter-spacing: 0.3px;
     }
 
     .status-badge-success {
         background: var(--success-gradient);
         color: white;
-        box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
         animation: pulse 2s ease-in-out infinite;
     }
 
     .status-badge i {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
     /* Ultra-Modern Empty State */
     .empty-state {
         text-align: center;
-        padding: 5rem 3rem;
+        padding: 4rem 2.5rem;
         background: linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(255, 140, 66, 0.08));
-        border-radius: 35px;
-        border: 3px dashed rgba(255, 107, 53, 0.4);
+        border-radius: 25px;
+        border: 2px dashed rgba(255, 107, 53, 0.4);
         animation: slideIn 0.8s ease-out 0.2s both;
         position: relative;
         overflow: hidden;
@@ -483,10 +501,10 @@
     }
 
     .empty-state-icon {
-        font-size: 6rem;
-        margin-bottom: 2rem;
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
         animation: float 3s ease-in-out infinite;
-        filter: drop-shadow(0 10px 30px rgba(255, 107, 53, 0.3));
+        filter: drop-shadow(0 8px 25px rgba(255, 107, 53, 0.3));
         position: relative;
         z-index: 1;
     }
@@ -494,61 +512,63 @@
     .empty-state h3 {
         color: #ff6b35;
         font-weight: 800;
-        font-size: 2rem;
-        margin-bottom: 1rem;
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
         position: relative;
         z-index: 1;
     }
 
     .empty-state p {
         color: rgba(255, 255, 255, 0.8);
-        font-size: 1.2rem;
-        margin-bottom: 2.5rem;
+        font-size: 1.05rem;
+        margin-bottom: 2rem;
         font-weight: 500;
         position: relative;
         z-index: 1;
+        line-height: 1.6;
     }
 
     .empty-state-btn {
         background: var(--primary-gradient);
         color: white;
-        padding: 1.2rem 3rem;
-        border-radius: 60px;
-        font-weight: 800;
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        font-weight: 700;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 0.85rem;
+        gap: 0.7rem;
         transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        box-shadow: 0 15px 40px rgba(255, 107, 53, 0.5);
+        box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
         position: relative;
         z-index: 1;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
     .empty-state-btn:hover {
-        transform: translateY(-7px) scale(1.08);
-        box-shadow: 0 20px 50px rgba(255, 107, 53, 0.7);
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 15px 40px rgba(255, 107, 53, 0.6);
         color: white;
     }
 
     /* Stats Cards */
     .stats-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 3rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.25rem;
+        margin-bottom: 2rem;
     }
 
     .stat-card {
         background: rgba(255, 107, 107, 0.1);
-        border-radius: 20px;
+        border-radius: 18px;
         padding: 1.5rem;
-        box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.15);
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
         border: 1px solid rgba(255, 107, 107, 0.3);
+        text-align: center;
     }
 
     .stat-card::before {
@@ -557,34 +577,35 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 4px;
+        height: 3px;
         background: var(--primary-gradient);
     }
 
     .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 35px rgba(255, 107, 53, 0.25);
     }
 
     .stat-card-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        opacity: 0.8;
+        font-size: 2.2rem;
+        margin-bottom: 0.75rem;
+        opacity: 0.9;
     }
 
     .stat-card-value {
         font-size: 2rem;
         font-weight: 800;
         color: #ff6b35;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.4rem;
+        line-height: 1;
     }
 
     .stat-card-label {
-        font-size: 1rem;
-        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.85);
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.8px;
     }
 
     /* Ultra-Comprehensive Responsive Design for Customer Dashboard */
@@ -596,19 +617,19 @@
         }
 
         .dashboard-header {
-            padding: 4rem 3rem !important;
+            padding: 2.5rem 2.5rem !important;
         }
 
         .dashboard-header h2 {
-            font-size: 2.8rem !important;
+            font-size: 2rem !important;
         }
 
         .events-card {
-            padding: 3rem !important;
+            padding: 2.25rem !important;
         }
 
         .stat-card {
-            padding: 2rem !important;
+            padding: 1.75rem !important;
         }
     }
 
@@ -619,11 +640,11 @@
         }
 
         .dashboard-header {
-            padding: 3.5rem 2.5rem !important;
+            padding: 2.25rem 2.25rem !important;
         }
 
         .events-card {
-            padding: 2.5rem !important;
+            padding: 2rem !important;
         }
     }
 
@@ -634,19 +655,19 @@
         }
 
         .dashboard-header {
-            padding: 3rem 2rem !important;
+            padding: 2rem 2rem !important;
         }
 
         .dashboard-header h2 {
-            font-size: 2.4rem !important;
+            font-size: 1.8rem !important;
         }
 
         .events-card {
-            padding: 2rem !important;
+            padding: 1.75rem !important;
         }
 
         .stat-card {
-            padding: 1.75rem !important;
+            padding: 1.5rem !important;
         }
 
         .modern-table {
@@ -665,40 +686,40 @@
         }
 
         .dashboard-header {
-            padding: 2.5rem 1.5rem !important;
+            padding: 2rem 1.5rem !important;
             text-align: center !important;
         }
 
         .dashboard-header h2 {
-            font-size: 2rem !important;
+            font-size: 1.7rem !important;
         }
 
         .dashboard-header .d-flex {
             flex-direction: column !important;
-            gap: 1.5rem !important;
+            gap: 1.25rem !important;
         }
 
         .create-event-btn {
             width: 100% !important;
             justify-content: center !important;
-            padding: 1.2rem 2rem !important;
-            font-size: 1.1rem !important;
+            padding: 0.9rem 2rem !important;
+            font-size: 1rem !important;
         }
 
         .events-card {
-            padding: 1.75rem !important;
-        }
-
-        .events-card h3 {
-            font-size: 1.6rem !important;
-        }
-
-        .stat-card {
             padding: 1.5rem !important;
         }
 
+        .events-card h3 {
+            font-size: 1.4rem !important;
+        }
+
+        .stat-card {
+            padding: 1.25rem !important;
+        }
+
         .stat-card-value {
-            font-size: 1.8rem !important;
+            font-size: 1.7rem !important;
         }
 
         .modern-table {
@@ -828,27 +849,27 @@
         }
 
         .empty-state {
-            padding: 2.5rem 1.25rem !important;
+            padding: 3rem 1.5rem !important;
             border-radius: 20px !important;
         }
 
         .empty-state-icon {
-            font-size: 4rem !important;
-            margin-bottom: 1.5rem !important;
+            font-size: 4.5rem !important;
+            margin-bottom: 1.25rem !important;
         }
 
         .empty-state h3 {
-            font-size: 1.5rem !important;
-            margin-bottom: 0.75rem !important;
+            font-size: 1.6rem !important;
+            margin-bottom: 0.7rem !important;
         }
 
         .empty-state p {
             font-size: 1rem !important;
-            margin-bottom: 2rem !important;
+            margin-bottom: 1.75rem !important;
         }
 
         .empty-state-btn {
-            padding: 0.9rem 1.8rem !important;
+            padding: 0.9rem 2rem !important;
             font-size: 0.95rem !important;
         }
 
@@ -1123,6 +1144,162 @@
         }
     }
 
+    /* Rating Modal Styles */
+    .rating-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        animation: fadeIn 0.3s ease;
+    }
+
+    .rating-modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .rating-modal-content {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(255, 140, 66, 0.15));
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 107, 53, 0.3);
+        border-radius: 25px;
+        padding: 2rem;
+        max-width: 480px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(255, 107, 53, 0.4);
+        animation: slideUp 0.4s ease;
+        position: relative;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .rating-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .rating-modal-header h3 {
+        color: #ff6b35;
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .rating-modal-close {
+        background: rgba(255, 107, 53, 0.2);
+        border: none;
+        color: white;
+        font-size: 1.8rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+
+    .rating-modal-close:hover {
+        background: rgba(255, 107, 53, 0.3);
+        transform: rotate(90deg);
+    }
+
+    .rating-stars {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+        margin: 1.5rem 0;
+    }
+
+    .rating-star {
+        font-size: 2.5rem;
+        color: rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.3));
+    }
+
+    .rating-star:hover,
+    .rating-star.active {
+        color: #ff6b35;
+        transform: scale(1.15);
+        filter: drop-shadow(0 0 15px rgba(255, 107, 53, 0.7));
+    }
+
+    .rating-comment {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 107, 53, 0.3);
+        border-radius: 12px;
+        padding: 0.9rem;
+        color: white;
+        font-size: 0.95rem;
+        resize: vertical;
+        min-height: 90px;
+        margin-bottom: 1.25rem;
+        font-family: inherit;
+    }
+
+    .rating-comment:focus {
+        outline: none;
+        border-color: #ff6b35;
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .rating-comment::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .rating-submit-btn {
+        width: 100%;
+        background: var(--primary-gradient);
+        border: none;
+        padding: 0.9rem 2rem;
+        font-weight: 700;
+        font-size: 1rem;
+        border-radius: 50px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .rating-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(255, 107, 53, 0.5);
+    }
+
+    .rating-submit-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
     /* High DPI/Retina displays */
     @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
         .dashboard-header {
@@ -1225,6 +1402,15 @@
         {% if events %}
         <div class="table-responsive">
             <table class="modern-table">
+                <colgroup>
+                    <col style="width: 100px;">
+                    <col style="width: 180px;">
+                    <col style="width: 130px;">
+                    <col style="width: 90px;">
+                    <col style="width: 130px;">
+                    <col style="width: 150px;">
+                    <col style="width: 150px;">
+                </colgroup>
                 <thead>
                     <tr>
                         <th><i class="bi bi-hash"></i> Event ID</th>
@@ -1280,9 +1466,220 @@
         </div>
         {% endif %}
     </div>
+
+    <!-- Completed Bookings / Rate Your Chef Section -->
+    {% if pending_reviews or rated_bookings %}
+    <div class="events-card" style="margin-top: 2rem;">
+        <h3>
+            <i class="bi bi-star-fill"></i>
+            Chef Ratings
+        </h3>
+        
+        {% if pending_reviews %}
+        <h4>
+            <i class="bi bi-clock-history"></i> Pending Reviews
+        </h4>
+        <div class="table-responsive">
+            <table class="modern-table">
+                <colgroup>
+                    <col style="width: 200px;">
+                    <col style="width: 250px;">
+                    <col style="width: 150px;">
+                    <col style="width: 150px;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th><i class="bi bi-person-badge"></i> Chef</th>
+                        <th><i class="bi bi-calendar-event"></i> Event</th>
+                        <th><i class="bi bi-calendar-check"></i> Event Date</th>
+                        <th><i class="bi bi-star"></i> Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in pending_reviews %}
+                    <tr>
+                        <td>{{ booking.chef.name }}</td>
+                        <td>{{ booking.event.town }}, {{ booking.event.sub_county }}</td>
+                        <td>{{ booking.event.event_date.strftime('%b %d, %Y') }}</td>
+                        <td>
+                            <button class="action-btn action-btn-warning rate-chef-btn" 
+                                    data-booking-id="{{ booking.id }}"
+                                    data-chef-name="{{ booking.chef.name }}">
+                                <i class="bi bi-star-fill"></i>
+                                Rate Chef
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if rated_bookings %}
+        <h4 style="color: #ff6b35; font-size: 1.4rem; margin: 2rem 0 1.5rem;">
+            <i class="bi bi-check-circle-fill"></i> Your Ratings
+        </h4>
+        <div class="table-responsive">
+            <table class="modern-table">
+                <colgroup>
+                    <col style="width: 180px;">
+                    <col style="width: 200px;">
+                    <col style="width: 120px;">
+                    <col style="width: 250px;">
+                    <col style="width: 150px;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th><i class="bi bi-person-badge"></i> Chef</th>
+                        <th><i class="bi bi-calendar-event"></i> Event</th>
+                        <th><i class="bi bi-star-fill"></i> Rating</th>
+                        <th><i class="bi bi-chat-quote"></i> Comment</th>
+                        <th><i class="bi bi-calendar-check"></i> Rated On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in rated_bookings %}
+                    <tr>
+                        <td>{{ booking.chef.name }}</td>
+                        <td>{{ booking.event.town }}, {{ booking.event.sub_county }}</td>
+                        <td>
+                            <span style="color: #ff6b35; font-size: 1.2rem;">
+                                {% for i in range(booking.rating_value) %}⭐{% endfor %}
+                            </span>
+                        </td>
+                        <td>{{ booking.rating_comment or 'No comment' }}</td>
+                        <td>{{ booking.rating_submitted_at.strftime('%b %d, %Y') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Rating Modal -->
+<div id="ratingModal" class="rating-modal">
+    <div class="rating-modal-content">
+        <div class="rating-modal-header">
+            <h3><i class="bi bi-star-fill"></i> Rate Your Chef</h3>
+            <button class="rating-modal-close" onclick="closeRatingModal()">×</button>
+        </div>
+        <p style="color: white; text-align: center; margin-bottom: 1rem; font-size: 1.1rem;">
+            How was your experience with <strong id="chefNameDisplay"></strong>?
+        </p>
+        <div class="rating-stars" id="ratingStars">
+            <span class="rating-star" data-rating="1">⭐</span>
+            <span class="rating-star" data-rating="2">⭐</span>
+            <span class="rating-star" data-rating="3">⭐</span>
+            <span class="rating-star" data-rating="4">⭐</span>
+            <span class="rating-star" data-rating="5">⭐</span>
+        </div>
+        <textarea id="ratingComment" class="rating-comment" placeholder="Share your experience (optional)..."></textarea>
+        <button id="submitRatingBtn" class="rating-submit-btn" onclick="submitRating()">
+            <i class="bi bi-send-fill"></i> Submit Rating
+        </button>
+    </div>
 </div>
 
 <script>
+    let selectedRating = 0;
+    let currentBookingId = null;
+
+    // Rating modal functions
+    function openRatingModal(bookingId, chefName) {
+        currentBookingId = bookingId;
+        selectedRating = 0;
+        document.getElementById('chefNameDisplay').textContent = chefName;
+        document.getElementById('ratingComment').value = '';
+        document.getElementById('ratingModal').classList.add('show');
+        updateStars();
+    }
+
+    function closeRatingModal() {
+        document.getElementById('ratingModal').classList.remove('show');
+    }
+
+    function updateStars() {
+        document.querySelectorAll('.rating-star').forEach((star, index) => {
+            if (index < selectedRating) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        });
+    }
+
+    async function submitRating() {
+        if (selectedRating === 0) {
+            alert('Please select a rating');
+            return;
+        }
+
+        const submitBtn = document.getElementById('submitRatingBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Submitting...';
+
+        try {
+            const response = await fetch(`/booking/${currentBookingId}/rate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rating: selectedRating,
+                    comment: document.getElementById('ratingComment').value
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert(data.message);
+                closeRatingModal();
+                location.reload();
+            } else {
+                alert(data.message || 'Failed to submit rating');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-send-fill"></i> Submit Rating';
+            }
+        } catch (error) {
+            console.error('Error submitting rating:', error);
+            alert('Failed to submit rating. Please try again.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-send-fill"></i> Submit Rating';
+        }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        // Star rating interaction
+        document.querySelectorAll('.rating-star').forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.rating);
+                updateStars();
+            });
+        });
+
+        // Rate chef buttons
+        document.querySelectorAll('.rate-chef-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const bookingId = this.dataset.bookingId;
+                const chefName = this.dataset.chefName;
+                openRatingModal(bookingId, chefName);
+            });
+        });
+
+        // Close modal on background click
+        document.getElementById('ratingModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeRatingModal();
+            }
+        });
+    });
+
     // Add smooth scroll behavior
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {

@@ -30,38 +30,273 @@
 </div>
 
 {% if chefs %}
+<style>
+    /* Modern Chef Card Styling */
+    .modern-chef-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 250, 245, 0.95) 100%);
+        border-radius: 20px;
+        border: 2px solid transparent;
+        box-shadow: 0 8px 30px rgba(255, 107, 53, 0.15);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        position: relative;
+        animation: fadeInUp 0.6s ease-out both;
+    }
+
+    .modern-chef-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #ff6b35, #ff8c42, #ffa552, #ff6b35);
+        background-size: 200% 100%;
+        animation: shimmer 3s linear infinite;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modern-chef-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 50px rgba(255, 107, 53, 0.3);
+        border-color: rgba(255, 107, 53, 0.3);
+    }
+
+    .chef-card-body {
+        padding: 1.25rem;
+    }
+
+    .chef-avatar-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .chef-avatar-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #fff;
+        box-shadow: 0 5px 20px rgba(255, 107, 53, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .modern-chef-card:hover .chef-avatar-img {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 8px 30px rgba(255, 107, 53, 0.5);
+    }
+
+    .verified-badge-modern {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+        padding: 0.3rem 0.7rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .chef-name-modern {
+        font-size: 1.15rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.3rem;
+    }
+
+    .chef-info-item {
+        display: flex;
+        align-items: start;
+        gap: 0.5rem;
+        margin-bottom: 0.6rem;
+        padding: 0.5rem;
+        background: rgba(255, 107, 53, 0.05);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .chef-info-item:hover {
+        background: rgba(255, 107, 53, 0.1);
+        transform: translateX(5px);
+    }
+
+    .chef-info-icon {
+        color: #ff6b35;
+        font-size: 1rem;
+        min-width: 18px;
+    }
+
+    .chef-info-text {
+        color: #4a5568;
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+
+    .specialties-section {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(255, 140, 66, 0.08));
+        padding: 0.75rem;
+        border-radius: 10px;
+        margin-top: 0.75rem;
+        border-left: 3px solid #ff6b35;
+    }
+
+    .specialties-title {
+        color: #ff6b35;
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .specialties-text {
+        color: #4a5568;
+        font-size: 0.8rem;
+        line-height: 1.5;
+    }
+
+    .chef-card-footer-modern {
+        padding: 1rem 1.25rem;
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.05), rgba(255, 140, 66, 0.05));
+        border-top: 1px solid rgba(255, 107, 53, 0.1);
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .btn-view-profile {
+        flex: 1;
+        background: white;
+        color: #ff6b35;
+        border: 2px solid #ff6b35;
+        padding: 0.6rem 1rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+    }
+
+    .btn-view-profile:hover {
+        background: #ff6b35;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+    }
+
+    .btn-select-chef {
+        flex: 1;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .btn-select-chef:hover {
+        background: linear-gradient(135deg, #ff8c42, #ffa552);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5);
+    }
+
+    /* Stagger animation for cards */
+    .modern-chef-card:nth-child(1) { animation-delay: 0.1s; }
+    .modern-chef-card:nth-child(2) { animation-delay: 0.2s; }
+    .modern-chef-card:nth-child(3) { animation-delay: 0.3s; }
+    .modern-chef-card:nth-child(4) { animation-delay: 0.4s; }
+</style>
+
 <div class="row">
     {% for chef in chefs %}
     <div class="col-md-6 mb-4">
-        <div class="chef-card h-100">
-            <div class="card-body">
-                <div class="d-flex align-items-start mb-3">
-                    {% if chef.photo_url %}
-                    <img src="{{ url_for('static', filename=chef.photo_url) }}" alt="Chef Photo" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
-                    {% else %}
-                    <div class="feature-icon me-3" style="width: 50px; height: 50px;">
-                        <i class="bi bi-person-badge"></i>
-                    </div>
-                    {% endif %}
-                    <div>
-                        <h5 class="card-title mb-1">{{ chef.name }}</h5>
-                        <span class="badge bg-success"><i class="bi bi-patch-check"></i> Verified</span>
+        <div class="modern-chef-card h-100">
+            <div class="chef-card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="chef-avatar-wrapper">
+                            {% if chef.photo_path %}
+                            <img src="{{ url_for('static', filename=chef.photo_path) }}" alt="Chef Photo" class="chef-avatar-img" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
+                            {% else %}
+                            <div class="chef-avatar-img d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #ff6b35, #ff8c42);">
+                                <i class="bi bi-person-badge" style="font-size: 2rem; color: white;"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h5 class="chef-name-modern">{{ chef.name }}</h5>
+                            <span class="verified-badge-modern">
+                                <i class="bi bi-patch-check-fill"></i> Verified Chef
+                            </span>
+                        </div>
                     </div>
                 </div>
-                <p class="card-text">
-                    <i class="bi bi-geo-alt" style="color: var(--primary-color);"></i> {{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}<br>
-                    <i class="bi bi-telephone" style="color: var(--primary-color);"></i> {{ chef.phone }}<br>
-                    <i class="bi bi-chat-left-quote" style="color: var(--primary-color);"></i> {{ chef.about }}
-                </p>
-                <h6 style="color: var(--primary-color);"><i class="bi bi-egg-fried"></i> Specialties:</h6>
-                <p class="text-muted">{{ chef.meals_offered.replace(',', ', ') }}</p>
+
+                <div class="chef-info-item">
+                    <i class="bi bi-geo-alt-fill chef-info-icon"></i>
+                    <span class="chef-info-text">{{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}</span>
+                </div>
+
+                <div class="chef-info-item">
+                    <i class="bi bi-telephone-fill chef-info-icon"></i>
+                    <span class="chef-info-text">{{ chef.phone }}</span>
+                </div>
+
+                <div class="chef-info-item">
+                    <i class="bi bi-chat-left-quote-fill chef-info-icon"></i>
+                    <span class="chef-info-text">{{ chef.about }}</span>
+                </div>
+
+                <div class="specialties-section">
+                    <div class="specialties-title">
+                        <i class="bi bi-egg-fried"></i>
+                        <span>Culinary Specialties</span>
+                    </div>
+                    <div class="specialties-text">{{ chef.meals_offered.replace(',', ', ') }}</div>
+                </div>
             </div>
-            <div class="card-footer d-flex gap-2">
-                <a href="{{ url_for('chef_profile', chef_id=chef.id) }}" class="btn btn-outline-primary flex-fill">
-                    <i class="bi bi-eye"></i> View Profile
-                </a>
-                <a href="{{ url_for('book_chef', event_id=event.id, chef_id=chef.id) }}" class="btn btn-primary flex-fill">
-                    <i class="bi bi-check-circle"></i> Select
+            <div class="chef-card-footer-modern">
+                <button onclick="viewChefProfile({{ chef.id }})" class="btn-view-profile">
+                    <i class="bi bi-eye-fill"></i> View Profile
+                </button>
+                <a href="{{ url_for('book_chef', event_id=event.id, chef_id=chef.id) }}" class="btn-select-chef" style="text-decoration: none;">
+                    <i class="bi bi-check-circle-fill"></i> Select Chef
                 </a>
             </div>
         </div>
@@ -73,4 +308,479 @@
     <i class="bi bi-exclamation-triangle"></i> No approved chefs found in your area. Please check back later or contact support.
 </div>
 {% endif %}
+
+<script>
+    // Chef Profile Modal Functions
+    async function viewChefProfile(chefId) {
+        try {
+            const response = await fetch(`/api/chef/${chefId}/profile`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch chef profile');
+            }
+            const chef = await response.json();
+            showChefProfileModal(chef);
+        } catch (error) {
+            console.error('Error fetching chef profile:', error);
+            alert('Unable to load chef profile. Please try again.');
+        }
+    }
+
+    function showChefProfileModal(chef) {
+        // Populate modal with chef data
+        document.getElementById('modalChefPhoto').src = chef.photo_url || "{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}";
+        document.getElementById('modalChefName').textContent = chef.name;
+        document.getElementById('modalChefEmail').textContent = chef.email;
+        document.getElementById('modalChefPhone').textContent = chef.phone;
+        document.getElementById('modalChefLocation').textContent = chef.location;
+        document.getElementById('modalChefBio').textContent = chef.bio || 'No bio available';
+        
+        // Build carousel
+        const carouselIndicators = document.getElementById('carouselIndicators');
+        const carouselInner = document.getElementById('carouselInner');
+        const carouselSection = document.getElementById('carouselSection');
+        const noImagesMessage = document.getElementById('noImagesMessage');
+        const imageCounter = document.getElementById('imageCounter');
+        
+        // Clear previous content
+        carouselIndicators.innerHTML = '';
+        carouselInner.innerHTML = '';
+        
+        if (chef.images && chef.images.length > 0) {
+            carouselSection.style.display = 'block';
+            noImagesMessage.style.display = 'none';
+            imageCounter.textContent = `${chef.images.length} Photo${chef.images.length > 1 ? 's' : ''}`;
+            
+            // Add indicators and slides
+            chef.images.forEach((image, index) => {
+                // Add indicator
+                const indicator = document.createElement('button');
+                indicator.type = 'button';
+                indicator.setAttribute('data-bs-target', '#chefCarousel');
+                indicator.setAttribute('data-bs-slide-to', index);
+                if (index === 0) indicator.classList.add('active');
+                carouselIndicators.appendChild(indicator);
+                
+                // Add slide
+                const slide = document.createElement('div');
+                slide.className = index === 0 ? 'carousel-item active' : 'carousel-item';
+                slide.innerHTML = `<img src="/static/images/chefs/${image}" class="d-block w-100" alt="Chef Portfolio" style="height: 300px; object-fit: cover; border-radius: 8px;">`;
+                carouselInner.appendChild(slide);
+            });
+        } else {
+            carouselSection.style.display = 'none';
+            noImagesMessage.style.display = 'block';
+        }
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('chefProfileModal'));
+        modal.show();
+    }
+</script>
+
+<!-- Modern Chef Profile Modal -->
+<div class="modal fade" id="chefProfileModal" tabindex="-1" aria-labelledby="chefProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content modern-modal-content">
+            <div class="modern-modal-header">
+                <h5 class="modal-title" id="chefProfileModalLabel">
+                    <i class="fas fa-user-circle"></i> Chef Profile
+                </h5>
+                <button type="button" class="btn-close-modern" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body modern-modal-body">
+                <!-- Chef Details Section -->
+                <div class="text-center mb-4 chef-profile-header">
+                    <div class="modal-avatar-wrapper">
+                        <img id="modalChefPhoto" src="" alt="Chef Photo" class="modal-chef-avatar">
+                        <div class="avatar-ring"></div>
+                    </div>
+                    <h4 id="modalChefName" class="modal-chef-name"></h4>
+                    <div class="modal-chef-details">
+                        <div class="detail-item">
+                            <i class="fas fa-envelope"></i>
+                            <span id="modalChefEmail"></span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-phone"></i>
+                            <span id="modalChefPhone"></span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="modalChefLocation"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Me Section -->
+                <div class="mb-4 modal-section">
+                    <h6 class="modal-section-title">
+                        <i class="fas fa-info-circle"></i> About Me
+                    </h6>
+                    <p id="modalChefBio" class="modal-section-text"></p>
+                </div>
+
+                <!-- Culinary Portfolio Section -->
+                <div id="carouselSection" class="modal-section">
+                    <h6 class="modal-section-title">
+                        <i class="fas fa-images"></i> Culinary Portfolio 
+                        <span id="imageCounter" class="image-counter-badge"></span>
+                    </h6>
+                    <div id="chefCarousel" class="carousel slide modern-carousel" data-bs-ride="carousel">
+                        <div class="carousel-indicators modern-indicators" id="carouselIndicators"></div>
+                        <div class="carousel-inner modern-carousel-inner" id="carouselInner"></div>
+                        <button class="carousel-control-prev modern-carousel-control" type="button" data-bs-target="#chefCarousel" data-bs-slide="prev">
+                            <span class="modern-carousel-icon"><i class="fas fa-chevron-left"></i></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next modern-carousel-control" type="button" data-bs-target="#chefCarousel" data-bs-slide="next">
+                            <span class="modern-carousel-icon"><i class="fas fa-chevron-right"></i></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- No Images Message -->
+                <div id="noImagesMessage" class="no-images-message">
+                    <i class="fas fa-camera"></i>
+                    <p>No portfolio images uploaded yet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Modern Modal Styling */
+    .modern-modal-content {
+        background: linear-gradient(135deg, #fff5f0 0%, #ffffff 50%, #fff8f3 100%);
+        border: none;
+        border-radius: 25px;
+        box-shadow: 0 20px 60px rgba(255, 107, 53, 0.3);
+        overflow: hidden;
+        animation: modalSlideIn 0.4s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .modern-modal-header {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        padding: 1rem 1.5rem;
+        border-bottom: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .modern-modal-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: shimmerEffect 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmerEffect {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(-30px, -30px); }
+    }
+
+    .modern-modal-header .modal-title {
+        color: white;
+        font-weight: 800;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-close-modern {
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-close-modern:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg) scale(1.1);
+    }
+
+    .modern-modal-body {
+        padding: 1.25rem;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    /* Custom Scrollbar */
+    .modern-modal-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .modern-modal-body::-webkit-scrollbar-track {
+        background: rgba(255, 107, 53, 0.1);
+        border-radius: 10px;
+    }
+
+    .modern-modal-body::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        border-radius: 10px;
+    }
+
+    .chef-profile-header {
+        animation: fadeInDown 0.6s ease-out;
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-avatar-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+
+    .modal-chef-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid white;
+        box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        position: relative;
+        z-index: 2;
+        animation: avatarFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes avatarFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .avatar-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 115px;
+        height: 115px;
+        border-radius: 50%;
+        border: 2px solid #ff6b35;
+        opacity: 0.3;
+        animation: ringPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes ringPulse {
+        0%, 100% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.3;
+        }
+        50% {
+            transform: translate(-50%, -50%) scale(1.1);
+            opacity: 0.1;
+        }
+    }
+
+    .modal-chef-name {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.75rem;
+    }
+
+    .modal-chef-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.2rem;
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 140, 66, 0.1));
+        border-radius: 50px;
+        color: #4a5568;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+    }
+
+    .detail-item:hover {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(255, 140, 66, 0.15));
+        transform: translateX(5px);
+    }
+
+    .detail-item i {
+        color: #ff6b35;
+        font-size: 0.95rem;
+    }
+
+    .modal-section {
+        background: white;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(255, 107, 53, 0.1);
+        margin-bottom: 1rem;
+        animation: fadeInUp 0.6s ease-out both;
+    }
+
+    .modal-section:nth-child(2) { animation-delay: 0.1s; }
+    .modal-section:nth-child(3) { animation-delay: 0.2s; }
+
+    .modal-section-title {
+        color: #ff6b35;
+        font-weight: 800;
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(255, 107, 53, 0.2);
+    }
+
+    .modal-section-text {
+        color: #4a5568;
+        line-height: 1.6;
+        font-size: 0.9rem;
+    }
+
+    .image-counter-badge {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        padding: 0.25rem 0.6rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        margin-left: 0.4rem;
+    }
+
+    /* Modern Carousel Styling */
+    .modern-carousel {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .modern-carousel-inner {
+        border-radius: 15px;
+    }
+
+    .modern-carousel-control {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.9;
+        transition: all 0.3s ease;
+        border: 3px solid white;
+        box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+    }
+
+    .carousel-control-prev.modern-carousel-control {
+        left: 15px;
+    }
+
+    .carousel-control-next.modern-carousel-control {
+        right: 15px;
+    }
+
+    .modern-carousel-control:hover {
+        opacity: 1;
+        transform: translateY(-50%) scale(1.15);
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
+    }
+
+    .modern-carousel-icon {
+        font-size: 1.3rem;
+        color: white;
+        font-weight: bold;
+    }
+
+    .modern-indicators button {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: rgba(255, 107, 53, 0.3);
+        border: 2px solid white;
+        margin: 0 6px;
+        transition: all 0.3s ease;
+    }
+
+    .modern-indicators button.active {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        transform: scale(1.3);
+    }
+
+    .modern-indicators button:hover {
+        background-color: rgba(255, 107, 53, 0.6);
+        transform: scale(1.2);
+    }
+
+    .no-images-message {
+        display: none;
+        text-align: center;
+        padding: 3rem;
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.05), rgba(255, 140, 66, 0.05));
+        border-radius: 15px;
+        border: 2px dashed rgba(255, 107, 53, 0.3);
+    }
+
+    .no-images-message i {
+        font-size: 4rem;
+        color: rgba(255, 107, 53, 0.3);
+        margin-bottom: 1rem;
+        animation: cameraShake 2s ease-in-out infinite;
+    }
+
+    @keyframes cameraShake {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-10deg); }
+        75% { transform: rotate(10deg); }
+    }
+
+    .no-images-message p {
+        color: #4a5568;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+</style>
 {% endblock %}

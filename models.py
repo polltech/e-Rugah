@@ -37,8 +37,38 @@ class Chef(db.Model):
     is_verified = db.Column(db.Boolean, default=False)
     is_approved = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    rating_total = db.Column(db.Integer, default=0)
+    rating_count = db.Column(db.Integer, default=0)
+    is_featured = db.Column(db.Boolean, default=False)
+    featured_priority = db.Column(db.Integer, default=100)
     
     bookings = db.relationship('Booking', backref='chef', lazy=True)
+
+    @property
+    def location(self):
+        """Returns formatted location string"""
+        return f"{self.town}, {self.county}"
+
+    @property
+    def has_ratings(self):
+        return bool(self.rating_count)
+
+    @property
+    def average_rating(self):
+        if not self.rating_count:
+            return None
+        return round(self.rating_total / self.rating_count, 1)
+    
+    @property
+    def photo_path(self):
+        """Returns the correct photo path for use with url_for('static', filename=...)"""
+        if not self.photo_url:
+            return None
+        # Handle old format with /static/ prefix
+        if self.photo_url.startswith('/static/'):
+            return self.photo_url.replace('/static/', '')
+        # Handle new format without prefix
+        return self.photo_url
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -71,6 +101,9 @@ class Booking(db.Model):
     deposit_amount = db.Column(db.Float)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     confirmed_at = db.Column(db.DateTime)
+    rating_value = db.Column(db.Integer)
+    rating_submitted_at = db.Column(db.DateTime)
+    rating_comment = db.Column(db.Text)
     
     payments = db.relationship('Payment', backref='booking', lazy=True)
 

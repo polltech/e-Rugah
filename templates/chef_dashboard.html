@@ -628,9 +628,23 @@
             <h2 class="mb-0"><i class="bi bi-speedometer2"></i> Chef Dashboard</h2>
             <p class="mb-0 mt-2" style="opacity: 0.9;">Manage your profile and bookings</p>
         </div>
-        {% if chef.photo_url %}
-        <img src="{{ url_for('static', filename=chef.photo_url) }}" alt="Chef Photo" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover; border: 3px solid rgba(255, 107, 107, 0.5);" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
-        {% endif %}
+        <div class="text-center">
+            {% if chef.photo_url %}
+            <img src="{{ chef.photo_url }}" alt="Chef Photo" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover; border: 3px solid rgba(255, 107, 107, 0.5);" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
+            {% else %}
+            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background: rgba(255, 107, 107, 0.3); border: 3px solid rgba(255, 107, 107, 0.5); font-size: 2rem;">
+                👨‍🍳
+            </div>
+            {% endif %}
+            <div class="mt-2">
+                <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#changePhotoModal">
+                    <i class="bi bi-camera"></i> Change Photo
+                </button>
+                <button class="btn btn-sm btn-outline-light ms-1" data-bs-toggle="modal" data-bs-target="#viewProfileModal">
+                    <i class="bi bi-eye"></i> View Profile
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -723,19 +737,273 @@
     </form>
 
     <div class="row">
-        <!-- Placeholder for uploaded images -->
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="image-card">
-                <img src="{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}" alt="Sample Image">
-                <div class="card-body">
-                    <p class="card-text small">Sample portfolio image</p>
-                    <button class="btn btn-danger btn-sm w-100">
-                        <i class="bi bi-trash"></i> Delete
-                    </button>
+        {% if images %}
+            {% for image in images %}
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="image-card">
+                    <img src="{{ url_for('static', filename='images/chefs/' + image) }}" alt="Portfolio Image" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+                    <div class="card-body">
+                        <p class="card-text small text-truncate">{{ image }}</p>
+                        <button class="btn btn-danger btn-sm w-100" onclick="deleteImage('{{ image }}')">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Add more placeholders or loop over images -->
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> No images uploaded yet. Upload your culinary creations to showcase your skills!
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
+
+<!-- Change Profile Photo Modal -->
+<div class="modal fade" id="changePhotoModal" tabindex="-1" aria-labelledby="changePhotoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(255, 107, 107, 0.3);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 107, 107, 0.3);">
+                <h5 class="modal-title" id="changePhotoModalLabel" style="color: white;">
+                    <i class="bi bi-camera"></i> Change Profile Photo
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" enctype="multipart/form-data" action="{{ url_for('chef_update_profile_photo') }}" id="profilePhotoForm">
+                    <div class="mb-3 text-center">
+                        <!-- Current Photo Preview -->
+                        <div class="mb-3">
+                            <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">Current Photo:</p>
+                            {% if chef.photo_url %}
+                            <img id="currentPhoto" src="{{ chef.photo_url }}" alt="Current Photo" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid rgba(255, 107, 107, 0.5);" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
+                            {% else %}
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px; background: rgba(255, 107, 107, 0.3); border: 3px solid rgba(255, 107, 107, 0.5); font-size: 2.5rem;">
+                                👨‍🍳
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- New Photo Preview -->
+                        <div id="newPhotoPreview" style="display: none;">
+                            <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">New Photo Preview:</p>
+                            <img id="previewImage" src="" alt="Preview" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid rgba(255, 107, 107, 0.5);">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="profile_photo" class="form-label" style="color: white;">
+                            <i class="bi bi-image"></i> Select New Profile Photo
+                        </label>
+                        <input type="file" class="form-control" id="profile_photo" name="profile_photo" accept="image/*" required onchange="previewProfilePhoto(event)">
+                        <div class="form-text" style="color: rgba(255, 255, 255, 0.7);">
+                            <i class="bi bi-info-circle"></i> Choose a clear, professional photo. Recommended size: 500x500px
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload"></i> Upload New Photo
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Preview profile photo before upload
+    function previewProfilePhoto(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById('newPhotoPreview').style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+<style>
+    /* Modal styling enhancements */
+    .modal-content {
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-body .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        color: white;
+    }
+    
+    .modal-body .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 107, 107, 0.6);
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(255, 107, 107, 0.25);
+    }
+    
+    .modal-body .form-control::file-selector-button {
+        background: rgba(255, 107, 107, 0.3);
+        border: none;
+        color: white;
+        padding: 0.375rem 0.75rem;
+        margin-right: 0.75rem;
+        border-radius: 0.25rem;
+    }
+    
+    .modal-body .form-control::file-selector-button:hover {
+        background: rgba(255, 107, 107, 0.5);
+    }
+</style>
+
+<!-- View Profile Modal -->
+<div class="modal fade" id="viewProfileModal" tabindex="-1" aria-labelledby="viewProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(255, 107, 107, 0.3);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 107, 107, 0.3);">
+                <h5 class="modal-title" id="viewProfileModalLabel" style="color: white;">
+                    <i class="bi bi-person-circle"></i> Chef Profile
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <!-- Chef Details -->
+                <div class="text-center mb-4">
+                    {% if chef.photo_url %}
+                    <img src="{{ chef.photo_url }}" alt="Chef Photo" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid rgba(255, 107, 107, 0.5);" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
+                    {% else %}
+                    <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 120px; height: 120px; background: rgba(255, 107, 107, 0.3); border: 4px solid rgba(255, 107, 107, 0.5); font-size: 3rem;">
+                        👨‍🍳
+                    </div>
+                    {% endif %}
+                    <h4 style="color: white; font-weight: 600;">{{ chef.name }}</h4>
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 0.5rem;">
+                        <i class="bi bi-envelope"></i> {{ chef.email }}
+                    </p>
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 0.5rem;">
+                        <i class="bi bi-telephone"></i> {{ chef.phone }}
+                    </p>
+                    <p style="color: rgba(255, 255, 255, 0.7);">
+                        <i class="bi bi-geo-alt"></i> {{ chef.location }}
+                    </p>
+                </div>
+
+                <hr style="border-color: rgba(255, 107, 107, 0.3);">
+
+                <!-- Chef Bio -->
+                <div class="mb-4">
+                    <h6 style="color: rgba(255, 107, 107, 0.9); font-weight: 600; margin-bottom: 1rem;">
+                        <i class="bi bi-card-text"></i> About Me
+                    </h6>
+                    <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">
+                        {{ chef.bio if chef.bio else 'No bio available yet.' }}
+                    </p>
+                </div>
+
+                <hr style="border-color: rgba(255, 107, 107, 0.3);">
+
+                <!-- Culinary Photos Gallery with Carousel -->
+                <div class="mb-3">
+                    <h6 style="color: rgba(255, 107, 107, 0.9); font-weight: 600; margin-bottom: 1rem;">
+                        <i class="bi bi-images"></i> Culinary Portfolio
+                    </h6>
+                    
+                    {% if images and images|length > 0 %}
+                    <div id="culinaryCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <!-- Carousel Indicators -->
+                        <div class="carousel-indicators">
+                            {% for image in images %}
+                            <button type="button" data-bs-target="#culinaryCarousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active"{% endif %} aria-current="{% if loop.first %}true{% endif %}" aria-label="Slide {{ loop.index }}"></button>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Carousel Items -->
+                        <div class="carousel-inner" style="border-radius: 10px; overflow: hidden;">
+                            {% for image in images %}
+                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                <img src="{{ url_for('static', filename='images/chefs/' + image) }}" class="d-block w-100" alt="Culinary Photo {{ loop.index }}" style="height: 400px; object-fit: cover;">
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Carousel Controls -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#culinaryCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#culinaryCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    <p class="text-center mt-2" style="color: rgba(255, 255, 255, 0.6); font-size: 0.85rem;">
+                        <i class="bi bi-arrow-left-right"></i> Swipe or use arrows to view all {{ images|length }} photos
+                    </p>
+                    {% else %}
+                    <div class="text-center py-4" style="background: rgba(255, 255, 255, 0.05); border-radius: 10px; border: 1px dashed rgba(255, 107, 107, 0.3);">
+                        <i class="bi bi-image" style="font-size: 3rem; color: rgba(255, 255, 255, 0.3);"></i>
+                        <p style="color: rgba(255, 255, 255, 0.6); margin-top: 1rem; margin-bottom: 0;">
+                            No culinary photos uploaded yet. Upload images to showcase your work!
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid rgba(255, 107, 107, 0.3);">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Carousel custom styling */
+    #culinaryCarousel .carousel-control-prev,
+    #culinaryCarousel .carousel-control-next {
+        width: 50px;
+        height: 50px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 107, 107, 0.7);
+        border-radius: 50%;
+        opacity: 0.8;
+    }
+    
+    #culinaryCarousel .carousel-control-prev:hover,
+    #culinaryCarousel .carousel-control-next:hover {
+        opacity: 1;
+        background: rgba(255, 107, 107, 0.9);
+    }
+    
+    #culinaryCarousel .carousel-control-prev {
+        left: 10px;
+    }
+    
+    #culinaryCarousel .carousel-control-next {
+        right: 10px;
+    }
+    
+    #culinaryCarousel .carousel-indicators button {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    #culinaryCarousel .carousel-indicators button.active {
+        background-color: rgba(255, 107, 107, 0.9);
+    }
+</style>
+
 {% endblock %}

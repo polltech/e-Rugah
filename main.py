@@ -3,6 +3,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
+from sqlalchemy import func
 from functools import wraps
 import os
 import json
@@ -62,10 +63,20 @@ def role_required(role):
 def index():
     # Show welcome page for non-logged-in users
     # Show full content (hero + all sections) for logged-in users
+    featured_chefs = Chef.query.filter(
+        Chef.is_verified.is_(True),
+        Chef.is_approved.is_(True)
+    ).order_by(
+        Chef.is_featured.desc(),
+        func.coalesce(Chef.featured_priority, 0).desc(),
+        func.coalesce(Chef.rating_count, 0).desc(),
+        func.coalesce(Chef.rating_total, 0).desc()
+    ).limit(12).all()
+
     if current_user.is_authenticated:
-        return render_template('index.html')
+        return render_template('index.html', featured_chefs=featured_chefs)
     else:
-        return render_template('welcome.html')
+        return render_template('welcome.html', featured_chefs=featured_chefs)
         
 @app.route('/reviews/<path:filename>')
 def reviews_files(filename):
@@ -205,7 +216,22 @@ def reset_password():
 @role_required('customer')
 def customer_dashboard():
     events = Event.query.filter_by(customer_id=current_user.id).all()
-    return render_template('customer_dashboard.html', events=events)
+    completed_bookings = Booking.query.join(Event).filter(
+        Event.customer_id == current_user.id,
+        Booking.status == 'confirmed',
+        Event.event_date <= datetime.utcnow()
+    ).all()
+
+    pending_reviews = [booking for booking in completed_bookings if booking.rating_value is None]
+    rated_bookings = [booking for booking in completed_bookings if booking.rating_value is not None]
+
+    return render_template(
+        'customer_dashboard.html',
+        events=events,
+        completed_bookings=completed_bookings,
+        pending_reviews=pending_reviews,
+        rated_bookings=rated_bookings
+    )
 
 @app.route('/customer/event/<int:event_id>/details')
 @role_required('customer')
@@ -215,14 +241,40 @@ def event_details(event_id):
         flash('Access denied', 'danger')
         return redirect(url_for('customer_dashboard'))
     
-    # Get menu items for the event
-    menu_item_ids = event.menu_items.split(',') if event.menu_items else []
-    menu_items = MenuItem.query.filter(MenuItem.id.in_(menu_item_ids)).all() if menu_item_ids else []
+    # Get dishes for the event
+    dish_ids = event.menu_items.split(',') if event.menu_items else []
+    dishes = []
+    total_guests = event.adult_guests + event.child_guests
+    
+    for dish_id in dish_ids:
+        dish = Dish.query.get(int(dish_id))
+        if dish:
+            # Calculate cost for this dish
+            dish_ingredients = DishIngredient.query.filter_by(dish_id=dish.id).all()
+            dish_cost = 0.0
+            ingredients_list = []
+            
+            for di in dish_ingredients:
+                ingredient = Ingredient.query.get(di.ingredient_id)
+                scaled_quantity = (di.quantity_for_base_servings / dish.base_servings) * total_guests
+                cost = scaled_quantity * ingredient.unit_price
+                dish_cost += cost
+                ingredients_list.append(ingredient.name)
+            
+            markup_amount = dish_cost * (dish.markup / 100)
+            selling_price = dish_cost + markup_amount
+            
+            dishes.append({
+                'name': dish.name,
+                'ingredients': ', '.join(ingredients_list) if ingredients_list else dish.description or 'No ingredients listed',
+                'total_price': selling_price,
+                'description': dish.description
+            })
     
     # Get booking if exists
     booking = Booking.query.filter_by(event_id=event.id).first()
     
-    return render_template('event_details.html', event=event, menu_items=menu_items, booking=booking)
+    return render_template('event_details.html', event=event, menu_items=dishes, booking=booking)
 
 @app.route('/customer/create-event', methods=['GET', 'POST'])
 @role_required('customer')
@@ -441,7 +493,7 @@ def chef_register():
                     photo_path = os.path.join('static', 'images', 'chefs', filename)
                     os.makedirs(os.path.dirname(photo_path), exist_ok=True)
                     photo.save(photo_path)
-                    photo_url = f"/static/images/chefs/{filename}"
+                    photo_url = f"images/chefs/{filename}"
 
             # Create user account immediately
             user = User(email=email, role='chef')
@@ -544,8 +596,16 @@ def chef_dashboard():
     if not chef.is_approved:
         return redirect(url_for('chef_pending'))
 
+    # Get chef's uploaded gallery images
+    images = []
+    chefs_dir = os.path.join('static', 'images', 'chefs')
+    if os.path.exists(chefs_dir):
+        for file in os.listdir(chefs_dir):
+            if file.startswith(f"chef_{chef.id}_") and file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                images.append(file)
+
     bookings = Booking.query.filter_by(chef_id=chef.id).all()
-    return render_template('chef_dashboard.html', chef=chef, bookings=bookings)
+    return render_template('chef_dashboard.html', chef=chef, bookings=bookings, images=images)
 
 @app.route('/chef/profile/<int:chef_id>')
 @login_required
@@ -581,13 +641,80 @@ def chef_upload_image():
 
     if file:
         from werkzeug.utils import secure_filename
-        filename = secure_filename(f"chef_{current_user.id}_{file.filename}")
+        # Get the chef profile to use chef.id instead of user.id
+        chef = Chef.query.filter_by(user_id=current_user.id).first()
+        if not chef:
+            flash('Chef profile not found', 'danger')
+            return redirect(url_for('chef_dashboard'))
+        
+        filename = secure_filename(f"chef_{chef.id}_{file.filename}")
         file_path = os.path.join('static', 'images', 'chefs', filename)
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         file.save(file_path)
         flash('Image uploaded successfully!', 'success')
 
     return redirect(url_for('chef_dashboard'))
+
+@app.route('/chef/update-profile-photo', methods=['POST'])
+@role_required('chef')
+def chef_update_profile_photo():
+    if 'profile_photo' not in request.files:
+        flash('No file selected', 'danger')
+        return redirect(url_for('chef_dashboard'))
+
+    file = request.files['profile_photo']
+    if file.filename == '':
+        flash('No file selected', 'danger')
+        return redirect(url_for('chef_dashboard'))
+
+    if file:
+        from werkzeug.utils import secure_filename
+        chef = Chef.query.filter_by(user_id=current_user.id).first()
+        if not chef:
+            flash('Chef profile not found', 'danger')
+            return redirect(url_for('chef_dashboard'))
+        
+        # Create a unique filename for the profile photo
+        filename = secure_filename(f"chef_{chef.user.email}_{file.filename}")
+        file_path = os.path.join('static', 'images', 'chefs', filename)
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        file.save(file_path)
+        
+        # Update the chef's photo_url in the database
+        chef.photo_url = f"/static/images/chefs/{filename}"
+        db.session.commit()
+        
+        flash('Profile photo updated successfully!', 'success')
+
+    return redirect(url_for('chef_dashboard'))
+
+@app.route('/api/chef/<int:chef_id>/profile')
+def get_chef_profile_api(chef_id):
+    """API endpoint to get chef profile data with images"""
+    chef = Chef.query.get_or_404(chef_id)
+    
+    # Only show approved chefs
+    if not chef.is_approved:
+        return jsonify({'error': 'Chef profile not available'}), 404
+    
+    # Get chef's uploaded images
+    images = []
+    chefs_dir = os.path.join('static', 'images', 'chefs')
+    if os.path.exists(chefs_dir):
+        for file in os.listdir(chefs_dir):
+            if file.startswith(f"chef_{chef.id}_") and file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                images.append(file)
+    
+    return jsonify({
+        'id': chef.id,
+        'name': chef.name,
+        'email': chef.user.email,
+        'phone': chef.phone,
+        'location': chef.location,
+        'bio': chef.about,
+        'photo_url': chef.photo_url,
+        'images': images
+    })
 
 @app.route('/admin/dashboard')
 @role_required('admin')
@@ -1557,20 +1684,134 @@ def approve_review(review_id):
     flash('Review approved successfully!', 'success')
     return redirect(url_for('admin_reviews'))
 
-@app.route('/admin/reviews/<int:review_id>/delete', methods=['POST'])
-@role_required('admin')
-def delete_review(review_id):
-    """Delete a review"""
+def _remove_review(review_id, success_message):
+    """Shared helper for removing reviews."""
     review = Review.query.get_or_404(review_id)
     db.session.delete(review)
     db.session.commit()
-    flash('Review deleted successfully!', 'success')
+    flash(success_message, 'success')
     return redirect(url_for('admin_reviews'))
+
+
+@app.route('/admin/reviews/<int:review_id>/reject', methods=['POST'])
+@role_required('admin')
+def reject_review(review_id):
+    """Reject a review and remove it from the system."""
+    return _remove_review(review_id, 'Review rejected and removed.')
+
+
+@app.route('/admin/reviews/<int:review_id>/delete', methods=['POST'])
+@role_required('admin')
+def delete_review(review_id):
+    """Delete an approved review."""
+    return _remove_review(review_id, 'Review deleted successfully!')
 
 @app.route('/test-reviews')
 def test_reviews():
     """Test page for reviews API"""
     return render_template('test_reviews.html')
+
+# Admin Featured Chefs Routes
+@app.route('/admin/featured-chefs')
+@role_required('admin')
+def admin_featured_chefs():
+    """Admin page to manage featured chefs"""
+    all_chefs = Chef.query.filter(
+        Chef.is_verified.is_(True),
+        Chef.is_approved.is_(True)
+    ).order_by(
+        Chef.is_featured.desc(),
+        func.coalesce(Chef.featured_priority, 0).desc(),
+        Chef.name
+    ).all()
+    return render_template('admin_featured_chefs.html', chefs=all_chefs)
+
+@app.route('/admin/chefs/<int:chef_id>/toggle-featured', methods=['POST'])
+@role_required('admin')
+def toggle_chef_featured(chef_id):
+    """Toggle chef featured status"""
+    chef = Chef.query.get_or_404(chef_id)
+    chef.is_featured = not chef.is_featured
+    if not chef.is_featured:
+        chef.featured_priority = 0
+    db.session.commit()
+    
+    status = "featured" if chef.is_featured else "unfeatured"
+    flash(f'Chef {chef.name} has been {status}!', 'success')
+    return redirect(url_for('admin_featured_chefs'))
+
+@app.route('/admin/chefs/<int:chef_id>/set-priority', methods=['POST'])
+@role_required('admin')
+def set_chef_priority(chef_id):
+    """Set chef featured priority"""
+    chef = Chef.query.get_or_404(chef_id)
+    priority = int(request.form.get('priority', 0))
+    chef.featured_priority = priority
+    if priority > 0 and not chef.is_featured:
+        chef.is_featured = True
+    db.session.commit()
+    flash(f'Priority for {chef.name} set to {priority}!', 'success')
+    return redirect(url_for('admin_featured_chefs'))
+
+# Chef Rating Routes
+@app.route('/booking/<int:booking_id>/rate', methods=['POST'])
+@role_required('customer')
+def rate_chef(booking_id):
+    """Submit a rating for a completed booking"""
+    try:
+        booking = Booking.query.get_or_404(booking_id)
+        
+        # Verify booking belongs to current user
+        if booking.event.customer_id != current_user.id:
+            return jsonify({'success': False, 'message': 'Access denied'}), 403
+        
+        # Verify booking is confirmed
+        if booking.status != 'confirmed':
+            return jsonify({'success': False, 'message': 'Can only rate confirmed bookings'}), 400
+        
+        # Verify event has passed
+        if booking.event.event_date > datetime.utcnow():
+            return jsonify({'success': False, 'message': 'Can only rate after event completion'}), 400
+        
+        # Verify not already rated
+        if booking.rating_value is not None:
+            return jsonify({'success': False, 'message': 'You have already rated this chef'}), 400
+        
+        data = request.get_json()
+        rating_value = int(data.get('rating', 0))
+        rating_comment = data.get('comment', '').strip()
+        
+        # Validate rating
+        if rating_value < 1 or rating_value > 5:
+            return jsonify({'success': False, 'message': 'Rating must be between 1 and 5'}), 400
+        
+        # Update booking with rating
+        booking.rating_value = rating_value
+        booking.rating_comment = rating_comment if rating_comment else None
+        booking.rating_submitted_at = datetime.utcnow()
+        
+        # Update chef's rating aggregates
+        chef = booking.chef
+        if chef.rating_total is None:
+            chef.rating_total = 0
+        if chef.rating_count is None:
+            chef.rating_count = 0
+            
+        chef.rating_total += rating_value
+        chef.rating_count += 1
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Thank you for rating your chef!',
+            'new_average': chef.average_rating
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"[ERROR] Failed to submit rating: {e}")
+        return jsonify({'success': False, 'message': 'Failed to submit rating. Please try again.'}), 500
 
 def init_db():
     with app.app_context():

@@ -1,0 +1,397 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Featured Chefs - e-Rugah{% endblock %}
+
+{% block content %}
+<style>
+    body { background: linear-gradient(135deg, #ffe4b5, #ffedd5); color: white; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
+    .bi { color: #ff6b35; }
+    
+    .page-header {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), rgba(255, 140, 66, 0.3));
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255, 107, 53, 0.4);
+        box-shadow: 0 10px 40px rgba(255, 107, 53, 0.3);
+    }
+
+    .chef-card {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(255, 140, 66, 0.15));
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 107, 53, 0.3);
+        border-radius: 20px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 32px rgba(255, 107, 53, 0.2);
+    }
+
+    .chef-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(255, 107, 53, 0.4);
+    }
+
+    .chef-card.featured {
+        border: 2px solid #ff6b35;
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.25), rgba(255, 140, 66, 0.25));
+    }
+
+    .chef-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .chef-info-left {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex: 1;
+    }
+
+    .chef-avatar-admin {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        overflow: hidden;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .chef-avatar-admin img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .chef-details h4 {
+        color: #ff6b35;
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .chef-meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+
+    .chef-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .rating-display {
+        color: #ff6b35;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    .featured-badge {
+        background: linear-gradient(45deg, #ff6b35, #ff8c42);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+    }
+
+    .chef-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #ff6b35, #ff8c42);
+        color: white;
+        box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 107, 53, 0.5);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 107, 53, 0.4);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 107, 53, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .priority-input {
+        width: 80px;
+        padding: 0.5rem;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 107, 53, 0.4);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .priority-input:focus {
+        outline: none;
+        border-color: #ff6b35;
+        box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+    }
+
+    .section-divider {
+        margin: 3rem 0 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid rgba(255, 107, 53, 0.3);
+    }
+
+    .section-title {
+        color: #ff6b35;
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: rgba(255, 107, 53, 0.1);
+        border-radius: 20px;
+        border: 2px dashed rgba(255, 107, 53, 0.3);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2 class="mb-0" style="color: #ff6b35; font-weight: 900;">
+                    <i class="bi bi-star-fill"></i> Manage Featured Chefs
+                </h2>
+                <p class="mb-0" style="font-size: 1.1rem; margin-top: 0.5rem;">
+                    Control which chefs appear in the spotlight carousel
+                </p>
+            </div>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Featured Chefs Section -->
+    {% set featured_chefs = chefs|selectattr('is_featured')|list %}
+    {% if featured_chefs %}
+    <div class="section-title">
+        <i class="bi bi-star-fill"></i>
+        Featured Chefs ({{ featured_chefs|length }})
+    </div>
+
+    {% for chef in featured_chefs %}
+    <div class="chef-card featured">
+        <div class="chef-info">
+            <div class="chef-info-left">
+                <div class="chef-avatar-admin">
+                    {% if chef.photo_url %}
+                        <img src="{{ chef.photo_url }}" alt="{{ chef.name }}">
+                    {% else %}
+                        <span>👨‍🍳</span>
+                    {% endif %}
+                </div>
+                <div class="chef-details">
+                    <h4>
+                        {{ chef.name }}
+                        <span class="featured-badge">
+                            <i class="bi bi-star-fill"></i> FEATURED
+                        </span>
+                    </h4>
+                    <div class="chef-meta">
+                        <span>
+                            <i class="bi bi-geo-alt-fill"></i>
+                            {{ chef.location }}
+                        </span>
+                        <span>
+                            <i class="bi bi-envelope-fill"></i>
+                            {{ chef.user.email }}
+                        </span>
+                    {% if chef.has_ratings %}
+                    <span>
+                        <i class="bi bi-star-fill"></i>
+                        <span class="rating-display">{{ "%.1f"|format(chef.average_rating) }}</span>
+                        ({{ chef.rating_count }} ratings)
+                    </span>
+                    {% else %}
+                    <span>
+                        <i class="bi bi-star"></i>
+                        No ratings yet
+                    </span>
+                    {% endif %}
+                    <span>
+                        <i class="bi bi-sort-numeric-down"></i>
+                        Priority: <strong>{{ chef.featured_priority or 0 }}</strong>
+                    </span>
+                </div>
+                </div>
+            </div>
+            <div class="chef-actions">
+                <form method="POST" action="{{ url_for('set_chef_priority', chef_id=chef.id) }}" style="display: flex; gap: 0.5rem; align-items: center;">
+                    <input type="number" name="priority" class="priority-input" 
+                           value="{{ chef.featured_priority or 0 }}" min="0" max="100" required>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Set Priority
+                    </button>
+                </form>
+                <form method="POST" action="{{ url_for('toggle_chef_featured', chef_id=chef.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Remove from Featured
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty-state">
+        <i class="bi bi-star"></i>
+        <h3 style="color: #ff6b35;">No Featured Chefs Yet</h3>
+        <p>Select chefs from the list below to feature them on the homepage</p>
+    </div>
+    {% endif %}
+
+    <!-- Available Chefs Section -->
+    {% set available_chefs = chefs|rejectattr('is_featured')|list %}
+    {% if available_chefs %}
+    <div class="section-divider">
+        <div class="section-title">
+            <i class="bi bi-people-fill"></i>
+            Available Chefs ({{ available_chefs|length }})
+        </div>
+    </div>
+
+    {% for chef in available_chefs %}
+    <div class="chef-card">
+        <div class="chef-info">
+            <div class="chef-info-left">
+                <div class="chef-avatar-admin">
+                    {% if chef.photo_url %}
+                        <img src="{{ chef.photo_url }}" alt="{{ chef.name }}">
+                    {% else %}
+                        <span>👨‍🍳</span>
+                    {% endif %}
+                </div>
+                <div class="chef-details">
+                    <h4>{{ chef.name }}</h4>
+                    <div class="chef-meta">
+                        <span>
+                            <i class="bi bi-geo-alt-fill"></i>
+                            {{ chef.location }}
+                        </span>
+                        <span>
+                            <i class="bi bi-envelope-fill"></i>
+                            {{ chef.user.email }}
+                        </span>
+                    {% if chef.has_ratings %}
+                    <span>
+                        <i class="bi bi-star-fill"></i>
+                        <span class="rating-display">{{ "%.1f"|format(chef.average_rating) }}</span>
+                        ({{ chef.rating_count }} ratings)
+                    </span>
+                    {% else %}
+                    <span>
+                        <i class="bi bi-star"></i>
+                        No ratings yet
+                    </span>
+                    {% endif %}
+                </div>
+                </div>
+            </div>
+            <div class="chef-actions">
+                <form method="POST" action="{{ url_for('toggle_chef_featured', chef_id=chef.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-star-fill"></i> Add to Featured
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+
+<script>
+    // Add smooth animations
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.chef-card');
+        cards.forEach((card, index) => {
+            card.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
+        });
+    });
+
+    // Confirm before removing featured status
+    document.querySelectorAll('form[action*="toggle-featured"]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const button = this.querySelector('button');
+            if (button.textContent.includes('Remove')) {
+                if (!confirm('Remove this chef from featured list?')) {
+                    e.preventDefault();
+                }
+            }
+        });
+    });
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</script>
+{% endblock %}

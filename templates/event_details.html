@@ -38,7 +38,7 @@
             <div class="menu-item-card">
                 <h6>{{ item.name }}</h6>
                 <p class="text-muted mb-1">{{ item.ingredients }}</p>
-                <p class="mb-0"><strong>KES {{ "{:.0f}".format(item.price_per_person) }} per person</strong></p>
+                <p class="mb-0"><strong>KES {{ "{:,.0f}".format(item.total_price) }}</strong> <span class="text-muted">(for {{ event.adult_guests + event.child_guests }} guests)</span></p>
             </div>
         </div>
         {% endfor %}

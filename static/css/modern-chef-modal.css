@@ -1,0 +1,315 @@
+/* Modern Chef Profile Modal - Orange Theme */
+
+/* Modern Modal Animations */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes ringPulse {
+    0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7),
+                    0 0 20px rgba(255, 107, 53, 0.3);
+    }
+    50% { 
+        box-shadow: 0 0 0 15px rgba(255, 107, 53, 0),
+                    0 0 30px rgba(255, 107, 53, 0.5);
+    }
+}
+
+@keyframes cameraShake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modern Modal Content */
+#chefProfileModal .modal-content {
+    background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%) !important;
+    border: none !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 60px rgba(255, 107, 53, 0.3) !important;
+    overflow: hidden;
+    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Modern Modal Header */
+#chefProfileModal .modal-header {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%) !important;
+    border: none !important;
+    padding: 1rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+#chefProfileModal .modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 3s infinite;
+}
+
+#chefProfileModal .modal-header .modal-title {
+    color: white !important;
+    font-weight: 700;
+    font-size: 1.2rem;
+    position: relative;
+    z-index: 1;
+}
+
+#chefProfileModal .modal-header .btn-close {
+    background: transparent !important;
+    border: 2px solid white !important;
+    border-radius: 50% !important;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white !important;
+    opacity: 1 !important;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    filter: brightness(0) invert(1);
+}
+
+#chefProfileModal .modal-header .btn-close:hover {
+    background: white !important;
+    transform: rotate(90deg);
+    filter: brightness(1) invert(0);
+}
+
+/* Modern Modal Body */
+#chefProfileModal .modal-body {
+    padding: 1.25rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    background: linear-gradient(to bottom, #fff8f3, #ffffff) !important;
+}
+
+/* Custom Scrollbar */
+#chefProfileModal .modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+#chefProfileModal .modal-body::-webkit-scrollbar-track {
+    background: rgba(255, 107, 53, 0.1);
+    border-radius: 10px;
+}
+
+#chefProfileModal .modal-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #ff6b35, #ff8c42);
+    border-radius: 10px;
+}
+
+/* Modal Avatar */
+#chefProfileModal #modalChefPhoto {
+    width: 100px !important;
+    height: 100px !important;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid white !important;
+    animation: ringPulse 2s ease-in-out infinite, float 3s ease-in-out infinite;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+}
+
+#chefProfileModal #modalChefName {
+    font-weight: 700 !important;
+    font-size: 1.5rem !important;
+    background: linear-gradient(135deg, #ff6b35, #ff8c42);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem !important;
+}
+
+/* Contact Details */
+#chefProfileModal .text-center.mb-4 > p {
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 140, 66, 0.1));
+    padding: 0.5rem 1.2rem;
+    border-radius: 25px;
+    color: #4a5568 !important;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.4rem auto !important;
+}
+
+#chefProfileModal .text-center.mb-4 > p i {
+    color: #ff6b35;
+    font-size: 0.95rem;
+}
+
+#chefProfileModal .text-center.mb-4 > p:hover {
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(255, 140, 66, 0.2));
+    transform: translateX(5px);
+}
+
+/* Remove old HR styles */
+#chefProfileModal hr {
+    display: none;
+}
+
+/* Modal Sections */
+#chefProfileModal .mb-4,
+#chefProfileModal .mb-3 {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    animation: fadeInUp 0.5s ease-out;
+}
+
+#chefProfileModal .mb-4:nth-of-type(2) {
+    animation-delay: 0.1s;
+}
+
+#chefProfileModal .mb-3:nth-of-type(3) {
+    animation-delay: 0.2s;
+}
+
+#chefProfileModal .modal-body h6 {
+    color: #ff6b35 !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    margin-bottom: 0.75rem !important;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(255, 107, 53, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+#chefProfileModal .modal-body p {
+    color: #4a5568 !important;
+    line-height: 1.6;
+    font-size: 0.9rem;
+}
+
+/* Modern Carousel */
+#chefProfileModal #chefCarousel .carousel-inner {
+    border-radius: 15px !important;
+    overflow: hidden !important;
+    box-shadow: 0 5px 20px rgba(255, 107, 53, 0.2);
+}
+
+#chefProfileModal #chefCarousel .carousel-control-prev,
+#chefProfileModal #chefCarousel .carousel-control-next {
+    width: 40px !important;
+    height: 40px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background: linear-gradient(135deg, #ff6b35, #ff8c42) !important;
+    border-radius: 50% !important;
+    opacity: 0.9 !important;
+    border: 2px solid white;
+    transition: all 0.3s ease;
+}
+
+#chefProfileModal #chefCarousel .carousel-control-prev {
+    left: 10px !important;
+}
+
+#chefProfileModal #chefCarousel .carousel-control-next {
+    right: 10px !important;
+}
+
+#chefProfileModal #chefCarousel .carousel-control-prev:hover,
+#chefProfileModal #chefCarousel .carousel-control-next:hover {
+    opacity: 1 !important;
+    transform: translateY(-50%) scale(1.1) !important;
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.5);
+}
+
+#chefProfileModal #chefCarousel .carousel-indicators button {
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+    background-color: rgba(255, 107, 53, 0.3) !important;
+    border: 2px solid white !important;
+    margin: 0 5px !important;
+    transition: all 0.3s ease;
+}
+
+#chefProfileModal #chefCarousel .carousel-indicators button.active {
+    background: linear-gradient(135deg, #ff6b35, #ff8c42) !important;
+    transform: scale(1.2);
+}
+
+#chefProfileModal .text-center.mt-2 {
+    text-align: center;
+    margin-top: 0.75rem !important;
+    color: rgba(74, 85, 104, 0.6) !important;
+    font-size: 0.8rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+#chefProfileModal .text-center.mt-2 i {
+    color: #ff6b35 !important;
+}
+
+/* No Images State */
+#chefProfileModal #noImagesMessage {
+    text-align: center;
+    padding: 2rem 1.5rem !important;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.05), rgba(255, 140, 66, 0.05)) !important;
+    border-radius: 12px !important;
+    border: 2px dashed rgba(255, 107, 53, 0.3) !important;
+}
+
+#chefProfileModal #noImagesMessage i {
+    font-size: 3rem !important;
+    color: rgba(255, 107, 53, 0.4) !important;
+    animation: cameraShake 2s ease-in-out infinite;
+}
+
+#chefProfileModal #noImagesMessage p {
+    color: rgba(74, 85, 104, 0.6) !important;
+    margin-top: 0.75rem !important;
+    margin-bottom: 0 !important;
+    font-size: 0.9rem !important;
+}
+
+/* Remove modal footer if exists */
+#chefProfileModal .modal-footer {
+    display: none;
+}
