@@ -1808,7 +1808,8 @@
                 <div class="chef-spotlight-card">
                     <div class="chef-avatar">
                         {% if chef.photo_url %}
-                            <img src="{{ chef.photo_url }}" alt="{{ chef.name }}">
+                            {% set chef_photo = chef.photo_url if chef.photo_url.startswith('/') else '/' + chef.photo_url %}
+                            <img src="{{ chef_photo }}" alt="{{ chef.name }}" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
                         {% else %}
                             <span class="chef-avatar-placeholder">👨‍🍳</span>
                         {% endif %}
@@ -2456,7 +2457,12 @@
 
     function showChefProfileModal(chef) {
         // Populate modal with chef data
-        document.getElementById('modalChefPhoto').src = chef.photo_url || "{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}";
+        let photoUrl = chef.photo_url || "{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}";
+        // Ensure photo URL starts with /
+        if (photoUrl && !photoUrl.startsWith('/') && !photoUrl.startsWith('http')) {
+            photoUrl = '/' + photoUrl;
+        }
+        document.getElementById('modalChefPhoto').src = photoUrl;
         document.getElementById('modalChefName').textContent = chef.name;
         document.getElementById('modalChefEmail').textContent = chef.email;
         document.getElementById('modalChefPhone').textContent = chef.phone;

@@ -78,6 +78,9 @@
 {% endif %}
 
 <div class="text-center">
+    <a href="{{ url_for('edit_event', event_id=event.id) }}" class="btn btn-warning me-2">
+        <i class="bi bi-pencil-square"></i> Edit Event
+    </a>
     <a href="{{ url_for('customer_dashboard') }}" class="btn btn-secondary">
         <i class="bi bi-arrow-left"></i> Back to Dashboard
     </a>

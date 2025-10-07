@@ -5,66 +5,377 @@
 {% block content %}
 <style>
     body {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa552 100%);
         min-height: 100vh;
         color: white;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     .page-header {
-        background: linear-gradient(135deg, rgba(255, 107, 107, 0.8) 0%, rgba(249, 115, 22, 0.6) 100%);
-        padding: 1.5rem;
-        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 2px solid rgba(255, 255, 255, 1);
+        padding: 2rem;
+        border-radius: 24px;
         margin-bottom: 2rem;
-        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
-        animation: fadeInUp 1s ease-out;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        animation: fadeInUp 0.6s ease-out;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
     }
 
     .dashboard-card:nth-child(1) { animation-delay: 0.1s; }
     .dashboard-card:nth-child(2) { animation-delay: 0.3s; }
     .dashboard-card:nth-child(3) { animation-delay: 0.5s; }
 
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .header-actions .btn, .header-actions button {
+        cursor: pointer !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.45rem 0.9rem;
+        border-radius: 999px;
+        border: 2px solid #ff6b35;
+        background: #ff6b35;
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .header-actions .btn:hover, .header-actions button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(255, 107, 53, 0.5);
+        background: #ff8c42;
+        border-color: #ff8c42;
+    }
+
+    .header-actions .btn:focus-visible, .header-actions button:focus-visible {
+        outline: 3px solid #ff6b35;
+        outline-offset: 2px;
+    }
+
+    .header-actions .d-flex {
+        display: inline-flex;
+        gap: 0.75rem;
+    }
+
+    .chef-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #ff6b35;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        background: white;
+    }
+
+    .chef-avatar-placeholder {
+        width: 72px;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 2rem;
+        border: 3px solid #ff6b35;
+        background: white;
+        color: #ff6b35;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
     .image-card {
-        background: rgba(255, 107, 107, 0.1);
-        border: 1px solid rgba(255, 107, 107, 0.2);
-        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid white;
+        border-radius: 16px;
         overflow: hidden;
-        transition: all 0.3s ease;
-        margin-bottom: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        height: 100%;
     }
 
     .image-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        transform: translateY(-8px);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+        border-color: white;
     }
 
     .image-card img {
-        height: 120px;
+        height: 200px;
         object-fit: cover;
+        width: 100%;
+        transition: transform 0.3s ease;
+    }
+
+    .image-card:hover img {
+        transform: scale(1.05);
     }
 
     .image-card .card-body {
-        padding: 0.75rem;
+        padding: 1rem;
+        background: white;
+        color: #333;
+    }
+
+    .btn-primary {
+        background: #ff6b35;
+        border: 2px solid #ff6b35;
+        border-radius: 12px;
+        padding: 0.65rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        background: #ff8c42;
+        border-color: #ff8c42;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        border: none;
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid white;
+        border-radius: 12px;
+        color: #333;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        background: white;
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        color: #333;
+    }
+
+    .input-group {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .profile-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .profile-info-item {
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid white;
+        border-radius: 12px;
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+    }
+
+    .profile-info-item:hover {
+        background: white;
+        border-color: white;
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-info-item i {
+        color: #ff6b35;
+        font-size: 1.25rem;
+        margin-right: 0.75rem;
+    }
+
+    .profile-info-item strong {
+        color: #666;
+        font-size: 0.85rem;
+        display: block;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .profile-info-item span {
+        color: #333;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        background: white;
+    }
+
+    .stat-card i {
+        font-size: 2.5rem;
+        color: #ff6b35;
+        margin-bottom: 0.75rem;
+    }
+
+    .stat-card .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ff6b35;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table-responsive {
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.95);
+    }
+
+    hr {
+        border-color: rgba(255, 107, 53, 0.3);
+        margin: 1.5rem 0;
+    }
+
+    .text-muted {
+        color: #666 !important;
+    }
+
+    /* Smooth scroll */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Selection color */
+    ::selection {
+        background: #ff6b35;
+        color: white;
+    }
+
+    /* Modal Styling */
+    .modal-content {
+        background: white !important;
+        border: 2px solid #ff6b35 !important;
+        border-radius: 20px !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .modal-header {
+        border-bottom: 2px solid rgba(255, 107, 53, 0.2) !important;
+        padding: 1.5rem !important;
+    }
+
+    .modal-body {
+        padding: 2rem !important;
+    }
+
+    .modal-footer {
+        border-top: 2px solid rgba(255, 107, 53, 0.2) !important;
+        padding: 1.5rem !important;
+    }
+
+    .modal-title {
+        color: #ff6b35 !important;
+        font-weight: 600 !important;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-secondary {
+        background: #f0f0f0;
+        border: 2px solid #ddd;
+        color: #333;
+        border-radius: 10px;
+        padding: 0.5rem 1.25rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background: #e0e0e0;
+        border-color: #ccc;
+        transform: translateY(-2px);
+    }
+
+    /* Loading Animation */
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .loading {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
 
     .page-header h2 {
-        color: white;
+        color: #ff6b35;
         font-weight: 700;
+        font-size: 2rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
 
     .page-header p {
-        color: rgba(255, 255, 255, 0.8);
+        color: #666;
+        margin: 0.5rem 0 0 0;
+        font-size: 0.95rem;
     }
 
     .dashboard-card {
-        background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(249, 115, 22, 0.1) 100%);
-        border: 1px solid rgba(255, 107, 107, 0.3);
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        color: white;
-        transition: all 0.3s ease;
-        animation: fadeInUp 1s ease-out;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 2px solid white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        color: #333;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: fadeInUp 0.6s ease-out;
         position: relative;
         overflow: hidden;
     }
@@ -73,26 +384,30 @@
         content: '';
         position: absolute;
         top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, rgba(255, 107, 107, 0.6), rgba(249, 115, 22, 0.6));
-        transition: left 0.5s ease;
-        z-index: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ff6b35, #ff8c42, #ffa552);
+        background-size: 200% 100%;
+        animation: shimmer 3s linear infinite;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
 
     .dashboard-card:hover::before {
-        left: 0;
+        opacity: 1;
     }
 
-    .dashboard-card > * {
-        position: relative;
-        z-index: 1;
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
     }
 
     .dashboard-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(255, 107, 107, 0.3);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        border-color: white;
+        background: white;
     }
 
     @keyframes fadeInUp {
@@ -107,39 +422,97 @@
     }
 
     .dashboard-card h4, .dashboard-card h5 {
-        color: white;
-        border-bottom: 2px solid rgba(255, 107, 107, 0.5);
-        padding-bottom: 0.5rem;
+        color: #ff6b35;
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .dashboard-card h4 i, .dashboard-card h5 i {
+        color: #ff6b35;
+        font-size: 1.3rem;
     }
 
     .badge {
-        background: linear-gradient(135deg, #ff6b35, #f97316) !important;
+        padding: 0.5rem 1rem;
+        border-radius: 12px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .badge.bg-success {
+        background: #10b981 !important;
+        color: white !important;
+    }
+
+    .badge.bg-warning {
+        background: #ff6b35 !important;
+        color: white !important;
+    }
+
+    .badge.bg-info {
+        background: #3b82f6 !important;
         color: white !important;
     }
 
     .table {
-        color: white;
+        color: #333;
+        border-radius: 12px;
+        overflow: hidden;
     }
 
     .table th {
-        background: rgba(255, 107, 107, 0.3);
-        border-color: rgba(255, 107, 107, 0.5);
+        background: #ff6b35;
+        border: none;
         color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        padding: 1rem;
     }
 
     .table td {
-        border-color: rgba(255, 107, 107, 0.2);
-        color: white;
+        border: none;
+        border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+        color: #333;
+        padding: 1rem;
+        vertical-align: middle;
+    }
+
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(255, 107, 53, 0.1);
+        transform: scale(1.01);
     }
 
     .table-striped tbody tr:nth-of-type(odd) {
-        background: rgba(255, 107, 107, 0.1);
+        background: rgba(255, 107, 53, 0.05);
     }
 
     .alert {
-        background: rgba(255, 107, 107, 0.2);
-        border: 1px solid rgba(255, 107, 107, 0.3);
-        color: white;
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid #ff6b35;
+        border-radius: 12px;
+        color: #333;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+        color: #ff6b35;
     }
 
     /* Ultra-Comprehensive Responsive Design for Chef Dashboard */
@@ -589,14 +962,14 @@
     @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
         .dashboard-card {
             box-shadow:
-                0 15px 35px rgba(255, 107, 107, 0.25),
-                0 5px 15px rgba(0, 0, 0, 0.15),
-                0 0 25px rgba(255, 107, 107, 0.15) !important;
+                0 15px 35px rgba(0, 0, 0, 0.15),
+                0 5px 15px rgba(0, 0, 0, 0.1),
+                0 0 25px rgba(0, 0, 0, 0.05) !important;
         }
 
         .image-card {
             box-shadow:
-                0 8px 25px rgba(255, 107, 107, 0.2),
+                0 8px 25px rgba(0, 0, 0, 0.15),
                 0 2px 8px rgba(0, 0, 0, 0.1) !important;
         }
     }
@@ -623,60 +996,77 @@
 </style>
 
 <div class="page-header">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h2 class="mb-0"><i class="bi bi-speedometer2"></i> Chef Dashboard</h2>
-            <p class="mb-0 mt-2" style="opacity: 0.9;">Manage your profile and bookings</p>
-        </div>
-        <div class="text-center">
-            {% if chef.photo_url %}
-            <img src="{{ chef.photo_url }}" alt="Chef Photo" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover; border: 3px solid rgba(255, 107, 107, 0.5);" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
-            {% else %}
-            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background: rgba(255, 107, 107, 0.3); border: 3px solid rgba(255, 107, 107, 0.5); font-size: 2rem;">
-                👨‍🍳
-            </div>
-            {% endif %}
-            <div class="mt-2">
-                <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#changePhotoModal">
-                    <i class="bi bi-camera"></i> Change Photo
-                </button>
-                <button class="btn btn-sm btn-outline-light ms-1" data-bs-toggle="modal" data-bs-target="#viewProfileModal">
-                    <i class="bi bi-eye"></i> View Profile
-                </button>
-            </div>
-        </div>
+    <div>
+        <h2 class="mb-0"><i class="bi bi-speedometer2"></i> Chef Dashboard</h2>
+        <p class="mb-0 mt-2" style="opacity: 0.85;">Manage your profile and bookings</p>
+    </div>
+    <div class="header-actions">
+        {% if chef.photo_url %}
+        {% set chef_photo = chef.photo_url if chef.photo_url.startswith('/') else '/' + chef.photo_url %}
+        <img src="{{ chef_photo }}" alt="Chef Photo" class="chef-avatar" loading="lazy" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
+        <span class="visually-hidden">Current chef profile photo</span>
+        {% else %}
+        <div class="chef-avatar-placeholder" aria-label="Chef avatar placeholder">👨‍🍳</div>
+        {% endif %}
+        <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#changePhotoModal">
+            <i class="bi bi-camera"></i> Change Photo
+        </button>
     </div>
 </div>
 
-<div class="row mb-4">
-    <div class="col-md-12">
-        <div class="dashboard-card">
-            <h5 class="mb-3"><i class="bi bi-person-badge"></i> Profile Status</h5>
-            <div class="mb-3">
-                {% if chef.is_verified %}
-                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Email Verified</span>
-                {% else %}
-                    <span class="badge bg-warning"><i class="bi bi-exclamation-circle"></i> Email Not Verified</span>
-                {% endif %}
+<!-- Stats Overview -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <i class="bi bi-calendar-check"></i>
+        <div class="stat-value">{{ bookings|length if bookings else 0 }}</div>
+        <div class="stat-label">Total Bookings</div>
+    </div>
+    <div class="stat-card">
+        <i class="bi bi-images"></i>
+        <div class="stat-value">{{ images|length if images else 0 }}</div>
+        <div class="stat-label">Portfolio Images</div>
+    </div>
+    <div class="stat-card">
+        <i class="bi bi-star-fill"></i>
+        <div class="stat-value">{{ chef.average_rating|round(1) if chef.has_ratings else 'N/A' }}</div>
+        <div class="stat-label">Average Rating</div>
+    </div>
+</div>
 
-                {% if chef.is_approved %}
-                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Approved</span>
-                {% else %}
-                    <span class="badge bg-warning"><i class="bi bi-clock"></i> Pending Admin Approval</span>
-                {% endif %}
-            </div>
-            
-            <hr>
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong><i class="bi bi-person"></i> Name:</strong> {{ chef.name }}</p>
-                    <p><strong><i class="bi bi-phone"></i> Phone:</strong> {{ chef.phone }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong><i class="bi bi-geo-alt"></i> Location:</strong> {{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}</p>
-                    <p><strong><i class="bi bi-egg-fried"></i> Meals Offered:</strong> {{ chef.meals_offered.replace(',', ', ') }}</p>
-                </div>
-            </div>
+<!-- Profile Information -->
+<div class="dashboard-card">
+    <h5><i class="bi bi-person-badge"></i> Profile Information</h5>
+    
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+        {% if chef.is_verified %}
+            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Email Verified</span>
+        {% else %}
+            <span class="badge bg-warning"><i class="bi bi-exclamation-circle"></i> Email Not Verified</span>
+        {% endif %}
+
+        {% if chef.is_approved %}
+            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Approved</span>
+        {% else %}
+            <span class="badge bg-warning"><i class="bi bi-clock"></i> Pending Approval</span>
+        {% endif %}
+    </div>
+    
+    <div class="profile-info-grid">
+        <div class="profile-info-item">
+            <strong><i class="bi bi-person"></i> Full Name</strong>
+            <span>{{ chef.name }}</span>
+        </div>
+        <div class="profile-info-item">
+            <strong><i class="bi bi-phone"></i> Phone Number</strong>
+            <span>{{ chef.phone }}</span>
+        </div>
+        <div class="profile-info-item">
+            <strong><i class="bi bi-geo-alt"></i> Location</strong>
+            <span>{{ chef.county }}, {{ chef.sub_county }}, {{ chef.town }}</span>
+        </div>
+        <div class="profile-info-item">
+            <strong><i class="bi bi-egg-fried"></i> Meals Offered</strong>
+            <span>{{ chef.meals_offered.replace(',', ', ') }}</span>
         </div>
     </div>
 </div>
@@ -739,11 +1129,11 @@
     <div class="row">
         {% if images %}
             {% for image in images %}
-            <div class="col-md-3 col-sm-6 mb-3">
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
                 <div class="image-card">
-                    <img src="{{ url_for('static', filename='images/chefs/' + image) }}" alt="Portfolio Image" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+                    <img src="{{ url_for('static', filename='images/chefs/' + image) }}" alt="Portfolio Image">
                     <div class="card-body">
-                        <p class="card-text small text-truncate">{{ image }}</p>
+                        <p class="card-text small text-truncate mb-2" style="color: #666;">{{ image }}</p>
                         <button class="btn btn-danger btn-sm w-100" onclick="deleteImage('{{ image }}')">
                             <i class="bi bi-trash"></i> Delete
                         </button>
@@ -753,8 +1143,10 @@
             {% endfor %}
         {% else %}
             <div class="col-12">
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i> No images uploaded yet. Upload your culinary creations to showcase your skills!
+                <div style="text-align: center; padding: 4rem 2rem; background: rgba(255, 255, 255, 0.9); border: 2px dashed #ff6b35; border-radius: 16px;">
+                    <i class="bi bi-images" style="font-size: 4rem; color: #ff6b35; margin-bottom: 1rem;"></i>
+                    <h5 style="color: #ff6b35; margin-bottom: 0.5rem;">No Images Yet</h5>
+                    <p style="color: #666; margin-bottom: 0;">Upload your culinary creations to showcase your skills!</p>
                 </div>
             </div>
         {% endif %}
@@ -764,23 +1156,23 @@
 <!-- Change Profile Photo Modal -->
 <div class="modal fade" id="changePhotoModal" tabindex="-1" aria-labelledby="changePhotoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(255, 107, 107, 0.3);">
-            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 107, 107, 0.3);">
-                <h5 class="modal-title" id="changePhotoModalLabel" style="color: white;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePhotoModalLabel">
                     <i class="bi bi-camera"></i> Change Profile Photo
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form method="POST" enctype="multipart/form-data" action="{{ url_for('chef_update_profile_photo') }}" id="profilePhotoForm">
                     <div class="mb-3 text-center">
                         <!-- Current Photo Preview -->
                         <div class="mb-3">
-                            <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">Current Photo:</p>
+                            <p style="color: #666; font-size: 0.9rem;">Current Photo:</p>
                             {% if chef.photo_url %}
-                            <img id="currentPhoto" src="{{ chef.photo_url }}" alt="Current Photo" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid rgba(255, 107, 107, 0.5);" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
+                            <img id="currentPhoto" src="{{ chef.photo_url }}" alt="Current Photo" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #ff6b35;" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
                             {% else %}
-                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px; background: rgba(255, 107, 107, 0.3); border: 3px solid rgba(255, 107, 107, 0.5); font-size: 2.5rem;">
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px; background: rgba(255, 107, 53, 0.1); border: 3px solid #ff6b35; font-size: 2.5rem; color: #ff6b35;">
                                 👨‍🍳
                             </div>
                             {% endif %}
@@ -788,17 +1180,17 @@
                         
                         <!-- New Photo Preview -->
                         <div id="newPhotoPreview" style="display: none;">
-                            <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">New Photo Preview:</p>
-                            <img id="previewImage" src="" alt="Preview" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid rgba(255, 107, 107, 0.5);">
+                            <p style="color: #666; font-size: 0.9rem;">New Photo Preview:</p>
+                            <img id="previewImage" src="" alt="Preview" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #ff6b35;">
                         </div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="profile_photo" class="form-label" style="color: white;">
+                        <label for="profile_photo" class="form-label" style="color: #333;">
                             <i class="bi bi-image"></i> Select New Profile Photo
                         </label>
                         <input type="file" class="form-control" id="profile_photo" name="profile_photo" accept="image/*" required onchange="previewProfilePhoto(event)">
-                        <div class="form-text" style="color: rgba(255, 255, 255, 0.7);">
+                        <div class="form-text" style="color: #666;">
                             <i class="bi bi-info-circle"></i> Choose a clear, professional photo. Recommended size: 500x500px
                         </div>
                     </div>
@@ -862,147 +1254,6 @@
     
     .modal-body .form-control::file-selector-button:hover {
         background: rgba(255, 107, 107, 0.5);
-    }
-</style>
-
-<!-- View Profile Modal -->
-<div class="modal fade" id="viewProfileModal" tabindex="-1" aria-labelledby="viewProfileModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(255, 107, 107, 0.3);">
-            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 107, 107, 0.3);">
-                <h5 class="modal-title" id="viewProfileModalLabel" style="color: white;">
-                    <i class="bi bi-person-circle"></i> Chef Profile
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
-                <!-- Chef Details -->
-                <div class="text-center mb-4">
-                    {% if chef.photo_url %}
-                    <img src="{{ chef.photo_url }}" alt="Chef Photo" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid rgba(255, 107, 107, 0.5);" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
-                    {% else %}
-                    <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 120px; height: 120px; background: rgba(255, 107, 107, 0.3); border: 4px solid rgba(255, 107, 107, 0.5); font-size: 3rem;">
-                        👨‍🍳
-                    </div>
-                    {% endif %}
-                    <h4 style="color: white; font-weight: 600;">{{ chef.name }}</h4>
-                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 0.5rem;">
-                        <i class="bi bi-envelope"></i> {{ chef.email }}
-                    </p>
-                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 0.5rem;">
-                        <i class="bi bi-telephone"></i> {{ chef.phone }}
-                    </p>
-                    <p style="color: rgba(255, 255, 255, 0.7);">
-                        <i class="bi bi-geo-alt"></i> {{ chef.location }}
-                    </p>
-                </div>
-
-                <hr style="border-color: rgba(255, 107, 107, 0.3);">
-
-                <!-- Chef Bio -->
-                <div class="mb-4">
-                    <h6 style="color: rgba(255, 107, 107, 0.9); font-weight: 600; margin-bottom: 1rem;">
-                        <i class="bi bi-card-text"></i> About Me
-                    </h6>
-                    <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">
-                        {{ chef.bio if chef.bio else 'No bio available yet.' }}
-                    </p>
-                </div>
-
-                <hr style="border-color: rgba(255, 107, 107, 0.3);">
-
-                <!-- Culinary Photos Gallery with Carousel -->
-                <div class="mb-3">
-                    <h6 style="color: rgba(255, 107, 107, 0.9); font-weight: 600; margin-bottom: 1rem;">
-                        <i class="bi bi-images"></i> Culinary Portfolio
-                    </h6>
-                    
-                    {% if images and images|length > 0 %}
-                    <div id="culinaryCarousel" class="carousel slide" data-bs-ride="carousel">
-                        <!-- Carousel Indicators -->
-                        <div class="carousel-indicators">
-                            {% for image in images %}
-                            <button type="button" data-bs-target="#culinaryCarousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active"{% endif %} aria-current="{% if loop.first %}true{% endif %}" aria-label="Slide {{ loop.index }}"></button>
-                            {% endfor %}
-                        </div>
-
-                        <!-- Carousel Items -->
-                        <div class="carousel-inner" style="border-radius: 10px; overflow: hidden;">
-                            {% for image in images %}
-                            <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                <img src="{{ url_for('static', filename='images/chefs/' + image) }}" class="d-block w-100" alt="Culinary Photo {{ loop.index }}" style="height: 400px; object-fit: cover;">
-                            </div>
-                            {% endfor %}
-                        </div>
-
-                        <!-- Carousel Controls -->
-                        <button class="carousel-control-prev" type="button" data-bs-target="#culinaryCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#culinaryCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-                    <p class="text-center mt-2" style="color: rgba(255, 255, 255, 0.6); font-size: 0.85rem;">
-                        <i class="bi bi-arrow-left-right"></i> Swipe or use arrows to view all {{ images|length }} photos
-                    </p>
-                    {% else %}
-                    <div class="text-center py-4" style="background: rgba(255, 255, 255, 0.05); border-radius: 10px; border: 1px dashed rgba(255, 107, 107, 0.3);">
-                        <i class="bi bi-image" style="font-size: 3rem; color: rgba(255, 255, 255, 0.3);"></i>
-                        <p style="color: rgba(255, 255, 255, 0.6); margin-top: 1rem; margin-bottom: 0;">
-                            No culinary photos uploaded yet. Upload images to showcase your work!
-                        </p>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="modal-footer" style="border-top: 1px solid rgba(255, 107, 107, 0.3);">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i> Close
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-    /* Carousel custom styling */
-    #culinaryCarousel .carousel-control-prev,
-    #culinaryCarousel .carousel-control-next {
-        width: 50px;
-        height: 50px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(255, 107, 107, 0.7);
-        border-radius: 50%;
-        opacity: 0.8;
-    }
-    
-    #culinaryCarousel .carousel-control-prev:hover,
-    #culinaryCarousel .carousel-control-next:hover {
-        opacity: 1;
-        background: rgba(255, 107, 107, 0.9);
-    }
-    
-    #culinaryCarousel .carousel-control-prev {
-        left: 10px;
-    }
-    
-    #culinaryCarousel .carousel-control-next {
-        right: 10px;
-    }
-    
-    #culinaryCarousel .carousel-indicators button {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background-color: rgba(255, 255, 255, 0.5);
-    }
-    
-    #culinaryCarousel .carousel-indicators button.active {
-        background-color: rgba(255, 107, 107, 0.9);
     }
 </style>
 

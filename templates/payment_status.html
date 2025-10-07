@@ -3,55 +3,492 @@
 {% block title %}Payment Status - e-Rugah{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body p-5 text-center">
-                <h2 class="card-title section-title mb-4">Payment Status</h2>
+<style>
+    /* Payment Status Page Modern Orange Theme */
+    body {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa552 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Animated Background Particles */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.06) 0%, transparent 50%);
+        animation: floatParticles 20s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @keyframes floatParticles {
+        0%, 100% { transform: translateY(0px) scale(1); }
+        33% { transform: translateY(-20px) scale(1.05); }
+        66% { transform: translateY(10px) scale(0.95); }
+    }
+
+    .status-container {
+        position: relative;
+        z-index: 1;
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .status-card {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        border: 2px solid rgba(255, 107, 53, 0.15);
+        overflow: hidden;
+        position: relative;
+        transition: all 0.4s ease;
+    }
+
+    .status-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #ff6b35, #ff8c42, #ffa552, #ffb366, #ff8c42, #ff6b35);
+        background-size: 400% 100%;
+        animation: gradientFlow 4s ease infinite;
+    }
+
+    @keyframes gradientFlow {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .status-card-body {
+        padding: 3rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .status-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #ff6b35;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    /* Status Icons */
+    .status-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        position: relative;
+        animation: iconPulse 3s ease-in-out infinite;
+    }
+
+    .status-icon.success {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+    }
+
+    .status-icon.success::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #10b981, #34d399);
+        opacity: 0.3;
+        animation: successRipple 3s ease-out infinite;
+    }
+
+    .status-icon.pending {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        box-shadow: 0 10px 40px rgba(255, 107, 53, 0.4);
+    }
+
+    .status-icon.pending::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        opacity: 0.3;
+        animation: pendingRipple 2s ease-out infinite;
+    }
+
+    .status-icon.pending i {
+        animation: hourglassSpin 2s ease-in-out infinite;
+    }
+
+    .status-icon.failed {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        color: white;
+        box-shadow: 0 10px 40px rgba(239, 68, 68, 0.4);
+    }
+
+    .status-icon.failed::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        opacity: 0.3;
+        animation: failedShake 0.5s ease-in-out;
+    }
+
+    @keyframes iconPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    @keyframes successRipple {
+        0% {
+            transform: scale(1);
+            opacity: 0.3;
+        }
+        50% {
+            transform: scale(1.15);
+            opacity: 0.15;
+        }
+        100% {
+            transform: scale(1.3);
+            opacity: 0;
+        }
+    }
+
+    @keyframes pendingRipple {
+        0% {
+            transform: scale(1);
+            opacity: 0.3;
+        }
+        100% {
+            transform: scale(1.3);
+            opacity: 0;
+        }
+    }
+
+    @keyframes hourglassSpin {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(180deg); }
+    }
+
+    @keyframes failedShake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
+    }
+
+    /* Status Messages */
+    .status-message {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .status-message.success {
+        color: #10b981;
+    }
+
+    .status-message.pending {
+        color: #ff6b35;
+    }
+
+    .status-message.failed {
+        color: #ef4444;
+    }
+
+    .status-description {
+        color: #666;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    /* Info Card */
+    .payment-info-card {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.05), rgba(255, 140, 66, 0.08));
+        border: 2px solid rgba(255, 107, 53, 0.2);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+        text-align: left;
+        position: relative;
+    }
+
+    .payment-info-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, #10b981, #34d399);
+        border-radius: 4px 0 0 4px;
+    }
+
+    .payment-info-card p {
+        margin-bottom: 0.8rem;
+        color: #333;
+    }
+
+    .payment-info-card strong {
+        color: #666;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .payment-info-card .receipt-number {
+        color: #ff6b35;
+        font-size: 1.1rem;
+        font-weight: 600;
+        font-family: monospace;
+        background: rgba(255, 107, 53, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        display: inline-block;
+    }
+
+    .payment-info-card .amount-paid {
+        color: #10b981;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .payment-info-card .status-badge {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        display: inline-block;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Action Buttons */
+    .btn-action {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        display: inline-block;
+        margin: 0.5rem;
+    }
+
+    .btn-action::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-action:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 35px rgba(255, 107, 53, 0.4);
+        color: white;
+    }
+
+    .btn-action i {
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .btn-action.refresh i {
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .btn-secondary-action {
+        background: white;
+        color: #ff6b35;
+        border: 2px solid #ff6b35;
+        border-radius: 12px;
+        padding: 0.9rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.15);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        margin: 0.5rem;
+    }
+
+    .btn-secondary-action:hover {
+        background: #ff6b35;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+    }
+
+    .btn-secondary-action i {
+        margin-right: 0.5rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .status-card-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .status-title {
+            font-size: 1.75rem;
+        }
+
+        .status-icon {
+            width: 100px;
+            height: 100px;
+            font-size: 3rem;
+        }
+
+        .status-message {
+            font-size: 1.5rem;
+        }
+
+        .payment-info-card .amount-paid {
+            font-size: 1.5rem;
+        }
+
+        .btn-action {
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+
+        .btn-secondary-action {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+    }
+</style>
+
+<div class="row justify-content-center status-container">
+    <div class="col-md-8 col-lg-7">
+        <div class="status-card">
+            <div class="status-card-body">
+                <h2 class="status-title">Payment Status</h2>
                 
                 {% if payment and payment.status == 'success' %}
-                    <div class="payment-icon mb-4">
-                        <i class="bi bi-check-circle" style="font-size: 3rem;"></i>
+                    <div class="status-icon success">
+                        <i class="bi bi-check-circle"></i>
                     </div>
-                    <h3 style="color: var(--food-green); font-weight: 700;">Payment Successful!</h3>
-                    <p class="lead mb-4">Your booking has been confirmed.</p>
-                    <div class="info-card text-start">
-                        <p class="mb-2"><strong><i class="bi bi-receipt"></i> Receipt Number:</strong></p>
-                        <p class="text-muted mb-3">{{ payment.mpesa_receipt_number }}</p>
-                        <p class="mb-2"><strong><i class="bi bi-cash-stack"></i> Amount Paid:</strong></p>
-                        <p style="color: var(--food-green); font-size: 1.5rem; font-weight: 700;" class="mb-3">KES {{ "%.2f"|format(payment.amount) }}</p>
-                        <p class="mb-2"><strong><i class="bi bi-bookmark-check"></i> Booking Status:</strong></p>
-                        <span class="badge bg-success">{{ booking.status.title() }}</span>
+                    <h3 class="status-message success">Payment Successful!</h3>
+                    <p class="status-description">Your booking has been confirmed. Thank you for your payment!</p>
+                    
+                    <div class="payment-info-card">
+                        <p><strong><i class="bi bi-receipt"></i> Receipt Number:</strong></p>
+                        <p class="receipt-number">{{ payment.mpesa_receipt_number }}</p>
+                        
+                        <p class="mt-3"><strong><i class="bi bi-cash-stack"></i> Amount Paid:</strong></p>
+                        <p class="amount-paid">KES {{ "%.2f"|format(payment.amount) }}</p>
+                        
+                        <p class="mt-3"><strong><i class="bi bi-bookmark-check"></i> Booking Status:</strong></p>
+                        <span class="status-badge">{{ booking.status.title() }}</span>
                     </div>
-                {% elif payment and payment.status == 'pending' %}
-                    <div class="payment-icon pending mb-4">
-                        <i class="bi bi-hourglass-split" style="font-size: 3rem;"></i>
-                    </div>
-                    <h3 style="color: var(--secondary-color); font-weight: 700;">Payment Pending</h3>
-                    <p class="lead mb-4">Please check your phone for the M-PESA prompt and complete the payment.</p>
+                    
                     <div class="mt-4">
-                        <a href="{{ url_for('payment_status', booking_id=booking.id) }}" class="btn btn-primary btn-lg">
+                        <a href="{{ url_for('customer_dashboard') }}" class="btn-action">
+                            <i class="bi bi-house"></i> Back to Dashboard
+                        </a>
+                    </div>
+                    
+                {% elif payment and payment.status == 'pending' %}
+                    <div class="status-icon pending">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <h3 class="status-message pending">Payment Pending</h3>
+                    <p class="status-description">Please check your phone for the M-PESA prompt and complete the payment.</p>
+                    
+                    <div class="mt-4">
+                        <a href="{{ url_for('payment_status', booking_id=booking.id) }}" class="btn-action refresh">
                             <i class="bi bi-arrow-clockwise"></i> Refresh Status
                         </a>
                     </div>
-                {% else %}
-                    <div class="payment-icon failed mb-4">
-                        <i class="bi bi-x-circle" style="font-size: 3rem;"></i>
+                    
+                    <div class="mt-2">
+                        <a href="{{ url_for('customer_dashboard') }}" class="btn-secondary-action">
+                            <i class="bi bi-house"></i> Back to Dashboard
+                        </a>
                     </div>
-                    <h3 style="color: var(--danger-color); font-weight: 700;">Payment Failed</h3>
-                    <p class="lead mb-4">Your payment could not be processed.</p>
+                    
+                {% else %}
+                    <div class="status-icon failed">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+                    <h3 class="status-message failed">Payment Failed</h3>
+                    <p class="status-description">Your payment could not be processed. Please try again or contact support.</p>
+                    
                     <div class="mt-4">
-                        <a href="{{ url_for('pay_booking', booking_id=booking.id) }}" class="btn btn-primary btn-lg">
+                        <a href="{{ url_for('pay_booking', booking_id=booking.id) }}" class="btn-action">
                             <i class="bi bi-arrow-repeat"></i> Try Again
                         </a>
                     </div>
+                    
+                    <div class="mt-2">
+                        <a href="{{ url_for('customer_dashboard') }}" class="btn-secondary-action">
+                            <i class="bi bi-house"></i> Back to Dashboard
+                        </a>
+                    </div>
                 {% endif %}
-                
-                <div class="mt-4">
-                    <a href="{{ url_for('customer_dashboard') }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-house"></i> Back to Dashboard
-                    </a>
-                </div>
             </div>
         </div>
     </div>

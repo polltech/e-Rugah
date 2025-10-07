@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Event - e-Rugah{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="mb-0"><i class="bi bi-pencil-square"></i> Edit Event</h2>
+    <p class="mt-2">Update your event details{% if booking %} - Chef: {{ booking.chef.name }}{% endif %}</p>
+</div>
+
+{% if booking %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> 
+    <strong>Note:</strong> You have already selected chef <strong>{{ booking.chef.name }}</strong> for this event. 
+    If you change the event details and the price increases, you'll need to pay the additional deposit percentage.
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" id="editEventForm">
+            <!-- Location Section -->
+            <h5><i class="bi bi-geo-alt-fill"></i> Location Details</h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="county" class="form-label">County</label>
+                    <input type="text" class="form-control" id="county" name="county" value="{{ event.county }}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="sub_county" class="form-label">Sub-County</label>
+                    <input type="text" class="form-control" id="sub_county" name="sub_county" value="{{ event.sub_county }}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="town" class="form-label">Town</label>
+                    <input type="text" class="form-control" id="town" name="town" value="{{ event.town }}" required>
+                </div>
+            </div>
+
+            <!-- Event Information Section -->
+            <h5 class="mt-4"><i class="bi bi-calendar-check"></i> Event Information</h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="event_date" class="form-label">Event Date</label>
+                    <input type="date" class="form-control" id="event_date" name="event_date" value="{{ event.event_date.strftime('%Y-%m-%d') }}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="adult_guests" class="form-label">Adult Guests</label>
+                    <input type="number" class="form-control" id="adult_guests" name="adult_guests" min="0" value="{{ event.adult_guests }}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="child_guests" class="form-label">Child Guests</label>
+                    <input type="number" class="form-control" id="child_guests" name="child_guests" min="0" value="{{ event.child_guests }}" required>
+                </div>
+            </div>
+
+            <!-- Menu Selection Section -->
+            <h5 class="mt-4"><i class="bi bi-menu-app"></i> Select Menu Items</h5>
+            <p class="text-muted">Select the dishes you want for your event</p>
+            <div class="row">
+                {% for dish in dishes %}
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="menu-item-card">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="dishes" value="{{ dish.id }}" id="dish{{ dish.id }}" {% if dish.id|string in selected_dish_ids %}checked{% endif %}>
+                            <label class="form-check-label w-100" for="dish{{ dish.id }}">
+                                <strong>{{ dish.name }}</strong>
+                                <br>
+                                <small class="text-muted">{{ dish.description or 'Delicious dish' }}</small>
+                                <br>
+                                <span class="badge bg-primary">{{ dish.base_servings }} servings</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Current Cost Display -->
+            <div class="alert alert-warning mt-4">
+                <h6><i class="bi bi-cash-stack"></i> Current Total Cost: KES {{ "{:,.0f}".format(event.total_cost) }}</h6>
+                {% if booking %}
+                <p class="mb-0"><small>Current Deposit: KES {{ "{:,.0f}".format(booking.deposit_amount) }}</small></p>
+                {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-check-circle"></i> Update Event
+                </button>
+                <a href="{{ url_for('event_details', event_id=event.id) }}" class="btn btn-secondary btn-lg">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.page-header {
+    background: linear-gradient(135deg, #ff6b35, #ff8c42);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    border: none;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+h5 {
+    color: #ff6b35;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    padding: 0.75rem;
+}
+
+.form-control:focus {
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+}
+
+.menu-item-card {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.menu-item-card:hover {
+    border-color: #ff6b35;
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
+    transform: translateY(-2px);
+}
+
+.form-check-input:checked {
+    background-color: #ff6b35;
+    border-color: #ff6b35;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #ff6b35, #ff8c42);
+    border: none;
+    border-radius: 50px;
+    padding: 0.75rem 2rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #ff8c42, #ffa552);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+}
+
+.btn-secondary {
+    border-radius: 50px;
+    padding: 0.75rem 2rem;
+    font-weight: 700;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.1), rgba(13, 110, 253, 0.05));
+    border: 2px solid rgba(13, 110, 253, 0.3);
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+    border: 2px solid rgba(255, 193, 7, 0.3);
+    border-radius: 15px;
+}
+</style>
+{% endblock %}

@@ -665,6 +665,142 @@
         opacity: 1;
         transform: translateY(0);
     }
+
+    /* How It Works Button */
+    .btn-how-it-works {
+        background: white !important;
+        color: #ff6b35 !important;
+        border: 2px solid white !important;
+        border-radius: 50px !important;
+        padding: 0.75rem 2rem !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+        transition: all 0.3s ease !important;
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-how-it-works:hover {
+        background: rgba(255, 255, 255, 0.95) !important;
+        transform: translateY(-3px) scale(1.05) !important;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .btn-how-it-works i {
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    /* How It Works Modal Styles */
+    .modal-content {
+        border-radius: 30px !important;
+        border: none !important;
+        overflow: hidden;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3) !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa552 100%);
+        color: white;
+        border: none !important;
+        padding: 1.25rem !important;
+    }
+
+    .modal-header .modal-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
+
+    .modal-header .btn-close:hover {
+        opacity: 1;
+    }
+
+    .modal-body {
+        padding: 1.5rem !important;
+        background: linear-gradient(135deg, #fff5f0 0%, #ffe4d6 100%);
+    }
+
+    .step-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 2px solid rgba(255, 107, 53, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .step-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(180deg, #ff6b35, #ff8c42);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+    }
+
+    .step-card:hover {
+        transform: translateX(10px);
+        box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+        border-color: #ff6b35;
+    }
+
+    .step-card:hover::before {
+        transform: scaleY(1);
+    }
+
+    .step-number {
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 3px 10px rgba(255, 107, 53, 0.3);
+    }
+
+    .step-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #ff6b35;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .step-description {
+        color: #555;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-bottom: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .step-icon {
+        font-size: 1.1rem;
+    }
 </style>
 
 <!-- Background Decorations -->
@@ -679,6 +815,9 @@
         <span class="food-emoji">🍴</span>
     </h2>
     <p>Tell us about your event and select delicious menu items</p>
+    <button type="button" class="btn btn-light btn-how-it-works mt-3" data-bs-toggle="modal" data-bs-target="#howItWorksModal">
+        <i class="bi bi-question-circle-fill"></i> How It Works
+    </button>
 </div>
 
 <div class="row justify-content-center">
@@ -1577,4 +1716,130 @@
         `;
     });
 </script>
+
+<!-- How It Works Modal -->
+<div class="modal fade" id="howItWorksModal" tabindex="-1" aria-labelledby="howItWorksModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="howItWorksModalLabel">
+                    <i class="bi bi-lightbulb-fill"></i>
+                    How to Create Your Event & Complete Payment
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Step 1 -->
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h6 class="step-title">
+                        <i class="bi bi-geo-alt-fill step-icon"></i>
+                        Enter Event Location
+                    </h6>
+                    <p class="step-description">
+                        Fill in your event location details including County, Sub-County, and Town. This helps us match you with chefs in your area.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h6 class="step-title">
+                        <i class="bi bi-calendar-heart step-icon"></i>
+                        Set Event Date & Guest Count
+                    </h6>
+                    <p class="step-description">
+                        Choose your event date and specify the number of adult and child guests. This information is crucial for accurate pricing and chef availability.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h6 class="step-title">
+                        <i class="bi bi-cup-hot-fill step-icon"></i>
+                        Select Your Menu
+                    </h6>
+                    <p class="step-description">
+                        Browse our delicious dishes and select your favorites. You can choose from our curated menu or use the "Custom Menu" button to search for specific dishes. Pricing is automatically calculated based on ingredients and guest count.
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h6 class="step-title">
+                        <i class="bi bi-rocket-takeoff step-icon"></i>
+                        Create Your Event
+                    </h6>
+                    <p class="step-description">
+                        Review your selections and click "Create Event" to submit. Your event will be created and you'll see the total cost breakdown.
+                    </p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="step-card">
+                    <div class="step-number">5</div>
+                    <h6 class="step-title">
+                        <i class="bi bi-people-fill step-icon"></i>
+                        Browse Available Chefs
+                    </h6>
+                    <p class="step-description">
+                        After creating your event, you'll be redirected to browse available chefs. View their profiles, ratings, and specialties to find the perfect match for your event.
+                    </p>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="step-card">
+                    <div class="step-number">6</div>
+                    <h6 class="step-title">
+                        <i class="bi bi-hand-thumbs-up-fill step-icon"></i>
+                        Select Your Chef
+                    </h6>
+                    <p class="step-description">
+                        Choose your preferred chef and click "Select Chef" to proceed. A booking will be created with a deposit amount (typically 30% of total cost).
+                    </p>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="step-card">
+                    <div class="step-number">7</div>
+                    <h6 class="step-title">
+                        <i class="bi bi-phone-fill step-icon"></i>
+                        Pay Deposit via M-PESA
+                    </h6>
+                    <p class="step-description">
+                        You'll be redirected to the payment page. Enter your M-PESA registered phone number (format: 254XXXXXXXXX) and click "Pay via M-PESA". You'll receive an STK push notification on your phone.
+                    </p>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="step-card">
+                    <div class="step-number">8</div>
+                    <h6 class="step-title">
+                        <i class="bi bi-check-circle-fill step-icon"></i>
+                        Complete Payment & Confirmation
+                    </h6>
+                    <p class="step-description">
+                        Enter your M-PESA PIN on your phone to complete the payment. Once successful, you'll see a confirmation page with your receipt number. Your booking is now confirmed and the chef will be notified!
+                    </p>
+                </div>
+
+                <!-- Success Note -->
+                <div class="alert alert-success mt-4" style="border-radius: 15px; border: 2px solid #10b981;">
+                    <h6 class="alert-heading" style="color: #10b981; font-weight: 700;">
+                        <i class="bi bi-info-circle-fill"></i> Important Notes
+                    </h6>
+                    <ul class="mb-0" style="color: #059669;">
+                        <li>Ensure your M-PESA phone number is active and has sufficient balance</li>
+                        <li>The deposit secures your booking and chef availability</li>
+                        <li>You can track your booking status in your dashboard</li>
+                        <li>Contact support if you encounter any payment issues</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

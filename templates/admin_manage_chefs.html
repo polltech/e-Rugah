@@ -1,0 +1,544 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Chefs - Admin - e-Rugah{% endblock %}
+
+{% block content %}
+<style>
+    body { 
+        background: linear-gradient(135deg, #ffe4b5, #ffedd5); 
+        color: white; 
+        text-shadow: 0 0 5px rgba(0,0,0,0.5); 
+        animation: fadeIn 0.5s ease-in; 
+    }
+    
+    @keyframes fadeIn { 
+        from { opacity: 0; } 
+        to { opacity: 1; } 
+    }
+    
+    .bi { color: #ff6b35; }
+    
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(255, 107, 53, 0.3);
+    }
+    
+    /* Card Styles */
+    .chef-card {
+        background: rgba(255, 140, 66, 0.3);
+        border: 1px solid rgba(255, 107, 53, 0.4);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 32px rgba(255, 107, 53, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .chef-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(255, 107, 53, 0.6), rgba(255, 140, 66, 0.6));
+        transition: left 0.5s ease;
+        z-index: 0;
+    }
+    
+    .chef-card:hover::before {
+        left: 0;
+    }
+    
+    .chef-card > * {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .chef-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(255, 107, 53, 0.4);
+    }
+    
+    /* Button Styles */
+    .btn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: none;
+        background: linear-gradient(45deg, #ff6b35, #ff8c42);
+        color: white;
+        font-weight: 600;
+    }
+    
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, #ff8c42, #ffa552);
+        transition: left 0.4s ease;
+        z-index: 0;
+    }
+    
+    .btn:hover::before {
+        left: 0;
+    }
+    
+    .btn > * {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5);
+    }
+    
+    .btn-danger {
+        background: linear-gradient(45deg, #dc3545, #c82333) !important;
+    }
+    
+    .btn-danger::before {
+        background: linear-gradient(90deg, #c82333, #bd2130) !important;
+    }
+    
+    .btn-success {
+        background: linear-gradient(45deg, #28a745, #218838) !important;
+    }
+    
+    .btn-success::before {
+        background: linear-gradient(90deg, #218838, #1e7e34) !important;
+    }
+    
+    .btn-warning {
+        background: linear-gradient(45deg, #ffc107, #e0a800) !important;
+    }
+    
+    .btn-warning::before {
+        background: linear-gradient(90deg, #e0a800, #d39e00) !important;
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(45deg, #6c757d, #5a6268) !important;
+    }
+    
+    .btn-secondary::before {
+        background: linear-gradient(90deg, #5a6268, #545b62) !important;
+    }
+    
+    /* Badge Styles */
+    .badge {
+        background: rgba(255, 107, 53, 0.6);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+    }
+    
+    .badge-success {
+        background: rgba(40, 167, 69, 0.8) !important;
+    }
+    
+    .badge-warning {
+        background: rgba(255, 193, 7, 0.8) !important;
+    }
+    
+    .badge-danger {
+        background: rgba(220, 53, 69, 0.8) !important;
+    }
+    
+    /* Rating Stars */
+    .rating-stars {
+        color: #ffc107;
+        font-size: 1.2rem;
+    }
+    
+    /* Modal Styles */
+    .modal-content {
+        background: linear-gradient(135deg, #fff5f0 0%, #ffe4d6 100%);
+        border-radius: 20px;
+        border: 2px solid rgba(255, 107, 53, 0.3);
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        border-radius: 18px 18px 0 0;
+        border: none;
+    }
+    
+    .modal-body {
+        color: #333;
+    }
+    
+    .form-control, .form-select {
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid rgba(255, 107, 53, 0.3);
+        border-radius: 10px;
+        color: #333;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+    }
+    
+    /* Alert Styles */
+    .alert {
+        background: rgba(255, 140, 66, 0.25);
+        border: 1px solid rgba(255, 107, 53, 0.4);
+        color: white;
+        border-radius: 10px;
+    }
+    
+    /* Chef Info Grid */
+    .chef-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .chef-info-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.75rem;
+        border-radius: 8px;
+        border-left: 4px solid #ff6b35;
+    }
+    
+    .chef-info-label {
+        font-size: 0.8rem;
+        opacity: 0.8;
+        margin-bottom: 0.25rem;
+    }
+    
+    .chef-info-value {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+    
+    /* Action Buttons Container */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+    
+    /* Search and Filter */
+    .search-filter-bar {
+        background: rgba(255, 140, 66, 0.3);
+        border: 1px solid rgba(255, 107, 53, 0.4);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(255, 107, 53, 0.2);
+    }
+</style>
+
+<div class="container mt-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-1"><i class="bi bi-people-fill"></i> Manage Chefs</h4>
+                <p class="mb-0 small">View, delete, and manage chef ratings</p>
+            </div>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-light">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Search and Filter Bar -->
+    <div class="search-filter-bar">
+        <div class="row">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <input type="text" id="searchChef" class="form-control" placeholder="Search by name, email, or location...">
+            </div>
+            <div class="col-md-3 mb-3 mb-md-0">
+                <select id="filterStatus" class="form-select">
+                    <option value="all">All Status</option>
+                    <option value="approved">Approved</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="filterRating" class="form-select">
+                    <option value="all">All Ratings</option>
+                    <option value="5">5 Stars</option>
+                    <option value="4">4+ Stars</option>
+                    <option value="3">3+ Stars</option>
+                    <option value="no-rating">No Rating</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="chef-card text-center">
+                <h3 class="mb-1">{{ chefs|length }}</h3>
+                <small>Total Chefs</small>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="chef-card text-center">
+                <h3 class="mb-1">{{ chefs|selectattr('is_approved')|list|length }}</h3>
+                <small>Approved Chefs</small>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="chef-card text-center">
+                <h3 class="mb-1">{{ chefs|selectattr('has_ratings')|list|length }}</h3>
+                <small>Chefs with Ratings</small>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="chef-card text-center">
+                <h3 class="mb-1">{{ chefs|rejectattr('is_approved')|list|length }}</h3>
+                <small>Pending Approval</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chefs List -->
+    {% if chefs %}
+        <div id="chefsList">
+            {% for chef in chefs %}
+            <div class="chef-card" data-chef-name="{{ chef.name|lower }}" data-chef-email="{{ chef.user.email|lower }}" data-chef-location="{{ chef.location|lower }}" data-chef-status="{% if chef.is_approved %}approved{% else %}pending{% endif %}" data-chef-rating="{% if chef.has_ratings %}{{ chef.average_rating }}{% else %}0{% endif %}">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="mb-3">
+                            <i class="bi bi-person-circle"></i> {{ chef.name }}
+                            {% if chef.is_approved %}
+                                <span class="badge badge-success ms-2">Approved</span>
+                            {% else %}
+                                <span class="badge badge-warning ms-2">Pending</span>
+                            {% endif %}
+                        </h5>
+                        
+                        <div class="chef-info">
+                            <div class="chef-info-item">
+                                <div class="chef-info-label">Email</div>
+                                <div class="chef-info-value">{{ chef.user.email }}</div>
+                            </div>
+                            <div class="chef-info-item">
+                                <div class="chef-info-label">Phone</div>
+                                <div class="chef-info-value">{{ chef.phone }}</div>
+                            </div>
+                            <div class="chef-info-item">
+                                <div class="chef-info-label">Location</div>
+                                <div class="chef-info-value">{{ chef.location }}</div>
+                            </div>
+                            <div class="chef-info-item">
+                                <div class="chef-info-label">Rating</div>
+                                <div class="chef-info-value">
+                                    {% if chef.has_ratings %}
+                                        <span class="rating-stars">
+                                            {% for i in range(chef.average_rating|int) %}
+                                                <i class="bi bi-star-fill"></i>
+                                            {% endfor %}
+                                            {% if chef.average_rating % 1 >= 0.5 %}
+                                                <i class="bi bi-star-half"></i>
+                                            {% endif %}
+                                        </span>
+                                        <span class="ms-2">{{ chef.average_rating }} ({{ chef.rating_count }} reviews)</span>
+                                    {% else %}
+                                        <span class="text-muted">No ratings yet</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if chef.about %}
+                        <div class="mt-2">
+                            <strong>About:</strong> {{ chef.about[:100] }}{% if chef.about|length > 100 %}...{% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="action-buttons">
+                            <!-- Add Rating Button -->
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addRatingModal{{ chef.id }}">
+                                <i class="bi bi-star-fill"></i> Add Rating
+                            </button>
+                            
+                            <!-- Reset Rating Button -->
+                            {% if chef.has_ratings %}
+                            <form method="POST" action="{{ url_for('admin_reset_chef_rating', chef_id=chef.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to reset all ratings for {{ chef.name }}?');">
+                                <button type="submit" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Reset Rating
+                                </button>
+                            </form>
+                            {% endif %}
+                            
+                            <!-- Delete Chef Button -->
+                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ chef.id }}">
+                                <i class="bi bi-trash-fill"></i> Delete Chef
+                            </button>
+                            
+                            <!-- View Profile Button -->
+                            <a href="{{ url_for('chef_profile', chef_id=chef.id) }}" class="btn btn-secondary btn-sm" target="_blank">
+                                <i class="bi bi-eye-fill"></i> View Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add Rating Modal -->
+            <div class="modal fade" id="addRatingModal{{ chef.id }}" tabindex="-1" aria-labelledby="addRatingModalLabel{{ chef.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addRatingModalLabel{{ chef.id }}">
+                                <i class="bi bi-star-fill"></i> Add Rating for {{ chef.name }}
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ url_for('admin_add_chef_rating', chef_id=chef.id) }}">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="rating_value{{ chef.id }}" class="form-label">Select Rating (1-5 stars)</label>
+                                    <select class="form-select" id="rating_value{{ chef.id }}" name="rating_value" required>
+                                        <option value="">Choose rating...</option>
+                                        <option value="5">⭐⭐⭐⭐⭐ (5 stars - Excellent)</option>
+                                        <option value="4">⭐⭐⭐⭐ (4 stars - Very Good)</option>
+                                        <option value="3">⭐⭐⭐ (3 stars - Good)</option>
+                                        <option value="2">⭐⭐ (2 stars - Fair)</option>
+                                        <option value="1">⭐ (1 star - Poor)</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle"></i> This will add a new rating to the chef's existing ratings. Current average: 
+                                    {% if chef.has_ratings %}
+                                        {{ chef.average_rating }} stars ({{ chef.rating_count }} reviews)
+                                    {% else %}
+                                        No ratings yet
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle"></i> Add Rating
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal{{ chef.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ chef.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger">
+                            <h5 class="modal-title" id="deleteModalLabel{{ chef.id }}">
+                                <i class="bi bi-exclamation-triangle-fill"></i> Confirm Delete
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ url_for('admin_delete_chef', chef_id=chef.id) }}">
+                            <div class="modal-body">
+                                <div class="alert alert-danger">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> <strong>Warning!</strong> This action cannot be undone.
+                                </div>
+                                <p style="color: #333;">Are you sure you want to delete <strong>{{ chef.name }}</strong>?</p>
+                                <p style="color: #666; font-size: 0.9rem;">This will permanently delete:</p>
+                                <ul style="color: #666; font-size: 0.9rem;">
+                                    <li>Chef profile and account</li>
+                                    <li>All associated bookings</li>
+                                    <li>All payment records</li>
+                                    <li>User account ({{ chef.user.email }})</li>
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash-fill"></i> Yes, Delete Chef
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No chefs found in the system.
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    // Search and Filter Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchChef');
+        const statusFilter = document.getElementById('filterStatus');
+        const ratingFilter = document.getElementById('filterRating');
+        const chefCards = document.querySelectorAll('.chef-card[data-chef-name]');
+        
+        function filterChefs() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusValue = statusFilter.value;
+            const ratingValue = ratingFilter.value;
+            
+            chefCards.forEach(card => {
+                const name = card.getAttribute('data-chef-name');
+                const email = card.getAttribute('data-chef-email');
+                const location = card.getAttribute('data-chef-location');
+                const status = card.getAttribute('data-chef-status');
+                const rating = parseFloat(card.getAttribute('data-chef-rating'));
+                
+                let showCard = true;
+                
+                // Search filter
+                if (searchTerm && !name.includes(searchTerm) && !email.includes(searchTerm) && !location.includes(searchTerm)) {
+                    showCard = false;
+                }
+                
+                // Status filter
+                if (statusValue !== 'all' && status !== statusValue) {
+                    showCard = false;
+                }
+                
+                // Rating filter
+                if (ratingValue !== 'all') {
+                    if (ratingValue === 'no-rating' && rating > 0) {
+                        showCard = false;
+                    } else if (ratingValue === '5' && rating < 5) {
+                        showCard = false;
+                    } else if (ratingValue === '4' && rating < 4) {
+                        showCard = false;
+                    } else if (ratingValue === '3' && rating < 3) {
+                        showCard = false;
+                    }
+                }
+                
+                card.style.display = showCard ? 'block' : 'none';
+            });
+        }
+        
+        searchInput.addEventListener('input', filterChefs);
+        statusFilter.addEventListener('change', filterChefs);
+        ratingFilter.addEventListener('change', filterChefs);
+    });
+</script>
+{% endblock %}

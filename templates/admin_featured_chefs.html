@@ -237,7 +237,8 @@
             <div class="chef-info-left">
                 <div class="chef-avatar-admin">
                     {% if chef.photo_url %}
-                        <img src="{{ chef.photo_url }}" alt="{{ chef.name }}">
+                        {% set chef_photo = chef.photo_url if chef.photo_url.startswith('/') else '/' + chef.photo_url %}
+                        <img src="{{ chef_photo }}" alt="{{ chef.name }}" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
                     {% else %}
                         <span>👨‍🍳</span>
                     {% endif %}
@@ -318,7 +319,8 @@
             <div class="chef-info-left">
                 <div class="chef-avatar-admin">
                     {% if chef.photo_url %}
-                        <img src="{{ chef.photo_url }}" alt="{{ chef.name }}">
+                        {% set chef_photo = chef.photo_url if chef.photo_url.startswith('/') else '/' + chef.photo_url %}
+                        <img src="{{ chef_photo }}" alt="{{ chef.name }}" onerror="this.src='{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}'">
                     {% else %}
                         <span>👨‍🍳</span>
                     {% endif %}

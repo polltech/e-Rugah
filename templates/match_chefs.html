@@ -305,8 +305,98 @@
     {% endfor %}
 </div>
 {% else %}
-<div class="alert alert-warning">
-    <i class="bi bi-exclamation-triangle"></i> No approved chefs found in your area. Please check back later or contact support.
+<style>
+    .no-chefs-container {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 140, 66, 0.1));
+        border: 2px solid rgba(255, 107, 53, 0.3);
+        border-radius: 20px;
+        padding: 3rem 2rem;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(255, 107, 53, 0.15);
+        animation: fadeInScale 0.6s ease-out;
+    }
+
+    @keyframes fadeInScale {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .no-chefs-icon {
+        font-size: 4rem;
+        color: #ff6b35;
+        margin-bottom: 1.5rem;
+        animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .no-chefs-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+    }
+
+    .no-chefs-message {
+        color: #4a5568;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .btn-contact-support {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        border: none;
+        padding: 0.9rem 2.5rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        text-decoration: none;
+    }
+
+    .btn-contact-support:hover {
+        background: linear-gradient(135deg, #ff8c42, #ffa552);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(255, 107, 53, 0.6);
+    }
+
+    .btn-contact-support i {
+        font-size: 1.2rem;
+    }
+</style>
+
+<div class="no-chefs-container">
+    <div class="no-chefs-icon">
+        <i class="bi bi-search"></i>
+    </div>
+    <h3 class="no-chefs-title">No Chefs Available in Your Area</h3>
+    <p class="no-chefs-message">
+        We couldn't find any approved chefs in <strong>{{ event.county }}, {{ event.sub_county }}, {{ event.town }}</strong> at the moment.<br>
+        Please check back later or reach out to our support team for assistance.
+    </p>
+    <a href="{{ url_for('index') }}#contact-section" class="btn-contact-support">
+        <i class="bi bi-headset"></i>
+        <span>Contact Support</span>
+    </a>
 </div>
 {% endif %}
 
@@ -328,7 +418,12 @@
 
     function showChefProfileModal(chef) {
         // Populate modal with chef data
-        document.getElementById('modalChefPhoto').src = chef.photo_url || "{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}";
+        let photoUrl = chef.photo_url || "{{ url_for('static', filename='images/pexels-janetrangdoan-793765.jpg') }}";
+        // Ensure photo URL starts with /
+        if (photoUrl && !photoUrl.startsWith('/') && !photoUrl.startsWith('http')) {
+            photoUrl = '/' + photoUrl;
+        }
+        document.getElementById('modalChefPhoto').src = photoUrl;
         document.getElementById('modalChefName').textContent = chef.name;
         document.getElementById('modalChefEmail').textContent = chef.email;
         document.getElementById('modalChefPhone').textContent = chef.phone;

@@ -313,6 +313,49 @@
         color: rgba(255, 255, 255, 0.5);
     }
 
+    .remember-chef-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: -0.5rem;
+        gap: 1rem;
+    }
+
+    .remember-checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .remember-checkbox {
+        width: 18px;
+        height: 18px;
+        accent-color: #ff6b6b;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .remember-description {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
+    }
+
+    .remember-error {
+        color: #ff6b6b;
+        font-size: 0.85rem;
+    }
+
+    .remember-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .remember-label:hover {
+        color: #ff6b6b;
+    }
+
     .chef-btn {
         width: 100%;
         padding: 1rem 2rem;
@@ -637,6 +680,14 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group remember-chef-container">
+                                    <div class="remember-checkbox-wrapper">
+                                        <input type="checkbox" id="remember_chef" name="remember_me" class="remember-checkbox">
+                                        <label for="remember_chef" class="remember-label">Remember Me</label>
+                                    </div>
+                                    <span class="remember-description">Keep me logged in on this device</span>
+                                    <div class="remember-error" id="rememberError" style="display: none;">Cannot enable remember me without password</div>
+                                </div>
                             </div>
 
                             <div class="form-section-card">
@@ -870,6 +921,7 @@
                                 <input type="text" class="form-input" id="emailCode" placeholder="Enter 4-digit code" maxlength="4" required>
                             </div>
                             <div id="emailCodeError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
+                            <div id="emailCodeSuccess" style="color: #51cf66; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
                         </div>
                         <button type="submit" class="chef-btn">
                             <span class="btn-text">Verify Email</span>
@@ -970,6 +1022,7 @@
 
         if (closeEmailVerificationBtn) {
             closeEmailVerificationBtn.addEventListener('click', function() {
+                emailVerificationModal.dataset.closeRequested = 'true';
                 window.location.href = '/login';
             });
         }
@@ -1312,10 +1365,12 @@
        // Email verification form
        const emailVerificationForm = document.getElementById('emailVerificationForm');
        const emailCodeError = document.getElementById('emailCodeError');
+       const emailCodeSuccess = document.getElementById('emailCodeSuccess');
        
        emailVerificationForm.addEventListener('submit', function(e) {
            e.preventDefault();
            emailCodeError.style.display = 'none';
+           emailCodeSuccess.style.display = 'none';
            
            const code = document.getElementById('emailCode').value;
            const email = document.getElementById('email').value;
@@ -1337,9 +1392,18 @@
            .then(data => {
                console.log('Email verification response:', data);
                if (data.success) {
-                   // Hide email verification modal
-                   emailVerificationModal.style.display = 'none';
-                   emailVerificationBackdrop.style.display = 'none';
+                   emailCodeError.style.display = 'none';
+                   emailCodeSuccess.textContent = data.message || 'Email verified successfully. Please continue.';
+                   emailCodeSuccess.style.display = 'block';
+
+                   const closeRequested = emailVerificationModal.dataset.closeRequested === 'true';
+                   const chefVerified = data.chef_verified === true;
+
+                   if (closeRequested && (chefVerified || !smsVerificationEnabled)) {
+                       emailVerificationModal.style.display = 'none';
+                       emailVerificationBackdrop.style.display = 'none';
+                       emailVerificationModal.dataset.closeRequested = 'false';
+                   }
                    
                    if (smsVerificationEnabled && data.require_sms) {
                        // SMS still needs verification - show SMS modal directly

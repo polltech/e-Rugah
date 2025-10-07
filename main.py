@@ -276,6 +276,124 @@ def event_details(event_id):
     
     return render_template('event_details.html', event=event, menu_items=dishes, booking=booking)
 
+@app.route('/customer/event/<int:event_id>/edit', methods=['GET', 'POST'])
+@role_required('customer')
+def edit_event(event_id):
+    event = Event.query.get_or_404(event_id)
+    if event.customer_id != current_user.id:
+        flash('Access denied', 'danger')
+        return redirect(url_for('customer_dashboard'))
+    
+    # Get existing booking if any
+    booking = Booking.query.filter_by(event_id=event.id).first()
+    
+    if request.method == 'POST':
+        # Store old values for comparison
+        old_total_cost = event.total_cost
+        old_chef_id = booking.chef_id if booking else None
+        
+        # Get form data
+        county = request.form.get('county')
+        sub_county = request.form.get('sub_county')
+        town = request.form.get('town')
+        adult_guests = int(request.form.get('adult_guests', 0))
+        child_guests = int(request.form.get('child_guests', 0))
+        event_date_str = request.form.get('event_date')
+        dishes = request.form.getlist('dishes')
+        custom_dishes_json = request.form.get('custom_dishes', '[]')
+        
+        event_date = datetime.strptime(event_date_str, '%Y-%m-%d')
+        total_guests = adult_guests + child_guests
+        
+        # Calculate new cost for regular menu dishes
+        total_cost = 0.0
+        for dish_id in dishes:
+            dish = Dish.query.get(int(dish_id))
+            dish_ingredients = DishIngredient.query.filter_by(dish_id=dish.id).all()
+
+            dish_cost = 0.0
+            for di in dish_ingredients:
+                ingredient = Ingredient.query.get(di.ingredient_id)
+                scaled_quantity = (di.quantity_for_base_servings / dish.base_servings) * total_guests
+                cost = scaled_quantity * ingredient.unit_price
+                dish_cost += cost
+
+            markup_amount = dish_cost * (dish.markup / 100)
+            selling_price = dish_cost + markup_amount
+            total_cost += selling_price
+        
+        # Calculate cost for custom dishes
+        try:
+            custom_dishes = json.loads(custom_dishes_json)
+            for custom_dish_id in custom_dishes:
+                dish = Dish.query.get(int(custom_dish_id))
+                if dish:
+                    dish_ingredients = DishIngredient.query.filter_by(dish_id=dish.id).all()
+                    dish_cost = 0.0
+                    for di in dish_ingredients:
+                        ingredient = Ingredient.query.get(di.ingredient_id)
+                        scaled_quantity = (di.quantity_for_base_servings / dish.base_servings) * total_guests
+                        cost = scaled_quantity * ingredient.unit_price
+                        dish_cost += cost
+                    markup_amount = dish_cost * (dish.markup / 100)
+                    selling_price = dish_cost + markup_amount
+                    total_cost += selling_price
+                    dishes.append(str(custom_dish_id))
+        except:
+            pass
+        
+        # Update event details
+        event.county = county
+        event.sub_county = sub_county
+        event.town = town
+        event.adult_guests = adult_guests
+        event.child_guests = child_guests
+        event.event_date = event_date
+        event.menu_items = ','.join(dishes)
+        event.total_cost = total_cost
+        
+        # Handle booking and payment adjustments
+        if booking:
+            # Get deposit percentage
+            deposit_config = SystemConfig.query.filter_by(key='deposit_percentage').first()
+            deposit_percentage = float(deposit_config.value) if deposit_config else 30.0
+            
+            # Calculate new deposit amount
+            new_deposit_amount = (total_cost * deposit_percentage) / 100
+            old_deposit_amount = booking.deposit_amount
+            
+            # Check if price increased
+            if total_cost > old_total_cost:
+                # Calculate additional deposit needed
+                additional_deposit = new_deposit_amount - old_deposit_amount
+                
+                # Update booking deposit amount
+                booking.deposit_amount = new_deposit_amount
+                booking.status = 'pending'  # Reset to pending for additional payment
+                
+                db.session.commit()
+                
+                flash(f'Event updated! The total cost increased by KES {total_cost - old_total_cost:,.0f}. You need to pay an additional deposit of KES {additional_deposit:,.0f}.', 'warning')
+                return redirect(url_for('pay_additional_deposit', booking_id=booking.id, additional_amount=additional_deposit))
+            else:
+                # Price stayed same or decreased - just update the event
+                booking.deposit_amount = new_deposit_amount
+                db.session.commit()
+                
+                flash('Event updated successfully! No additional payment required.', 'success')
+                return redirect(url_for('match_chefs', event_id=event.id))
+        else:
+            # No booking yet, just update event
+            db.session.commit()
+            flash('Event updated successfully!', 'success')
+            return redirect(url_for('match_chefs', event_id=event.id))
+    
+    # GET request - show edit form
+    dishes = Dish.query.all()
+    selected_dish_ids = event.menu_items.split(',') if event.menu_items else []
+    
+    return render_template('edit_event.html', event=event, dishes=dishes, selected_dish_ids=selected_dish_ids, booking=booking)
+
 @app.route('/customer/create-event', methods=['GET', 'POST'])
 @role_required('customer')
 def create_event():
@@ -450,6 +568,41 @@ def payment_status(booking_id):
     payment = Payment.query.filter_by(booking_id=booking.id).order_by(Payment.created_at.desc()).first()
     
     return render_template('payment_status.html', booking=booking, event=event, payment=payment)
+
+@app.route('/booking/<int:booking_id>/pay-additional', methods=['GET', 'POST'])
+@login_required
+def pay_additional_deposit(booking_id):
+    booking = Booking.query.get_or_404(booking_id)
+    event = Event.query.get(booking.event_id)
+    
+    if event.customer_id != current_user.id:
+        flash('Access denied', 'danger')
+        return redirect(url_for('customer_dashboard'))
+    
+    # Get additional amount from query parameter
+    additional_amount = float(request.args.get('additional_amount', 0))
+    
+    if request.method == 'POST':
+        phone = request.form.get('phone')
+        
+        payment = Payment(
+            booking_id=booking.id,
+            phone_number=phone,
+            amount=additional_amount,
+            status='pending'
+        )
+        db.session.add(payment)
+        db.session.commit()
+        
+        result = initiate_mpesa_stk(phone, additional_amount, booking.id)
+        
+        if result.get('success'):
+            flash('Additional payment initiated successfully! Please check your phone.', 'success')
+            return redirect(url_for('payment_status', booking_id=booking.id))
+        else:
+            flash('Payment initiation failed. Please try again.', 'danger')
+    
+    return render_template('pay_additional_deposit.html', booking=booking, event=event, additional_amount=additional_amount)
 
 @app.route('/mpesa/callback', methods=['POST'])
 def mpesa_callback():
@@ -674,8 +827,19 @@ def chef_update_profile_photo():
             flash('Chef profile not found', 'danger')
             return redirect(url_for('chef_dashboard'))
         
-        # Create a unique filename for the profile photo
-        filename = secure_filename(f"chef_{chef.user.email}_{file.filename}")
+        # Remove old profile photo if it exists
+        if chef.photo_url:
+            existing_path = chef.photo_url.lstrip('/')
+            if os.path.exists(existing_path):
+                try:
+                    os.remove(existing_path)
+                except OSError:
+                    pass
+        
+        # Create a unique filename for the profile photo using chef.id to prevent special character issues
+        original_name = os.path.splitext(secure_filename(file.filename))[0]
+        extension = os.path.splitext(file.filename)[1]
+        filename = secure_filename(f"chef_{chef.id}_{original_name}{extension}")
         file_path = os.path.join('static', 'images', 'chefs', filename)
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         file.save(file_path)
@@ -1347,24 +1511,29 @@ def verify_email_code_endpoint():
 
     # Check if SMS verification is required
     sms_enabled = is_sms_verification_enabled()
+    chef_verified = False
     
     if sms_enabled:
-        return jsonify({
-            'success': True, 
+        response_payload = {
+            'success': True,
             'message': 'Email verified! Please verify your phone number.',
-            'require_sms': True
-        })
+            'require_sms': True,
+            'chef_verified': False
+        }
+        return jsonify(response_payload)
     else:
-        # SMS disabled, mark chef as verified and redirect to dashboard
+        # SMS disabled, mark chef as verified and build response
         if user and user.chef:
             user.chef.is_verified = True
             db.session.commit()
+            chef_verified = True
         
         return jsonify({
             'success': True,
             'message': 'Email verified successfully!',
             'require_sms': False,
-            'redirect': '/chef/dashboard'
+            'redirect': '/chef/dashboard',
+            'chef_verified': chef_verified
         })
 
 @app.route('/send_sms_code', methods=['POST'])
@@ -1709,6 +1878,87 @@ def test_mpesa_connection():
             return jsonify({'success': False, 'message': f'API returned status {response.status_code}'})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/admin/manage-chefs')
+@role_required('admin')
+def admin_manage_chefs():
+    """Admin page to manage all chefs - view, delete, and manage ratings"""
+    all_chefs = Chef.query.order_by(Chef.created_at.desc()).all()
+    return render_template('admin_manage_chefs.html', chefs=all_chefs)
+
+@app.route('/admin/chef/<int:chef_id>/delete', methods=['POST'])
+@role_required('admin')
+def admin_delete_chef(chef_id):
+    """Delete a chef and their associated user account"""
+    chef = Chef.query.get_or_404(chef_id)
+    user = chef.user
+    
+    try:
+        # Delete associated bookings first (if any)
+        bookings = Booking.query.filter_by(chef_id=chef_id).all()
+        for booking in bookings:
+            # Delete payments associated with bookings
+            Payment.query.filter_by(booking_id=booking.id).delete()
+            db.session.delete(booking)
+        
+        # Delete the chef
+        db.session.delete(chef)
+        
+        # Delete the user account
+        db.session.delete(user)
+        
+        db.session.commit()
+        flash(f'Chef {chef.name} and associated account deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting chef: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin_manage_chefs'))
+
+@app.route('/admin/chef/<int:chef_id>/add-rating', methods=['POST'])
+@role_required('admin')
+def admin_add_chef_rating(chef_id):
+    """Add or update a chef's rating"""
+    chef = Chef.query.get_or_404(chef_id)
+    
+    try:
+        rating_value = int(request.form.get('rating_value'))
+        
+        if rating_value < 1 or rating_value > 5:
+            flash('Rating must be between 1 and 5 stars', 'danger')
+            return redirect(url_for('admin_manage_chefs'))
+        
+        # Add the rating to the chef's total
+        chef.rating_total += rating_value
+        chef.rating_count += 1
+        
+        db.session.commit()
+        flash(f'Rating added successfully! {chef.name} now has an average rating of {chef.average_rating} stars', 'success')
+    except ValueError:
+        flash('Invalid rating value', 'danger')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding rating: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin_manage_chefs'))
+
+@app.route('/admin/chef/<int:chef_id>/reset-rating', methods=['POST'])
+@role_required('admin')
+def admin_reset_chef_rating(chef_id):
+    """Reset a chef's rating to zero"""
+    chef = Chef.query.get_or_404(chef_id)
+    
+    try:
+        chef.rating_total = 0
+        chef.rating_count = 0
+        
+        db.session.commit()
+        flash(f'Rating reset successfully for {chef.name}', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error resetting rating: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin_manage_chefs'))
 
 @app.route('/admin/images', methods=['GET', 'POST'])
 @role_required('admin')
