@@ -867,7 +867,7 @@
                     <input type="hidden" name="custom_dishes" id="customDishesInput" value="[]">
 
                     <!-- Pro Tip Alert -->
-                    <div class="alert alert-info mt-4 animate-on-scroll">
+                    <div class="alert alert-info mt-4 animate-on-scroll" style="color: black;">
                         <i class="bi bi-lightbulb-fill"></i> 
                         <strong>Pro Tip:</strong> Select multiple dishes to give your guests variety and make your event memorable!
                     </div>
@@ -907,50 +907,50 @@
 
 <!-- Custom Menu Modal -->
 <div class="modal fade" id="customMenuModal" tabindex="-1" aria-labelledby="customMenuModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
-            <div class="modal-header border-0" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); padding: 1rem 1.5rem; border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title text-white mb-0" id="customMenuModalLabel" style="font-size: 1.1rem; font-weight: 700;">
+    <div class="modal-dialog modal-dialog-scrollable" style="max-width: 600px;">
+        <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 8px 30px rgba(0,0,0,0.15);">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%); padding: 0.75rem 1.25rem; border-radius: 15px 15px 0 0;">
+                <h5 class="modal-title text-white mb-0" id="customMenuModalLabel" style="font-size: 0.95rem; font-weight: 600;">
                     <i class="bi bi-search"></i> Custom Menu Search
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="font-size: 0.8rem;"></button>
             </div>
-            <div class="modal-body" style="padding: 1.5rem; background: #f8f9fa;">
-                <p class="text-muted mb-3" style="font-size: 0.9rem;">
+            <div class="modal-body" style="padding: 1.25rem; background: white;">
+                <p class="mb-3" style="font-size: 0.8rem; color: #333;">
                     Search for specific dishes to check their ingredients and prices. You can add up to 10 custom dishes.
                 </p>
                 
                 <!-- Search Section -->
-                <div class="mb-4">
-                    <div class="input-group" style="box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; overflow: hidden;">
-                        <input type="text" class="form-control" id="customDishSearch" placeholder="Enter dish name (e.g., Pilau, Biryani, Samosa)" style="border: 2px solid #e2e8f0; padding: 0.75rem 1rem; font-size: 0.95rem; border-right: none;">
-                        <button class="btn" id="checkDishBtn" type="button" style="background: linear-gradient(135deg, #6c757d, #5a6268); color: white; border: 2px solid #6c757d; padding: 0.75rem 1.5rem; font-weight: 600;">
+                <div class="mb-3">
+                    <div class="input-group" style="box-shadow: 0 2px 8px rgba(255,107,53,0.1); border-radius: 10px; overflow: hidden;">
+                        <input type="text" class="form-control" id="customDishSearch" placeholder="Enter dish name (e.g., Pilau, Biryani, Samosa)" style="border: 2px solid #ff6b35; padding: 0.6rem 0.9rem; font-size: 0.85rem; border-right: none;">
+                        <button class="btn" id="checkDishBtn" type="button" style="background: linear-gradient(135deg, #ff6b35, #ff8c42); color: white; border: 2px solid #ff6b35; padding: 0.6rem 1.2rem; font-weight: 600; font-size: 0.85rem;">
                             <i class="bi bi-search"></i> Check
                         </button>
                     </div>
                 </div>
 
                 <!-- Search Results -->
-                <div id="customDishResults" style="min-height: 100px;">
-                    <div class="text-center text-muted" style="padding: 2rem;">
-                        <i class="bi bi-search" style="font-size: 3rem; opacity: 0.3;"></i>
-                        <p style="margin-top: 1rem; font-size: 0.9rem;">Enter a dish name and click "Check" to see if it's available</p>
+                <div id="customDishResults" style="min-height: 80px;">
+                    <div class="text-center" style="padding: 1.5rem;">
+                        <i class="bi bi-search" style="font-size: 2.5rem; opacity: 0.3; color: #ff6b35;"></i>
+                        <p style="margin-top: 0.75rem; font-size: 0.8rem; color: #666;">Enter a dish name and click "Check" to see if it's available</p>
                     </div>
                 </div>
 
                 <!-- Selected Custom Dishes -->
-                <div id="selectedCustomDishes" style="display: none; margin-top: 1.5rem;">
-                    <h6 style="color: #2c3e50; font-weight: 700; margin-bottom: 1rem;">
-                        <i class="bi bi-check-circle-fill" style="color: #28a745;"></i> Selected Custom Dishes (<span id="customDishCount">0</span>/10)
+                <div id="selectedCustomDishes" style="display: none; margin-top: 1.25rem;">
+                    <h6 style="color: #ff6b35; font-weight: 600; margin-bottom: 0.75rem; font-size: 0.9rem;">
+                        <i class="bi bi-check-circle-fill" style="color: #ff6b35;"></i> Selected Custom Dishes (<span id="customDishCount">0</span>/10)
                     </h6>
                     <div id="selectedCustomDishesList" class="mb-3"></div>
                 </div>
             </div>
-            <div class="modal-footer border-0" style="padding: 1rem 1.5rem; background: white;">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 10px; padding: 0.5rem 1.5rem;">
+            <div class="modal-footer border-0" style="padding: 0.75rem 1.25rem; background: white; border-top: 1px solid #ff6b35;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 8px; padding: 0.4rem 1.2rem; background: white; color: #ff6b35; border: 2px solid #ff6b35; font-size: 0.85rem;">
                     <i class="bi bi-x-circle"></i> Close
                 </button>
-                <button type="button" class="btn btn-primary" id="addCustomDishesBtn" style="border-radius: 10px; padding: 0.5rem 1.5rem; background: linear-gradient(135deg, #ff6b35, #ff8c42); border: none;">
+                <button type="button" class="btn btn-primary" id="addCustomDishesBtn" style="border-radius: 8px; padding: 0.4rem 1.2rem; background: linear-gradient(135deg, #ff6b35, #ff8c42); border: none; font-size: 0.85rem;">
                     <i class="bi bi-plus-circle"></i> Add to Event
                 </button>
             </div>
@@ -959,6 +959,10 @@
 </div>
 
 <script>
+    // Custom Menu Modal Functionality - Declare at top for global access
+    let customSelectedDishes = [];
+    const MAX_CUSTOM_DISHES = 10;
+
     // Animate elements on scroll
     const observerOptions = {
         threshold: 0.1,
@@ -1111,17 +1115,39 @@
             return;
         }
 
-        // Get all selected dishes
+        // Get all selected regular dishes
         const selectedDishes = [];
-        document.querySelectorAll('.dish-checkbox:checked').forEach(checkbox => {
+        const regularCheckboxes = document.querySelectorAll('.dish-checkbox:checked');
+        
+        console.log('=== CALCULATE PRICE DEBUG ===');
+        console.log('Regular checkboxes found:', regularCheckboxes.length);
+        
+        regularCheckboxes.forEach(checkbox => {
+            console.log('Regular dish:', checkbox.getAttribute('data-dish-name'), 'ID:', checkbox.value);
             selectedDishes.push({
                 id: checkbox.value,
                 name: checkbox.getAttribute('data-dish-name')
             });
         });
 
+        // Add custom dishes to the list
+        console.log('Custom dishes array:', customSelectedDishes);
+        if (customSelectedDishes && customSelectedDishes.length > 0) {
+            customSelectedDishes.forEach(dish => {
+                console.log('Custom dish:', dish.name, 'ID:', dish.id);
+                selectedDishes.push({
+                    id: dish.id,
+                    name: dish.name
+                });
+            });
+        }
+
+        console.log('Total dishes to calculate:', selectedDishes.length);
+        console.log('All selected dishes:', selectedDishes);
+        console.log('=== END DEBUG ===');
+
         if (selectedDishes.length === 0) {
-            alert('Please select at least one dish.');
+            alert('Please select at least one dish (regular or custom).');
             return;
         }
 
@@ -1130,7 +1156,7 @@
         document.getElementById('priceModalBody').innerHTML = '<div class="text-center py-3"><div class="spinner-border" role="status" style="width: 1.5rem; height: 1.5rem; color: #ff6b35; border-width: 2px;"><span class="visually-hidden">Loading...</span></div><p class="mt-2 mb-0" style="font-size: 0.7rem; color: #6c757d;">Calculating prices...</p></div>';
         modal.show();
 
-        // Fetch prices for all selected dishes
+        // Fetch prices for all selected dishes (regular + custom)
         const fetchPromises = selectedDishes.map(dish => 
             fetch('/api/calculate-dish-price', {
                 method: 'POST',
@@ -1238,10 +1264,6 @@
             });
     });
 
-    // Custom Menu Modal Functionality
-    let customSelectedDishes = [];
-    const MAX_CUSTOM_DISHES = 10;
-
     // Check dish button handler
     document.getElementById('checkDishBtn').addEventListener('click', function() {
         const dishName = document.getElementById('customDishSearch').value.trim();
@@ -1254,10 +1276,10 @@
         // Show loading
         document.getElementById('customDishResults').innerHTML = `
             <div class="text-center py-3">
-                <div class="spinner-border" role="status" style="color: #6c757d;">
+                <div class="spinner-border" role="status" style="color: #ff6b35;">
                     <span class="visually-hidden">Loading...</span>
                 </div>
-                <p class="mt-2 mb-0" style="font-size: 0.9rem; color: #6c757d;">Searching for "${dishName}"...</p>
+                <p class="mt-2 mb-0" style="font-size: 0.8rem; color: #666;">Searching for "${dishName}"...</p>
             </div>
         `;
 
@@ -1281,7 +1303,7 @@
         })
         .catch(error => {
             document.getElementById('customDishResults').innerHTML = `
-                <div class="alert alert-danger">
+                <div class="alert" style="background: #fff5f2; border: 2px solid #ff6b35; color: #ff6b35; border-radius: 8px; font-size: 0.85rem;">
                     <i class="bi bi-exclamation-triangle-fill"></i> Error searching for dish. Please try again.
                 </div>
             `;
@@ -1298,36 +1320,36 @@
 
     function displayDishDetails(dish) {
         let html = `
-            <div class="card" style="border: 2px solid #28a745; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);">
-                <div class="card-header" style="background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 1rem;">
-                    <h6 class="mb-0" style="font-weight: 700;">
+            <div class="card" style="border: 2px solid #ff6b35; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);">
+                <div class="card-header" style="background: linear-gradient(135deg, #ff6b35, #ff8c42); color: white; padding: 0.75rem;">
+                    <h6 class="mb-0" style="font-weight: 600; font-size: 0.9rem;">
                         <i class="bi bi-check-circle-fill"></i> ${dish.name} Found!
                     </h6>
                 </div>
-                <div class="card-body" style="padding: 1rem;">
-                    <p style="color: #6c757d; font-size: 0.9rem; margin-bottom: 1rem;">${dish.description || 'No description available'}</p>
+                <div class="card-body" style="padding: 0.75rem;">
+                    <p style="color: #666; font-size: 0.8rem; margin-bottom: 0.75rem;">${dish.description || 'No description available'}</p>
                     
                     <div class="row mb-3">
                         <div class="col-6">
-                            <small class="text-muted">Base Servings:</small>
-                            <div style="font-weight: 600; color: #2c3e50;">${dish.base_servings} people</div>
+                            <small style="color: #999; font-size: 0.75rem;">Base Servings:</small>
+                            <div style="font-weight: 600; color: #333; font-size: 0.85rem;">${dish.base_servings} people</div>
                         </div>
                         <div class="col-6">
-                            <small class="text-muted">Markup:</small>
-                            <div style="font-weight: 600; color: #2c3e50;">${dish.markup}%</div>
+                            <small style="color: #999; font-size: 0.75rem;">Markup:</small>
+                            <div style="font-weight: 600; color: #333; font-size: 0.85rem;">${dish.markup}%</div>
                         </div>
                     </div>
 
-                    <h6 style="font-weight: 700; color: #2c3e50; margin-bottom: 0.75rem;">
-                        <i class="bi bi-basket2-fill" style="color: #ff6b35;"></i> Ingredients & Prices
+                    <h6 style="font-weight: 600; color: #ff6b35; margin-bottom: 0.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-basket2-fill"></i> Ingredients & Prices
                     </h6>
                     <div class="table-responsive">
-                        <table class="table table-sm" style="font-size: 0.85rem;">
-                            <thead style="background: #f8f9fa;">
+                        <table class="table table-sm" style="font-size: 0.75rem;">
+                            <thead style="background: #fff5f2;">
                                 <tr>
-                                    <th>Ingredient</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-end">Cost</th>
+                                    <th style="color: #ff6b35; font-size: 0.75rem;">Ingredient</th>
+                                    <th class="text-center" style="color: #ff6b35; font-size: 0.75rem;">Quantity</th>
+                                    <th class="text-end" style="color: #ff6b35; font-size: 0.75rem;">Cost</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1336,9 +1358,9 @@
         dish.ingredients.forEach(ing => {
             html += `
                 <tr>
-                    <td style="font-weight: 600;">${ing.name}</td>
-                    <td class="text-center">${ing.quantity}${ing.unit}</td>
-                    <td class="text-end">KSh ${ing.total_cost.toLocaleString()}</td>
+                    <td style="font-weight: 600; color: #333;">${ing.name}</td>
+                    <td class="text-center" style="color: #666;">${ing.quantity}${ing.unit}</td>
+                    <td class="text-end" style="color: #333;">KSh ${ing.total_cost.toLocaleString()}</td>
                 </tr>
             `;
         });
@@ -1348,23 +1370,23 @@
                         </table>
                     </div>
 
-                    <div style="background: #f8f9fa; padding: 0.75rem; border-radius: 8px; margin-top: 1rem;">
-                        <div class="d-flex justify-content-between mb-2" style="font-size: 0.9rem;">
-                            <span>Ingredients Cost:</span>
-                            <span style="font-weight: 600;">KSh ${dish.total_base_cost.toLocaleString()}</span>
+                    <div style="background: #fff5f2; padding: 0.6rem; border-radius: 8px; margin-top: 0.75rem; border: 1px solid #ff6b35;">
+                        <div class="d-flex justify-content-between mb-2" style="font-size: 0.75rem;">
+                            <span style="color: #666;">Ingredients Cost:</span>
+                            <span style="font-weight: 600; color: #333;">KSh ${dish.total_base_cost.toLocaleString()}</span>
                         </div>
-                        <div class="d-flex justify-content-between mb-2" style="font-size: 0.9rem;">
-                            <span>Markup (${dish.markup}%):</span>
-                            <span style="font-weight: 600;">KSh ${dish.markup_amount.toLocaleString()}</span>
+                        <div class="d-flex justify-content-between mb-2" style="font-size: 0.75rem;">
+                            <span style="color: #666;">Markup (${dish.markup}%):</span>
+                            <span style="font-weight: 600; color: #333;">KSh ${dish.markup_amount.toLocaleString()}</span>
                         </div>
-                        <div class="d-flex justify-content-between" style="font-size: 1rem; font-weight: 700; color: #28a745;">
+                        <div class="d-flex justify-content-between" style="font-size: 0.85rem; font-weight: 700; color: #ff6b35;">
                             <span>Base Price (${dish.base_servings} servings):</span>
                             <span>KSh ${dish.base_selling_price.toLocaleString()}</span>
                         </div>
                     </div>
 
                     <div class="text-center mt-3">
-                        <button class="btn btn-success" onclick="selectCustomDish(${dish.id}, '${dish.name}')" style="border-radius: 10px; padding: 0.5rem 2rem;">
+                        <button class="btn" onclick="selectCustomDish('${dish.id}', '${dish.name}')" style="background: linear-gradient(135deg, #ff6b35, #ff8c42); color: white; border: none; border-radius: 8px; padding: 0.4rem 1.5rem; font-size: 0.85rem; font-weight: 600;">
                             <i class="bi bi-plus-circle"></i> Select This Dish
                         </button>
                     </div>
@@ -1377,25 +1399,25 @@
 
     function displayDishNotFound(dishName) {
         let html = `
-            <div class="card" style="border: 2px solid #ffc107; border-radius: 12px; overflow: hidden;">
-                <div class="card-header" style="background: linear-gradient(135deg, #ffc107, #ffb300); color: white; padding: 1rem;">
-                    <h6 class="mb-0" style="font-weight: 700;">
+            <div class="card" style="border: 2px solid #ff6b35; border-radius: 12px; overflow: hidden;">
+                <div class="card-header" style="background: linear-gradient(135deg, #ff6b35, #ff8c42); color: white; padding: 0.75rem;">
+                    <h6 class="mb-0" style="font-weight: 600; font-size: 0.9rem;">
                         <i class="bi bi-exclamation-triangle-fill"></i> Dish Not Found
                     </h6>
                 </div>
-                <div class="card-body" style="padding: 1.5rem; text-align: center;">
-                    <p style="font-size: 1rem; color: #6c757d; margin-bottom: 1.5rem;">
+                <div class="card-body" style="padding: 1rem; text-align: center;">
+                    <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">
                         "${dishName}" is not currently in our menu database.
                     </p>
-                    <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 1.5rem;">
+                    <p style="font-size: 0.8rem; color: #666; margin-bottom: 1rem;">
                         Would you like to request this dish? We'll send your request to our admin team.
                     </p>
                     
                     <div class="mb-3">
-                        <textarea class="form-control" id="customDishNotes" rows="3" placeholder="Add any additional notes about this dish (optional)" style="border-radius: 10px; font-size: 0.9rem;"></textarea>
+                        <textarea class="form-control" id="customDishNotes" rows="3" placeholder="Add any additional notes about this dish (optional)" style="border-radius: 8px; font-size: 0.8rem; border: 2px solid #ff6b35;"></textarea>
                     </div>
 
-                    <button class="btn btn-warning" onclick="requestCustomDish('${dishName}')" style="border-radius: 10px; padding: 0.5rem 2rem; color: white; font-weight: 600;">
+                    <button class="btn" onclick="requestCustomDish('${dishName}')" style="background: linear-gradient(135deg, #ff6b35, #ff8c42); color: white; border: none; border-radius: 8px; padding: 0.4rem 1.5rem; font-weight: 600; font-size: 0.85rem;">
                         <i class="bi bi-envelope-fill"></i> Request This Dish
                     </button>
                 </div>
@@ -1406,6 +1428,10 @@
     }
 
     window.selectCustomDish = function(dishId, dishName) {
+        console.log('=== SELECT CUSTOM DISH ===');
+        console.log('Dish ID:', dishId, 'Type:', typeof dishId);
+        console.log('Dish Name:', dishName);
+        
         if (customSelectedDishes.length >= MAX_CUSTOM_DISHES) {
             alert('Maximum 10 custom dishes allowed');
             return;
@@ -1418,12 +1444,13 @@
         }
 
         customSelectedDishes.push({ id: dishId, name: dishName });
+        console.log('Custom dishes array after adding:', customSelectedDishes);
         updateSelectedCustomDishes();
         
         // Clear search
         document.getElementById('customDishSearch').value = '';
         document.getElementById('customDishResults').innerHTML = `
-            <div class="alert alert-success">
+            <div class="alert" style="background: #fff5f2; border: 2px solid #ff6b35; color: #ff6b35; border-radius: 8px; font-size: 0.85rem;">
                 <i class="bi bi-check-circle-fill"></i> "${dishName}" added to your selection!
             </div>
         `;
@@ -1435,10 +1462,10 @@
         // Show loading
         document.getElementById('customDishResults').innerHTML = `
             <div class="text-center py-3">
-                <div class="spinner-border" role="status" style="color: #ffc107;">
+                <div class="spinner-border" role="status" style="color: #ff6b35;">
                     <span class="visually-hidden">Loading...</span>
                 </div>
-                <p class="mt-2 mb-0" style="font-size: 0.9rem; color: #6c757d;">Sending request...</p>
+                <p class="mt-2 mb-0" style="font-size: 0.8rem; color: #666;">Sending request...</p>
             </div>
         `;
 
@@ -1456,13 +1483,13 @@
         .then(data => {
             if (data.success) {
                 document.getElementById('customDishResults').innerHTML = `
-                    <div class="alert alert-success">
+                    <div class="alert" style="background: #fff5f2; border: 2px solid #ff6b35; color: #ff6b35; border-radius: 8px; font-size: 0.85rem;">
                         <i class="bi bi-check-circle-fill"></i> ${data.message}
                     </div>
                 `;
             } else {
                 document.getElementById('customDishResults').innerHTML = `
-                    <div class="alert alert-danger">
+                    <div class="alert" style="background: #fff5f2; border: 2px solid #ff6b35; color: #ff6b35; border-radius: 8px; font-size: 0.85rem;">
                         <i class="bi bi-exclamation-triangle-fill"></i> ${data.message}
                     </div>
                 `;
@@ -1470,7 +1497,7 @@
         })
         .catch(error => {
             document.getElementById('customDishResults').innerHTML = `
-                <div class="alert alert-danger">
+                <div class="alert" style="background: #fff5f2; border: 2px solid #ff6b35; color: #ff6b35; border-radius: 8px; font-size: 0.85rem;">
                     <i class="bi bi-exclamation-triangle-fill"></i> Error sending request. Please try again.
                 </div>
             `;
@@ -1490,11 +1517,11 @@
         let html = '';
         customSelectedDishes.forEach((dish, index) => {
             html += `
-                <div class="d-flex justify-content-between align-items-center p-2 mb-2" style="background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    <span style="font-weight: 600; color: #2c3e50;">
-                        <i class="bi bi-check-circle-fill" style="color: #28a745;"></i> ${dish.name}
+                <div class="d-flex justify-content-between align-items-center p-2 mb-2" style="background: #fff5f2; border-radius: 8px; border: 2px solid #ff6b35;">
+                    <span style="font-weight: 600; color: #333; font-size: 0.85rem;">
+                        <i class="bi bi-check-circle-fill" style="color: #ff6b35;"></i> ${dish.name}
                     </span>
-                    <button class="btn btn-sm btn-danger" onclick="removeCustomDish(${index})" style="border-radius: 6px; padding: 0.25rem 0.5rem;">
+                    <button class="btn btn-sm" onclick="removeCustomDish(${index})" style="background: #ff6b35; color: white; border: none; border-radius: 6px; padding: 0.25rem 0.5rem; font-size: 0.75rem;">
                         <i class="bi bi-trash"></i>
                     </button>
                 </div>

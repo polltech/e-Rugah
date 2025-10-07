@@ -1,0 +1,438 @@
+{% extends "base.html" %}
+
+{% block title %}Email Settings - e-Rugah{% endblock %}
+
+{% block content %}
+<style>
+    body { background: linear-gradient(135deg, #ffe4b5, #ffedd5); color: white; text-shadow: 0 0 5px rgba(0,0,0,0.5); animation: fadeIn 0.5s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .bi { color: #ff6b35; }
+    
+    /* Card hover effect with left-to-right color slide */
+    .dashboard-card { 
+        position: relative; 
+        overflow: hidden; 
+        background: rgba(255, 140, 66, 0.3); 
+        border: 1px solid rgba(255, 107, 53, 0.4); 
+        backdrop-filter: blur(10px); 
+        box-shadow: 0 8px 32px rgba(255, 107, 53, 0.2); 
+        transition: all 0.3s ease; 
+        animation: slideUp 0.6s ease-out; 
+    }
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(255, 107, 53, 0.6), rgba(255, 140, 66, 0.6));
+        transition: left 0.5s ease;
+        z-index: 0;
+    }
+    .dashboard-card:hover::before {
+        left: 0;
+    }
+    .dashboard-card > * {
+        position: relative;
+        z-index: 1;
+    }
+    .dashboard-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(255, 107, 53, 0.4); }
+    
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    
+    /* All buttons same orange color with left-to-right hover */
+    .btn { 
+        position: relative; 
+        overflow: hidden; 
+        transition: all 0.3s ease; 
+        border: none; 
+        background: linear-gradient(45deg, #ff6b35, #ff8c42); 
+        color: white;
+    }
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, #ff8c42, #ffa552);
+        transition: left 0.4s ease;
+        z-index: 0;
+    }
+    .btn:hover::before {
+        left: 0;
+    }
+    .btn > * {
+        position: relative;
+        z-index: 1;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5); }
+    
+    /* Outline button style */
+    .btn-outline-secondary { 
+        background: transparent !important; 
+        border: 1px solid rgba(255, 107, 53, 0.6) !important; 
+        color: white !important; 
+    }
+    .btn-outline-secondary::before {
+        background: linear-gradient(90deg, rgba(255, 107, 53, 0.3), rgba(255, 140, 66, 0.3)) !important;
+    }
+    
+    .form-control { 
+        background: rgba(255, 140, 66, 0.25); 
+        border: 1px solid rgba(255, 107, 53, 0.4); 
+        color: white; 
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        background: rgba(255, 140, 66, 0.35);
+        border-color: rgba(255, 107, 53, 0.7);
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+        color: white;
+    }
+    .form-control::placeholder { color: rgba(255, 255, 255, 0.7); }
+    .form-text { color: rgba(255, 255, 255, 0.8); font-size: 0.75rem; }
+    .alert { background: rgba(255, 140, 66, 0.25); border: 1px solid rgba(255, 107, 53, 0.4); color: white; }
+    .hr { border-color: rgba(255, 107, 53, 0.4); }
+    
+    .info-box {
+        background: rgba(255, 140, 66, 0.2);
+        border-left: 4px solid #ff6b35;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 8px;
+    }
+    
+    .test-connection-result {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        display: none;
+    }
+    
+    .test-connection-result.success {
+        background: rgba(40, 167, 69, 0.3);
+        border: 1px solid rgba(40, 167, 69, 0.5);
+    }
+    
+    .test-connection-result.error {
+        background: rgba(220, 53, 69, 0.3);
+        border: 1px solid rgba(220, 53, 69, 0.5);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .page-header h5 {
+            font-size: 1rem !important;
+        }
+        .page-header p {
+            font-size: 0.75rem !important;
+        }
+        .dashboard-card {
+            padding: 1rem !important;
+        }
+        .btn {
+            font-size: 0.7rem !important;
+            padding: 0.4rem 0.6rem !important;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h5 class="mb-0" style="font-size: 1.1rem;"><i class="bi bi-envelope-at"></i> Email & SMTP Settings</h5>
+            <p class="mb-0 mt-1 small" style="font-size: 0.8rem; color: rgba(0, 0, 0, 0.8);">Configure email settings for sending messages from contact form</p>
+        </div>
+        <div class="mt-2 mt-md-0">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary btn-sm" style="font-size: 0.75rem; padding: 0.25rem;">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-card mb-3">
+    <form method="POST" id="emailSettingsForm">
+        <h6 class="mb-3" style="font-size: 0.9rem;"><i class="bi bi-google"></i> Gmail SMTP Configuration</h6>
+
+        <div class="info-box">
+            <i class="bi bi-info-circle"></i>
+            <strong>Important:</strong> These settings are used to send messages from the contact form on your home page to your admin email address.
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="gmail_user" class="form-label">
+                    <i class="bi bi-envelope"></i> Gmail Email Address
+                </label>
+                <input type="email" class="form-control" id="gmail_user" name="gmail_user"
+                       value="{{ settings.get('gmail_user', '') }}" placeholder="your-email@gmail.com" required>
+                <div class="form-text">This email will be used to send messages and receive contact form submissions</div>
+            </div>
+            <div class="col-md-6">
+                <label for="gmail_password" class="form-label">
+                    <i class="bi bi-key"></i> Gmail App Password
+                </label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="gmail_password" name="gmail_password"
+                           value="{{ settings.get('gmail_password', '') }}" placeholder="16-character App Password" required>
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword" style="z-index: 10;">
+                        <i class="bi bi-eye" id="toggleIcon"></i>
+                    </button>
+                </div>
+                <div class="form-text">Generate an App Password from your Google Account security settings</div>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <h6 class="mb-3" style="font-size: 0.9rem;"><i class="bi bi-server"></i> SMTP Server Details</h6>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="smtp_host" class="form-label">
+                    <i class="bi bi-hdd-network"></i> SMTP Host
+                </label>
+                <input type="text" class="form-control" id="smtp_host" name="smtp_host"
+                       value="{{ settings.get('smtp_host', 'smtp.gmail.com') }}" placeholder="smtp.gmail.com" required>
+                <div class="form-text">Gmail SMTP server address (default: smtp.gmail.com)</div>
+            </div>
+            <div class="col-md-6">
+                <label for="smtp_port" class="form-label">
+                    <i class="bi bi-plug"></i> SMTP Port
+                </label>
+                <select class="form-control" id="smtp_port" name="smtp_port" required>
+                    <option value="587" {% if settings.get('smtp_port', '587') == '587' %}selected{% endif %}>587 (TLS - Recommended)</option>
+                    <option value="465" {% if settings.get('smtp_port', '587') == '465' %}selected{% endif %}>465 (SSL)</option>
+                    <option value="25" {% if settings.get('smtp_port', '587') == '25' %}selected{% endif %}>25 (Unencrypted)</option>
+                </select>
+                <div class="form-text">Port 587 with TLS is recommended for Gmail</div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="smtp_encryption" class="form-label">
+                    <i class="bi bi-shield-lock"></i> Encryption Method
+                </label>
+                <select class="form-control" id="smtp_encryption" name="smtp_encryption" required>
+                    <option value="tls" {% if settings.get('smtp_encryption', 'tls') == 'tls' %}selected{% endif %}>TLS (Recommended)</option>
+                    <option value="ssl" {% if settings.get('smtp_encryption', 'tls') == 'ssl' %}selected{% endif %}>SSL</option>
+                    <option value="none" {% if settings.get('smtp_encryption', 'tls') == 'none' %}selected{% endif %}>None</option>
+                </select>
+                <div class="form-text">TLS encryption is recommended for security</div>
+            </div>
+            <div class="col-md-6">
+                <label for="admin_email" class="form-label">
+                    <i class="bi bi-person-badge"></i> Admin Email (Recipient)
+                </label>
+                <input type="email" class="form-control" id="admin_email" name="admin_email"
+                       value="{{ settings.get('admin_email', settings.get('gmail_user', '')) }}" placeholder="admin@example.com" required>
+                <div class="form-text">Email address where contact form messages will be sent</div>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <h6 class="mb-3" style="font-size: 0.9rem;"><i class="bi bi-gear"></i> Additional Settings</h6>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="sender_name" class="form-label">
+                    <i class="bi bi-person"></i> Sender Name
+                </label>
+                <input type="text" class="form-control" id="sender_name" name="sender_name"
+                       value="{{ settings.get('sender_name', 'e-Rugah Contact Form') }}" placeholder="e-Rugah Contact Form">
+                <div class="form-text">Name that appears as the sender in emails</div>
+            </div>
+            <div class="col-md-6">
+                <label for="email_timeout" class="form-label">
+                    <i class="bi bi-clock"></i> Connection Timeout (seconds)
+                </label>
+                <input type="number" class="form-control" id="email_timeout" name="email_timeout"
+                       value="{{ settings.get('email_timeout', '30') }}" min="10" max="120" placeholder="30">
+                <div class="form-text">Maximum time to wait for SMTP connection (default: 30 seconds)</div>
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            <i class="bi bi-lightbulb"></i>
+            <strong>How to Generate a Gmail App Password:</strong>
+            <ol class="mb-0 mt-2">
+                <li>Go to your Google Account settings: <a href="https://myaccount.google.com/" target="_blank" style="color: #ff6b35; text-decoration: underline;">myaccount.google.com</a></li>
+                <li>Navigate to <strong>Security</strong> → <strong>2-Step Verification</strong> (enable if not already enabled)</li>
+                <li>Scroll down to <strong>App passwords</strong> and click on it</li>
+                <li>Select <strong>Mail</strong> as the app and <strong>Other</strong> as the device</li>
+                <li>Enter "e-Rugah" as the custom name and click <strong>Generate</strong></li>
+                <li>Copy the 16-character password and paste it in the "Gmail App Password" field above</li>
+            </ol>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="btn btn-primary btn-sm" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
+                <i class="bi bi-save"></i> Save Settings
+            </button>
+            <button type="button" class="btn btn-info btn-sm" id="testConnectionBtn" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
+                <i class="bi bi-plug"></i> Test Connection
+            </button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
+                <i class="bi bi-x"></i> Cancel
+            </a>
+        </div>
+
+        <div class="test-connection-result" id="testResult"></div>
+    </form>
+</div>
+
+<div class="dashboard-card">
+    <h6 class="mb-3" style="font-size: 0.9rem;"><i class="bi bi-question-circle"></i> Troubleshooting</h6>
+    
+    <div class="accordion" id="troubleshootingAccordion">
+        <div class="accordion-item" style="background: rgba(255, 140, 66, 0.2); border: 1px solid rgba(255, 107, 53, 0.3);">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" 
+                        style="background: rgba(255, 140, 66, 0.3); color: white; border: none;">
+                    <i class="bi bi-exclamation-triangle me-2"></i> Authentication Failed
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
+                <div class="accordion-body" style="color: white;">
+                    <strong>Solution:</strong>
+                    <ul>
+                        <li>Ensure you're using an App Password, not your regular Gmail password</li>
+                        <li>Verify that 2-Step Verification is enabled on your Google Account</li>
+                        <li>Check that the email address is correct</li>
+                        <li>Try generating a new App Password</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-item" style="background: rgba(255, 140, 66, 0.2); border: 1px solid rgba(255, 107, 53, 0.3); margin-top: 0.5rem;">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" 
+                        style="background: rgba(255, 140, 66, 0.3); color: white; border: none;">
+                    <i class="bi bi-clock-history me-2"></i> Connection Timeout
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
+                <div class="accordion-body" style="color: white;">
+                    <strong>Solution:</strong>
+                    <ul>
+                        <li>Check your internet connection</li>
+                        <li>Verify the SMTP host and port are correct</li>
+                        <li>Increase the connection timeout value</li>
+                        <li>Check if your firewall is blocking SMTP connections</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-item" style="background: rgba(255, 140, 66, 0.2); border: 1px solid rgba(255, 107, 53, 0.3); margin-top: 0.5rem;">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" 
+                        style="background: rgba(255, 140, 66, 0.3); color: white; border: none;">
+                    <i class="bi bi-envelope-x me-2"></i> Emails Not Being Received
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
+                <div class="accordion-body" style="color: white;">
+                    <strong>Solution:</strong>
+                    <ul>
+                        <li>Check your spam/junk folder</li>
+                        <li>Verify the admin email address is correct</li>
+                        <li>Test the connection using the "Test Connection" button</li>
+                        <li>Ensure Gmail hasn't blocked your account for suspicious activity</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordInput = document.getElementById('gmail_password');
+        const toggleIcon = document.getElementById('toggleIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('bi-eye');
+            toggleIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('bi-eye-slash');
+            toggleIcon.classList.add('bi-eye');
+        }
+    });
+
+    // Test SMTP connection
+    document.getElementById('testConnectionBtn').addEventListener('click', async function() {
+        const btn = this;
+        const originalHTML = btn.innerHTML;
+        const resultDiv = document.getElementById('testResult');
+        
+        // Disable button and show loading
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Testing...';
+        
+        // Hide previous result
+        resultDiv.style.display = 'none';
+        resultDiv.className = 'test-connection-result';
+        
+        try {
+            const formData = new FormData(document.getElementById('emailSettingsForm'));
+            
+            const response = await fetch('{{ url_for("test_email_connection") }}', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            // Show result
+            resultDiv.style.display = 'block';
+            
+            if (data.success) {
+                resultDiv.classList.add('success');
+                resultDiv.innerHTML = `
+                    <i class="bi bi-check-circle"></i>
+                    <strong>Connection Successful!</strong>
+                    <p class="mb-0 mt-2">${data.message}</p>
+                `;
+            } else {
+                resultDiv.classList.add('error');
+                resultDiv.innerHTML = `
+                    <i class="bi bi-x-circle"></i>
+                    <strong>Connection Failed</strong>
+                    <p class="mb-0 mt-2">${data.message}</p>
+                `;
+            }
+        } catch (error) {
+            resultDiv.style.display = 'block';
+            resultDiv.classList.add('error');
+            resultDiv.innerHTML = `
+                <i class="bi bi-x-circle"></i>
+                <strong>Error</strong>
+                <p class="mb-0 mt-2">Failed to test connection: ${error.message}</p>
+            `;
+        } finally {
+            // Re-enable button
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
+        }
+    });
+
+    // Auto-sync admin email with gmail_user if empty
+    document.getElementById('gmail_user').addEventListener('blur', function() {
+        const adminEmailInput = document.getElementById('admin_email');
+        if (!adminEmailInput.value || adminEmailInput.value === '') {
+            adminEmailInput.value = this.value;
+        }
+    });
+</script>
+{% endblock %}

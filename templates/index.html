@@ -223,7 +223,7 @@
     }
 
     .hero-title-left .event {
-        background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #e2e8f0 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -357,7 +357,7 @@
     }
 
     .highlight-green {
-        color: #34d399;
+        color: #ffffff;
     }
 
     .with {
@@ -365,7 +365,7 @@
     }
 
     .erugah {
-        color: #34d399;
+        color: #ffffff;
     }
 
     .hero-subtitle::first-letter {
@@ -390,7 +390,7 @@
 
     /* Modern Section Title */
     .modern-title {
-        color: #ff6b6b;
+        color: #f97316;
         font-size: 2.5rem;
         font-weight: 800;
         letter-spacing: -1px;
@@ -412,7 +412,7 @@
         transform: translateX(-50%);
         width: 0;
         height: 3px;
-        background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+        background: linear-gradient(135deg, #f97316, #fb923c, #fdba74);
         animation: underlineExpand 1.5s ease-out 0.5s forwards;
     }
 
@@ -421,8 +421,8 @@
     }
 
     @keyframes titleGlow {
-        0% { filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.5)); }
-        100% { filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.8)); }
+        0% { filter: drop-shadow(0 0 5px rgba(249, 115, 22, 0.5)); }
+        100% { filter: drop-shadow(0 0 20px rgba(249, 115, 22, 0.8)); }
     }
 
     @keyframes underlineExpand {
@@ -724,27 +724,29 @@
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+        background: transparent;
         color: white;
-        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
-        border: 2px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4), 0 8px 25px rgba(249, 115, 22, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.6);
     }
 
     .btn-primary:hover {
         transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 15px 40px rgba(99, 102, 241, 0.7);
+        box-shadow: 0 15px 40px rgba(255, 107, 53, 0.7);
         color: white;
-        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);
+        background: linear-gradient(135deg, #f97316 0%, #fb923c 50%, #fdba74 100%);
+        border-color: rgba(255, 107, 53, 0.8);
     }
 
     .btn-secondary {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        background: transparent;
         backdrop-filter: blur(15px);
         border: 2px solid rgba(255, 255, 255, 0.6);
         color: #ffffff;
         font-weight: 600;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4), 0 8px 25px rgba(249, 115, 22, 0.3);
     }
 
     .btn-secondary::before {
@@ -754,7 +756,7 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.4), transparent);
         transition: left 0.5s;
     }
 
@@ -763,11 +765,11 @@
     }
 
     .btn-secondary:hover {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+        background: linear-gradient(135deg, #f97316 0%, #fb923c 50%, #fdba74 100%);
         transform: translateY(-3px) scale(1.02);
         color: white;
-        border-color: rgba(255, 255, 255, 0.8);
-        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 107, 53, 0.8);
+        box-shadow: 0 15px 40px rgba(255, 107, 53, 0.7);
     }
 
     /* Slider Navigation Dots */
@@ -897,8 +899,14 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        transition: left 0.5s;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(249, 115, 22, 0.1) 25%, 
+            rgba(251, 146, 60, 0.2) 50%, 
+            rgba(253, 186, 116, 0.1) 75%, 
+            transparent 100%);
+        transition: left 0.6s ease-in-out;
+        z-index: 1;
     }
 
     .info-card:hover::before {
@@ -907,9 +915,9 @@
 
     .info-card:hover {
         transform: translateY(-15px) scale(1.02);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2), 0 0 40px rgba(255, 165, 0, 0.5);
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-        border-color: rgba(255, 165, 0, 0.4);
+        box-shadow: 0 25px 50px rgba(249, 115, 22, 0.3), 0 0 40px rgba(249, 115, 22, 0.5);
+        background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(251, 146, 60, 0.1) 100%);
+        border-color: rgba(249, 115, 22, 0.4);
     }
 
     .info-card h5 {
@@ -1690,7 +1698,7 @@
 
         .chef-location {
             text-align: center;
-            color: rgba(255, 255, 255, 0.8);
+            color: #000000;
             font-size: 0.9rem;
             margin-bottom: 1rem;
             display: flex;
@@ -1711,13 +1719,13 @@
         }
 
         .chef-rating-text {
-            color: rgba(255, 255, 255, 0.9);
+            color: #000000;
             font-size: 0.85rem;
             font-weight: 600;
         }
 
         .chef-verified-badge {
-            background: linear-gradient(45deg, #10b981, #34d399);
+            background: linear-gradient(135deg, #f97316, #fb923c);
             color: white;
             padding: 0.4rem 0.8rem;
             border-radius: 50px;
@@ -1727,6 +1735,7 @@
             align-items: center;
             gap: 0.3rem;
             margin-top: 0.5rem;
+            box-shadow: 0 3px 10px rgba(249, 115, 22, 0.4);
         }
 
         .chef-slider-nav-btn {
@@ -1819,7 +1828,7 @@
                             {{ "%.1f"|format(chef.average_rating) }} ({{ chef.rating_count }} reviews)
                         </div>
                         {% else %}
-                        <div class="chef-rating-text" style="color: rgba(255, 255, 255, 0.6);">
+                        <div class="chef-rating-text" style="color: #000000;">
                             New Chef
                         </div>
                         {% endif %}
@@ -1831,7 +1840,7 @@
                     </div>
                     <!-- View Profile Button -->
                     <div style="text-align: center; margin-top: 12px;">
-                        <button onclick="viewChefProfile({{ chef.id }})" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(255, 107, 107, 0.5)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 8px rgba(255, 107, 107, 0.3)';">
+                        <button onclick="viewChefProfile({{ chef.id }})" style="background: linear-gradient(135deg, #f97316, #fb923c); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);" onmouseover="this.style.transform='scale(1.05)'; this.style.background='linear-gradient(135deg, #fb923c, #fdba74)'; this.style.boxShadow='0 8px 25px rgba(249, 115, 22, 0.5)';" onmouseout="this.style.transform='scale(1)'; this.style.background='linear-gradient(135deg, #f97316, #fb923c)'; this.style.boxShadow='0 4px 15px rgba(249, 115, 22, 0.3)';">
                             <i class="fas fa-user"></i> View Profile
                         </button>
                     </div>
@@ -1932,7 +1941,7 @@
     <div class="row mb-5">
         <div class="col-md-6 mb-4">
             <div class="info-card">
-                <h5 style="color: #667eea; font-weight: 700;">
+                <h5 style="color: #f97316; font-weight: 700;">
                     <span class="food-emoji">🍽️</span> Culinary Variety Unleashed
                 </h5>
                 <p class="mb-0">Unleash your taste buds! From homey classics to worldly wonders, our skilled chefs deliver personalized menus that cater to every flavor profile and dietary need.</p>
@@ -1940,7 +1949,7 @@
         </div>
         <div class="col-md-6 mb-4">
             <div class="info-card">
-                <h5 style="color: #667eea; font-weight: 700;">
+                <h5 style="color: #f97316; font-weight: 700;">
                     <span class="food-emoji">💳</span> Crystal Clear Pricing
                 </h5>
                 <p class="mb-0">Transparency you can trust. No sneaky fees—see exactly what you're paying for, based purely on your chosen menu and number of guests.</p>
@@ -1948,7 +1957,7 @@
         </div>
         <div class="col-md-6 mb-4">
             <div class="info-card">
-                <h5 style="color: #667eea; font-weight: 700;">
+                <h5 style="color: #f97316; font-weight: 700;">
                     <span class="food-emoji">🚀</span> Instant Reservations
                 </h5>
                 <p class="mb-0">Chef booked in a flash! Our super-speedy system transforms your <span class="highlight-green">event</span> vision into confirmed bookings with minimal effort.</p>
@@ -1956,7 +1965,7 @@
         </div>
         <div class="col-md-6 mb-4">
             <div class="info-card">
-                <h5 style="color: #667eea; font-weight: 700;">
+                <h5 style="color: #f97316; font-weight: 700;">
                     <span class="food-emoji">🏆</span> Elite Culinary Assurance
                 </h5>
                 <p class="mb-0">Excellence is our standard. Every chef undergoes rigorous screening, guaranteeing premier culinary talent for your unforgettable <span class="highlight-green">events</span>.</p>
@@ -1996,6 +2005,319 @@
         </div>
     </div>
 </div>
+
+<!-- Contact/Send Message Section -->
+<div class="container mt-5 mb-5">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2 class="section-title d-inline-block modern-title">
+                <span class="title-icon">✉️</span> Get In Touch <span class="title-icon">📧</span>
+            </h2>
+            <p class="text-muted mt-2">Have questions or need assistance? Send us a message!</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="contact-form-card">
+                <form id="contactForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-modern">
+                                <i class="bi bi-person-fill form-icon"></i>
+                                <input type="text" class="form-control-modern" id="contactName" placeholder="Your Name" required value="{{ current_user.email.split('@')[0] if current_user.is_authenticated else '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group-modern">
+                                <i class="bi bi-envelope-fill form-icon"></i>
+                                <input type="email" class="form-control-modern" id="contactEmail" placeholder="Your Email" required value="{{ current_user.email if current_user.is_authenticated else '' }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-group-modern">
+                            <i class="bi bi-chat-left-text-fill form-icon"></i>
+                            <input type="text" class="form-control-modern" id="contactSubject" placeholder="Subject" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="form-group-modern">
+                            <i class="bi bi-pencil-fill form-icon"></i>
+                            <textarea class="form-control-modern" id="contactMessage" rows="5" placeholder="Your Message" required></textarea>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn-send-message">
+                            <span class="btn-text">Send Message</span>
+                            <i class="bi bi-send-fill btn-icon"></i>
+                        </button>
+                    </div>
+                </form>
+                <div id="contactFormMessage" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Contact Form Styles */
+    .contact-form-card {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 140, 66, 0.1));
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(255, 107, 53, 0.3);
+        border-radius: 25px;
+        padding: 2.5rem;
+        box-shadow: 0 15px 50px rgba(255, 107, 53, 0.2);
+        position: relative;
+        overflow: hidden;
+        animation: cardSlideUp 0.8s ease-out;
+    }
+
+    @keyframes cardSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .contact-form-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+        animation: rotateGradient 10s linear infinite;
+    }
+
+    @keyframes rotateGradient {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .form-group-modern {
+        position: relative;
+        animation: fadeInUp 0.6s ease-out both;
+    }
+
+    .form-group-modern:nth-child(1) { animation-delay: 0.1s; }
+    .form-group-modern:nth-child(2) { animation-delay: 0.2s; }
+    .form-group-modern:nth-child(3) { animation-delay: 0.3s; }
+    .form-group-modern:nth-child(4) { animation-delay: 0.4s; }
+
+    .form-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #ff6b35;
+        font-size: 1.2rem;
+        z-index: 2;
+        transition: all 0.3s ease;
+    }
+
+    .form-control-modern {
+        width: 100%;
+        padding: 0.9rem 1rem 0.9rem 3rem;
+        border: 2px solid rgba(255, 107, 53, 0.3);
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+    }
+
+    .form-control-modern:focus {
+        outline: none;
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .form-control-modern:focus + .form-icon {
+        color: #ff8c42;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    textarea.form-control-modern {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .btn-send-message {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        border: none;
+        padding: 1rem 3rem;
+        border-radius: 50px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        animation: fadeInUp 0.6s ease-out 0.5s both;
+    }
+
+    .btn-send-message::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-send-message:hover::before {
+        left: 100%;
+    }
+
+    .btn-send-message:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 12px 35px rgba(255, 107, 53, 0.6);
+    }
+
+    .btn-send-message:active {
+        transform: translateY(-2px) scale(1.02);
+    }
+
+    .btn-icon {
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-send-message:hover .btn-icon {
+        transform: translateX(5px);
+    }
+
+    .btn-send-message:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .alert-modern {
+        padding: 1rem 1.5rem;
+        border-radius: 15px;
+        border: none;
+        animation: slideInDown 0.5s ease-out;
+        backdrop-filter: blur(10px);
+        font-weight: 600;
+    }
+
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .alert-success-modern {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(74, 222, 128, 0.2));
+        border: 2px solid rgba(34, 197, 94, 0.4);
+        color: #166534;
+    }
+
+    .alert-danger-modern {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(248, 113, 113, 0.2));
+        border: 2px solid rgba(239, 68, 68, 0.4);
+        color: #991b1b;
+    }
+
+    @media (max-width: 768px) {
+        .contact-form-card {
+            padding: 1.5rem;
+        }
+
+        .btn-send-message {
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<script>
+    // Contact Form Submission
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = this.querySelector('.btn-send-message');
+        const messageDiv = document.getElementById('contactFormMessage');
+        const originalBtnText = submitBtn.innerHTML;
+        
+        // Disable button and show loading
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Sending...';
+        
+        const formData = {
+            name: document.getElementById('contactName').value,
+            email: document.getElementById('contactEmail').value,
+            subject: document.getElementById('contactSubject').value,
+            message: document.getElementById('contactMessage').value
+        };
+        
+        try {
+            const response = await fetch('/send-message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                messageDiv.innerHTML = `
+                    <div class="alert alert-success-modern">
+                        <i class="bi bi-check-circle-fill me-2"></i>${data.message}
+                    </div>
+                `;
+                // Reset form
+                this.reset();
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="alert alert-danger-modern">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>${data.message}
+                    </div>
+                `;
+            }
+        } catch (error) {
+            messageDiv.innerHTML = `
+                <div class="alert alert-danger-modern">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>An error occurred. Please try again later.
+                </div>
+            `;
+        } finally {
+            // Re-enable button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+            
+            // Clear message after 5 seconds
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 5000);
+        }
+    });
+</script>
 
 <style>
     /* Reviews Slider Styles - Same as index.html */

@@ -161,18 +161,24 @@ body::before {
 .nav-link i {
     margin-right: 0.4rem;
     transition: transform 0.3s ease;
+    color: #000000 !important;
+    filter: none !important;
 }
 
-.nav-link i.bi-door-open {
-    color: #ffa552;
-}
-
-.nav-link i.bi-person-plus-fill {
-    color: #2ecc71;
-}
-
-.nav-link i.bi-award-fill {
-    color: #f39c12;
+.nav-link i.bi-door-open,
+.nav-link i.bi-person-plus-fill,
+.nav-link i.bi-award-fill,
+.nav-link i.bi-speedometer2,
+.nav-link i.bi-plus-circle,
+.nav-link i.bi-graph-up,
+.nav-link i.bi-gear,
+.nav-link i.bi-box-arrow-right,
+.nav-link i.bi-house-door,
+.nav-link i.bi-info-circle,
+.nav-link i.bi-check-circle,
+.nav-link i.bi-exclamation-circle,
+.nav-link i.bi-exclamation-triangle {
+    color: #000000 !important;
 }
 
 .nav-link:hover {
@@ -203,8 +209,10 @@ body::before {
 
 .btn-primary {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+    background-color: var(--primary-color);
     background-size: 200% auto;
     border: none;
+    border-color: var(--primary-color);
     padding: 0.85rem 2.5rem;
     font-weight: 600;
     border-radius: 50px;
@@ -237,6 +245,7 @@ body::before {
     transform: translateY(-5px) scale(1.05);
     box-shadow: 0 12px 35px rgba(255, 107, 53, 0.5);
     background-position: right center;
+    background-color: var(--secondary-color);
 }
 
 .btn-success {

@@ -897,26 +897,52 @@ def admin_delete_custom_dish(dish_id):
 @app.route('/api/calculate-dish-price', methods=['POST'])
 @login_required
 def calculate_dish_price():
-    dish_id = int(request.form.get('dish_id'))
+    dish_id_str = request.form.get('dish_id')
     guests = int(request.form.get('guests'))
 
-    dish = Dish.query.get_or_404(dish_id)
-    dish_ingredients = DishIngredient.query.filter_by(dish_id=dish.id).all()
+    # Check if this is a custom dish (prefixed with 'custom_')
+    is_custom = str(dish_id_str).startswith('custom_')
+    
+    if is_custom:
+        # Extract the actual ID from 'custom_123' format
+        actual_id = int(dish_id_str.replace('custom_', ''))
+        dish = CustomDish.query.get_or_404(actual_id)
+        dish_ingredients = CustomDishIngredient.query.filter_by(dish_id=dish.id).all()
+        
+        total_cost = 0.0
+        ingredient_breakdown = []
 
-    total_cost = 0.0
-    ingredient_breakdown = []
+        for di in dish_ingredients:
+            ingredient = CustomIngredient.query.get(di.ingredient_id)
+            scaled_quantity = (di.quantity_for_base_servings / dish.base_servings) * guests
+            cost = scaled_quantity * ingredient.unit_price
+            total_cost += cost
+            ingredient_breakdown.append({
+                'name': ingredient.name,
+                'scaled_quantity': round(scaled_quantity, 2),
+                'unit': ingredient.unit,
+                'cost': round(cost, 2)
+            })
+    else:
+        # Regular dish from main database
+        dish_id = int(dish_id_str)
+        dish = Dish.query.get_or_404(dish_id)
+        dish_ingredients = DishIngredient.query.filter_by(dish_id=dish.id).all()
 
-    for di in dish_ingredients:
-        ingredient = Ingredient.query.get(di.ingredient_id)
-        scaled_quantity = (di.quantity_for_base_servings / dish.base_servings) * guests
-        cost = scaled_quantity * ingredient.unit_price
-        total_cost += cost
-        ingredient_breakdown.append({
-            'name': ingredient.name,
-            'scaled_quantity': round(scaled_quantity, 2),
-            'unit': ingredient.unit,
-            'cost': round(cost, 2)
-        })
+        total_cost = 0.0
+        ingredient_breakdown = []
+
+        for di in dish_ingredients:
+            ingredient = Ingredient.query.get(di.ingredient_id)
+            scaled_quantity = (di.quantity_for_base_servings / dish.base_servings) * guests
+            cost = scaled_quantity * ingredient.unit_price
+            total_cost += cost
+            ingredient_breakdown.append({
+                'name': ingredient.name,
+                'scaled_quantity': round(scaled_quantity, 2),
+                'unit': ingredient.unit,
+                'cost': round(cost, 2)
+            })
 
     markup_amount = total_cost * (dish.markup / 100)
     selling_price = total_cost + markup_amount
@@ -976,7 +1002,7 @@ def check_custom_dish():
         'success': True,
         'found': True,
         'dish': {
-            'id': dish.id,
+            'id': f'custom_{dish.id}',  # Prefix with 'custom_' to distinguish from regular dishes
             'name': dish.name,
             'description': dish.description,
             'base_servings': dish.base_servings,
@@ -1491,6 +1517,146 @@ def admin_settings():
 
     return render_template('admin_settings.html', settings=settings, SMS_VERIFICATION_KEY=SMS_VERIFICATION_KEY)
 
+@app.route('/admin/email-settings', methods=['GET', 'POST'])
+@role_required('admin')
+def admin_email_settings():
+    if request.method == 'POST':
+        # Save email settings
+        email_settings_keys = [
+            'gmail_user', 'gmail_password',
+            'smtp_host', 'smtp_port', 'smtp_encryption',
+            'admin_email', 'sender_name', 'email_timeout'
+        ]
+
+        for key in email_settings_keys:
+            value = request.form.get(key)
+            if value is not None:
+                config = SystemConfig.query.filter_by(key=key).first()
+                if config:
+                    config.value = value
+                else:
+                    config = SystemConfig(key=key, value=value)
+                    db.session.add(config)
+
+        db.session.commit()
+        flash('Email settings updated successfully!', 'success')
+        return redirect(url_for('admin_email_settings'))
+
+    # Get current settings
+    settings = {}
+    configs = SystemConfig.query.filter(SystemConfig.key.in_([
+        'gmail_user', 'gmail_password',
+        'smtp_host', 'smtp_port', 'smtp_encryption',
+        'admin_email', 'sender_name', 'email_timeout'
+    ])).all()
+
+    for config in configs:
+        settings[config.key] = config.value
+
+    # Set defaults if not configured
+    if 'smtp_host' not in settings:
+        settings['smtp_host'] = 'smtp.gmail.com'
+    if 'smtp_port' not in settings:
+        settings['smtp_port'] = '587'
+    if 'smtp_encryption' not in settings:
+        settings['smtp_encryption'] = 'tls'
+    if 'sender_name' not in settings:
+        settings['sender_name'] = 'e-Rugah Contact Form'
+    if 'email_timeout' not in settings:
+        settings['email_timeout'] = '30'
+
+    return render_template('admin_email_settings.html', settings=settings)
+
+@app.route('/admin/test-email-connection', methods=['POST'])
+@role_required('admin')
+def test_email_connection():
+    """Test SMTP connection with provided settings"""
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    
+    try:
+        # Get settings from form
+        gmail_user = request.form.get('gmail_user')
+        gmail_password = request.form.get('gmail_password')
+        smtp_host = request.form.get('smtp_host', 'smtp.gmail.com')
+        smtp_port = int(request.form.get('smtp_port', 587))
+        smtp_encryption = request.form.get('smtp_encryption', 'tls')
+        timeout = int(request.form.get('email_timeout', 30))
+        
+        if not gmail_user or not gmail_password:
+            return jsonify({
+                'success': False,
+                'message': 'Gmail email and password are required'
+            })
+        
+        # Test connection
+        if smtp_encryption == 'ssl':
+            server = smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=timeout)
+        else:
+            server = smtplib.SMTP(smtp_host, smtp_port, timeout=timeout)
+            if smtp_encryption == 'tls':
+                server.starttls()
+        
+        # Login
+        server.login(gmail_user, gmail_password)
+        
+        # Send test email to self
+        msg = MIMEMultipart()
+        msg['From'] = gmail_user
+        msg['To'] = gmail_user
+        msg['Subject'] = 'e-Rugah SMTP Test - Connection Successful'
+        
+        body = """
+        <html>
+            <body style="font-family: Arial, sans-serif; padding: 20px;">
+                <h2 style="color: #ff6b35;">SMTP Connection Test Successful!</h2>
+                <p>Your email settings are configured correctly.</p>
+                <p><strong>Configuration Details:</strong></p>
+                <ul>
+                    <li>SMTP Host: {}</li>
+                    <li>SMTP Port: {}</li>
+                    <li>Encryption: {}</li>
+                    <li>Email: {}</li>
+                </ul>
+                <p>You can now receive messages from your contact form.</p>
+                <hr>
+                <p style="color: #666; font-size: 12px;">This is an automated test message from e-Rugah</p>
+            </body>
+        </html>
+        """.format(smtp_host, smtp_port, smtp_encryption.upper(), gmail_user)
+        
+        msg.attach(MIMEText(body, 'html'))
+        
+        server.send_message(msg)
+        server.quit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Connection successful! A test email has been sent to {gmail_user}'
+        })
+        
+    except smtplib.SMTPAuthenticationError:
+        return jsonify({
+            'success': False,
+            'message': 'Authentication failed. Please check your email and app password.'
+        })
+    except smtplib.SMTPConnectError:
+        return jsonify({
+            'success': False,
+            'message': 'Could not connect to SMTP server. Please check host and port.'
+        })
+    except smtplib.SMTPException as e:
+        return jsonify({
+            'success': False,
+            'message': f'SMTP error: {str(e)}'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error: {str(e)}'
+        })
+
 @app.route('/admin/mpesa-settings', methods=['GET', 'POST'])
 @role_required('admin')
 def admin_mpesa_settings():
@@ -1812,6 +1978,128 @@ def rate_chef(booking_id):
         db.session.rollback()
         print(f"[ERROR] Failed to submit rating: {e}")
         return jsonify({'success': False, 'message': 'Failed to submit rating. Please try again.'}), 500
+
+@app.route('/send-message', methods=['POST'])
+@login_required
+def send_message():
+    """Send a message from logged-in user to admin email"""
+    try:
+        data = request.get_json()
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip()
+        subject = data.get('subject', '').strip()
+        message = data.get('message', '').strip()
+        
+        # Validate inputs
+        if not all([name, email, subject, message]):
+            return jsonify({'success': False, 'message': 'All fields are required'}), 400
+        
+        # Get email configuration from database
+        email_configs = SystemConfig.query.filter(SystemConfig.key.in_([
+            'gmail_user', 'gmail_password', 'smtp_host', 'smtp_port', 
+            'smtp_encryption', 'admin_email', 'sender_name', 'email_timeout'
+        ])).all()
+        
+        config_dict = {config.key: config.value for config in email_configs}
+        
+        gmail_user = config_dict.get('gmail_user')
+        gmail_password = config_dict.get('gmail_password')
+        smtp_host = config_dict.get('smtp_host', 'smtp.gmail.com')
+        smtp_port = int(config_dict.get('smtp_port', 587))
+        smtp_encryption = config_dict.get('smtp_encryption', 'tls')
+        admin_email = config_dict.get('admin_email', gmail_user)
+        sender_name = config_dict.get('sender_name', 'e-Rugah Contact Form')
+        email_timeout = int(config_dict.get('email_timeout', 30))
+        
+        if not gmail_user or not gmail_password:
+            return jsonify({
+                'success': False, 
+                'message': 'Email system not configured. Please contact administrator.'
+            }), 500
+        
+        # Send email using SMTP
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        import smtplib
+        
+        msg = MIMEMultipart('alternative')
+        msg['From'] = f'{sender_name} <{gmail_user}>'
+        msg['To'] = admin_email
+        msg['Subject'] = f'e-Rugah Contact: {subject}'
+        msg['Reply-To'] = email
+        
+        # Plain text version
+        text_body = f"""
+New Message from e-Rugah Contact Form
+
+From: {name}
+Email: {email}
+Subject: {subject}
+
+Message:
+{message}
+
+---
+Sent via e-Rugah Contact Form
+Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        """
+        
+        # HTML version
+        html_body = f"""
+        <html>
+            <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h2 style="color: #ff6b35; border-bottom: 3px solid #ff6b35; padding-bottom: 10px;">New Contact Form Message</h2>
+                    
+                    <div style="margin: 20px 0;">
+                        <p style="margin: 10px 0;"><strong style="color: #333;">From:</strong> {name}</p>
+                        <p style="margin: 10px 0;"><strong style="color: #333;">Email:</strong> <a href="mailto:{email}" style="color: #ff6b35;">{email}</a></p>
+                        <p style="margin: 10px 0;"><strong style="color: #333;">Subject:</strong> {subject}</p>
+                    </div>
+                    
+                    <div style="background-color: #fff8f5; padding: 20px; border-left: 4px solid #ff6b35; margin: 20px 0;">
+                        <p style="margin: 0; color: #333; line-height: 1.6;">{message.replace(chr(10), '<br>')}</p>
+                    </div>
+                    
+                    <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                    
+                    <p style="color: #666; font-size: 12px; margin: 10px 0;">
+                        Sent via e-Rugah Contact Form<br>
+                        Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+                    </p>
+                </div>
+            </body>
+        </html>
+        """
+        
+        msg.attach(MIMEText(text_body, 'plain'))
+        msg.attach(MIMEText(html_body, 'html'))
+        
+        # Send email with configured settings
+        if smtp_encryption == 'ssl':
+            server = smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=email_timeout)
+        else:
+            server = smtplib.SMTP(smtp_host, smtp_port, timeout=email_timeout)
+            if smtp_encryption == 'tls':
+                server.starttls()
+        
+        server.login(gmail_user, gmail_password)
+        server.send_message(msg)
+        server.quit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Your message has been sent successfully! We will get back to you soon.'
+        })
+        
+    except Exception as e:
+        print(f"[ERROR] Failed to send message: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'success': False, 
+            'message': 'Failed to send message. Please try again later.'
+        }), 500
 
 def init_db():
     with app.app_context():
