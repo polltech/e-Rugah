@@ -5,7 +5,8 @@
 {% block content %}
 <style>
     body {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa552 100%);
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
+        background-attachment: fixed;
         position: relative;
         overflow-x: hidden;
         padding-top: 76px;
@@ -23,6 +24,23 @@
         box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
     }
 
+    /* Navbar Links - Orange Color */
+    .navbar .nav-link {
+        color: #ff6b35 !important;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .navbar .nav-link:hover {
+        color: #ff8c42 !important;
+        transform: translateY(-1px);
+    }
+
+    .navbar .nav-link.active {
+        color: #ff6b35 !important;
+        font-weight: 600;
+    }
+
     /* Animated background particles */
     body::before {
         content: '';
@@ -31,16 +49,18 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 80%, rgba(255, 140, 66, 0.15) 0%, transparent 50%);
+        background-image: 
+            radial-gradient(circle at 20% 50%, rgba(255, 107, 107, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 40% 20%, rgba(251, 146, 60, 0.06) 0%, transparent 50%);
+        animation: backgroundMove 20s ease infinite;
         pointer-events: none;
         z-index: 0;
-        animation: floatParticles 20s ease-in-out infinite;
     }
 
-    @keyframes floatParticles {
-        0%, 100% { transform: translate(0, 0); }
-        50% { transform: translate(20px, -20px); }
+    @keyframes backgroundMove {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.1); }
     }
 
     .pending-container {

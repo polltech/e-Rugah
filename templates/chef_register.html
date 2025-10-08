@@ -3,851 +3,347 @@
 {% block title %}Chef Registration - e-Rugah{% endblock %}
 
 {% block content %}
-<style>
-    /* Hide footer on chef register page */
-    footer {
-        display: none !important;
-    }
-
-    .modal-backdrop-custom {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.7) 50%, rgba(102, 126, 234, 0.6) 100%);
-        backdrop-filter: blur(20px);
-        z-index: 1040;
-        display: none;
-        animation: backdropFadeIn 0.5s ease-out;
-    }
-
-    .chef-modal {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0.9);
-        z-index: 1050;
-        width: 90%;
-        max-width: 650px; /* Larger for chef form */
-        max-height: 98vh;
-        overflow-y: auto;
-        animation: modalScaleIn 0.5s ease-out forwards;
-    }
-
-    @keyframes backdropFadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes modalScaleIn {
-        from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
-        to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    }
-
-    .modal-content-custom {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-        backdrop-filter: blur(25px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 24px;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05), 0 0 40px rgba(255, 107, 107, 0.2), 0 0 80px rgba(255, 107, 107, 0.1), 0 0 120px rgba(249, 115, 22, 0.05);
-        overflow: hidden;
-        position: relative;
-    }
-
-    .modal-content-custom::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #ff6b6b, #f97316, #fb923c, #fdba74, #ff6b6b);
-        background-size: 200% 100%;
-        animation: gradientBorder 3s ease infinite;
-    }
-
-    @keyframes gradientBorder {
-        0%, 100% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-    }
-
-    .modal-header-custom {
-        padding: 1.5rem 1.5rem 0;
-        text-align: right;
-    }
-
-    .modal-close-btn {
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: rgba(255, 255, 255, 0.8);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-    }
-
-    .modal-close-btn:hover {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        transform: rotate(90deg);
-    }
-
-    .modal-body-custom {
-        padding: 1.5rem 1.5rem 2rem;
-    }
-
-    .chef-auth-section {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-    }
-
-    .chef-brand-section {
-        text-align: center;
-        margin-bottom: 1rem;
-    }
-
-    .brand-icon .icon-circle {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, #ff6b6b, #f97316);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
-        animation: iconFloat 3s ease-in-out infinite;
-    }
-
-    @keyframes iconFloat {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-    }
-
-    .brand-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: white;
-        margin-bottom: 0.5rem;
-        background: linear-gradient(135deg, #ff6b6b, #f97316, #fb923c);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .brand-subtitle {
-        background: linear-gradient(135deg, #10b981, #34d399, #6ee7b7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-size: 1rem;
-        line-height: 1.5;
-    }
-
-    .chef-form-section {
-        width: 100%;
-    }
-
-    .chef-form {
-        width: 100%;
-    }
-
-    .form-section-card {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        backdrop-filter: blur(10px);
-    }
-
-    .section-title {
-        color: #ff6b6b;
-        font-size: 1.2rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .meal-limit {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.9rem;
-        font-weight: 400;
-    }
-
-    .form-row {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .form-group.half {
-        flex: 1;
-    }
-
-    .form-group.third {
-        flex: 1;
-    }
-
-    .input-wrapper {
-        position: relative;
-        margin-bottom: 1rem;
-    }
-
-    .input-icon {
-        position: absolute;
-        left: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: rgba(255, 255, 255, 0.6);
-        z-index: 2;
-        transition: color 0.3s ease;
-    }
-
-    .form-input {
-        width: 100%;
-        padding: 0.75rem 1rem 0.75rem 3rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        color: white;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-    }
-
-    .form-input:focus {
-        outline: none;
-        border-color: #ff6b6b;
-        background: rgba(255, 255, 255, 0.15);
-        box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
-    }
-
-    .form-input::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-    .form-textarea {
-        resize: vertical;
-        min-height: 60px;
-    }
-
-    .form-label {
-        position: absolute;
-        left: 3rem;
-        top: 1rem;
-        color: rgba(255, 255, 255, 0.7);
-        transition: all 0.3s ease;
-        pointer-events: none;
-        background: transparent;
-        padding: 0 0.25rem;
-    }
-
-    .form-input:focus + .form-label,
-    .form-input:not(:placeholder-shown) + .form-label {
-        top: -0.5rem;
-        left: 2.5rem;
-        font-size: 0.85rem;
-        color: #ff6b6b;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-        backdrop-filter: blur(10px);
-        border-radius: 4px;
-    }
-
-    .password-toggle {
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.6);
-        cursor: pointer;
-        transition: color 0.3s ease;
-    }
-
-    .password-toggle:hover {
-        color: #ff6b6b;
-    }
-
-    .meals-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
-
-    .meal-input-wrapper {
-        position: relative;
-    }
-
-    .meal-input {
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        color: white;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-    }
-
-    .meal-input:focus {
-        outline: none;
-        border-color: #ff6b6b;
-        background: rgba(255, 255, 255, 0.15);
-        box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
-    }
-
-    .meal-input::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-    .remember-chef-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: -0.5rem;
-        gap: 1rem;
-    }
-
-    .remember-checkbox-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .remember-checkbox {
-        width: 18px;
-        height: 18px;
-        accent-color: #ff6b6b;
-        cursor: pointer;
-        border-radius: 4px;
-    }
-
-    .remember-description {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.85rem;
-    }
-
-    .remember-error {
-        color: #ff6b6b;
-        font-size: 0.85rem;
-    }
-
-    .remember-label {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.95rem;
-        cursor: pointer;
-        user-select: none;
-    }
-
-    .remember-label:hover {
-        color: #ff6b6b;
-    }
-
-    .chef-btn {
-        width: 100%;
-        padding: 1rem 2rem;
-        background: linear-gradient(135deg, #ff6b6b, #f97316);
-        border: none;
-        border-radius: 12px;
-        color: white;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
-    }
-
-    .chef-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 35px rgba(255, 107, 107, 0.5);
-        background: linear-gradient(135deg, #e53e3e, #dd6b20);
-    }
-
-    .chef-btn:active {
-        transform: translateY(0);
-    }
-
-    .btn-text {
-        transition: opacity 0.3s ease;
-    }
-
-    .btn-loader {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .spinner {
-        width: 20px;
-        height: 20px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-top: 2px solid white;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .auth-footer {
-        text-align: center;
-        margin-top: 1.5rem;
-    }
-
-    .auth-footer-text {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.95rem;
-    }
-
-    .auth-link {
-        color: #ff6b6b;
-        text-decoration: none;
-        font-weight: 600;
-        transition: color 0.3s ease;
-    }
-
-    .auth-link:hover {
-        color: #e53e3e;
-        text-decoration: underline;
-    }
-
-    /* Notification Styles */
-    .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #10b981, #34d399);
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
-        z-index: 1060;
-        transform: translateX(100%);
-        transition: transform 0.5s ease;
-        font-weight: 600;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .notification.show {
-        transform: translateX(0);
-    }
-
-    .notification.error {
-        background: linear-gradient(135deg, #ef4444, #f87171);
-        box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
-    }
-
-    /* Password Strength Indicator */
-    .password-strength {
-        margin-top: 0.5rem;
-        display: none;
-    }
-
-    .strength-bar {
-        height: 4px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 2px;
-        overflow: hidden;
-        margin-bottom: 0.5rem;
-    }
-
-    .strength-fill {
-        height: 100%;
-        width: 0%;
-        transition: width 0.3s ease, background-color 0.3s ease;
-        border-radius: 2px;
-    }
-
-    .strength-fill.weak { background-color: #ef4444; width: 33%; }
-    .strength-fill.medium { background-color: #f59e0b; width: 66%; }
-    .strength-fill.strong { background-color: #10b981; width: 100%; }
-
-    .strength-text {
-        font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.7);
-        margin-bottom: 0.25rem;
-    }
-
-    .strength-requirements {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .requirement {
-        display: flex;
-        align-items: center;
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.6);
-        transition: color 0.3s ease;
-    }
-
-    .requirement.met {
-        color: #10b981;
-    }
-
-    .requirement-icon {
-        width: 12px;
-        height: 12px;
-        margin-right: 0.25rem;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.3s ease;
-    }
-
-    .requirement.met .requirement-icon {
-        background: #10b981;
-    }
-
-    .requirement-icon::before {
-        content: '×';
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 8px;
-        font-weight: bold;
-    }
-
-    .requirement.met .requirement-icon::before {
-        content: '✓';
-    }
-
-    /* Email validation styles */
-    .email-error {
-        display: none;
-        color: #ef4444;
-        font-size: 0.85rem;
-        margin-top: 0.25rem;
-    }
-
-    .input-error {
-        border-color: #ef4444 !important;
-        box-shadow: 0 0 20px rgba(239, 68, 68, 0.3) !important;
-    }
-
-    @media (max-width: 768px) {
-        .chef-modal {
-            width: 95%;
-            max-width: none;
-            max-height: 95vh;
-        }
-
-        .modal-body-custom {
-            padding: 1.5rem;
-        }
-
-        .brand-title {
-            font-size: 1.8rem;
-        }
-
-        .form-row {
-            flex-direction: column;
-            gap: 0;
-        }
-
-        .meals-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .notification {
-            left: 10px;
-            right: 10px;
-            top: 10px;
-        }
-
-        .strength-requirements {
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-    }
-</style>
-<div class="modal-backdrop-custom" id="chefModalBackdrop">
-    <div class="chef-modal" id="chefModal">
-        <div class="modal-content-custom chef-modal-content">
-            <div class="modal-header-custom">
-                <button class="modal-close-btn" id="closeChefModalBtn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chef-register-modern.css') }}">
+
+<div class="chef-page-container">
+    <div class="chef-page-content">
+        <!-- Header -->
+        <div class="chef-page-header">
+            <h1 class="page-title">Join as a Chef</h1>
+            <p class="page-subtitle">Share your culinary passion with food lovers. Complete the registration in 4 simple steps.</p>
+        </div>
+
+        <!-- Progress Stepper -->
+        <div class="progress-stepper">
+            <div class="progress-line">
+                <div class="progress-line-fill" id="progressFill" style="width: 25%;"></div>
             </div>
+            
+            <div class="step active" data-step="1">
+                <div class="step-circle">
+                    <span class="step-number">1</span>
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <span class="step-label">Account</span>
+            </div>
+            
+            <div class="step" data-step="2">
+                <div class="step-circle">
+                    <span class="step-number">2</span>
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <span class="step-label">Personal Info</span>
+            </div>
+            
+            <div class="step" data-step="3">
+                <div class="step-circle">
+                    <span class="step-number">3</span>
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <span class="step-label">Location</span>
+            </div>
+            
+            <div class="step" data-step="4">
+                <div class="step-circle">
+                    <span class="step-number">4</span>
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <span class="step-label">Expertise</span>
+            </div>
+        </div>
 
-            <div class="modal-body-custom">
-                <div class="chef-auth-section">
-                    <div class="chef-brand-section">
-                        <div class="brand-icon">
-                            <div class="icon-circle">
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M6 12H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-                                    <path d="M6 8h12"/>
-                                    <path d="M6 12v6a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-6"/>
-                                    <path d="M12 2v4"/>
-                                    <circle cx="9" cy="16" r="1"/>
-                                    <circle cx="15" cy="16" r="1"/>
+        <!-- Form Body -->
+        <div class="chef-page-body">
+            <form method="POST" class="chef-form" id="chefRegistrationForm" enctype="multipart/form-data">
+                
+                <!-- Step 1: Account Information -->
+                <div class="form-step active" data-step="1">
+                    <h2 class="step-title">Create Your Account</h2>
+                    <p class="step-description">Let's start with your login credentials. Choose a strong password to keep your account secure.</p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <div class="input-icon">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                        <polyline points="22,6 12,13 2,6"/>
+                                    </svg>
+                                </div>
+                                <input type="email" class="form-input" id="email" name="email" placeholder=" " required>
+                                <label class="form-label" for="email">Email Address</label>
+                            </div>
+                            <div class="error-message" id="emailError">
+                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
                                 </svg>
+                                Please enter a valid email address
                             </div>
                         </div>
-                        <h1 class="brand-title">Join as Chef</h1>
-                        <p class="brand-subtitle">Become part of our professional chef network and start creating amazing culinary experiences</p>
-                    </div>
 
-                    <div class="chef-form-section">
-                        <form method="POST" class="chef-form" id="chefRegistrationForm" enctype="multipart/form-data">
-                            <div class="form-section-card">
-                                <h3 class="section-title">Account Information</h3>
-                                <div class="form-row">
-                                    <div class="form-group half">
-                                        <div class="input-wrapper">
-                                            <div class="input-icon">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                                                    <polyline points="22,6 12,13 2,6"/>
-                                                </svg>
-                                            </div>
-                                            <input type="email" class="form-input" id="email" name="email" placeholder=" " required>
-                                            <label for="email" class="form-label">Email Address</label>
-                                            <div class="input-border"></div>
-                                        </div>
-                                        <div class="email-error" id="emailError">Please enter a valid email address</div>
-                                    </div>
-
-                                    <div class="form-group half">
-                                        <div class="input-wrapper">
-                                            <div class="input-icon">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                                                    <circle cx="12" cy="16" r="1"/>
-                                                    <path d="m7 11 1.5-1.5L12 11l3.5-1.5L17 11"/>
-                                                </svg>
-                                            </div>
-                                            <input type="password" class="form-input" id="password" name="password" placeholder=" " required>
-                                            <label for="password" class="form-label">Password</label>
-                                            <button class="password-toggle" type="button" id="toggleChefPassword">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon" id="chefEyeIcon">
-                                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                                                    <line x1="1" y1="1" x2="23" y2="23"/>
-                                                </svg>
-                                            </button>
-                                            <div class="input-border"></div>
-                                        </div>
-                                        <div class="password-strength" id="passwordStrength">
-                                            <div class="strength-bar">
-                                                <div class="strength-fill" id="strengthFill"></div>
-                                            </div>
-                                            <div class="strength-requirements">
-                                                <div class="requirement" id="lengthReq">
-                                                    <div class="requirement-icon"></div>
-                                                    At least 8 characters
-                                                </div>
-                                                <div class="requirement" id="uppercaseReq">
-                                                    <div class="requirement-icon"></div>
-                                                    One uppercase letter
-                                                </div>
-                                                <div class="requirement" id="lowercaseReq">
-                                                    <div class="requirement-icon"></div>
-                                                    One lowercase letter
-                                                </div>
-                                                <div class="requirement" id="numberReq">
-                                                    <div class="requirement-icon"></div>
-                                                    One number
-                                                </div>
-                                                <div class="requirement" id="specialReq">
-                                                    <div class="requirement-icon"></div>
-                                                    One special character
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <div class="input-icon">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                    </svg>
                                 </div>
-                                <div class="form-group remember-chef-container">
-                                    <div class="remember-checkbox-wrapper">
-                                        <input type="checkbox" id="remember_chef" name="remember_me" class="remember-checkbox">
-                                        <label for="remember_chef" class="remember-label">Remember Me</label>
-                                    </div>
-                                    <span class="remember-description">Keep me logged in on this device</span>
-                                    <div class="remember-error" id="rememberError" style="display: none;">Cannot enable remember me without password</div>
-                                </div>
-                            </div>
-
-                            <div class="form-section-card">
-                                <h3 class="section-title">Personal Information</h3>
-                                <div class="form-row">
-                                    <div class="form-group half">
-                                        <div class="input-wrapper">
-                                            <div class="input-icon">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                                    <circle cx="12" cy="7" r="4"/>
-                                                </svg>
-                                            </div>
-                                            <input type="text" class="form-input" id="name" name="name" placeholder=" " required>
-                                            <label for="name" class="form-label">Full Name</label>
-                                            <div class="input-border"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group half">
-                                        <div class="input-wrapper">
-                                            <div class="input-icon">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                                                </svg>
-                                            </div>
-                                            <input type="text" class="form-input" id="phone" name="phone" placeholder="254712345678" required>
-                                            <label for="phone" class="form-label">Phone Number</label>
-                                            <div class="input-border"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="input-wrapper">
-                                        <label for="photo" class="form-label" style="position: static; margin-bottom: 0.5rem; display: block; color: rgba(255, 255, 255, 0.7);">Upload Profile Photo</label>
-                                        <input type="file" id="photo" name="photo" accept="image/*" required style="width: 100%; padding: 0.75rem; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 12px; color: white; transition: all 0.3s ease; backdrop-filter: blur(10px);">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-section-card">
-                                <h3 class="section-title">Location</h3>
-                                <div class="form-row">
-                                    <div class="form-group third">
-                                        <div class="input-wrapper">
-                                            <div class="input-icon">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
-                                                    <circle cx="12" cy="10" r="3"/>
-                                                </svg>
-                                            </div>
-                                            <input type="text" class="form-input" id="county" name="county" placeholder=" " required>
-                                            <label for="county" class="form-label">County</label>
-                                            <div class="input-border"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group third">
-                                        <div class="input-wrapper">
-                                            <div class="input-icon">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
-                                                    <circle cx="12" cy="10" r="3"/>
-                                                </svg>
-                                            </div>
-                                            <input type="text" class="form-input" id="sub_county" name="sub_county" placeholder=" " required>
-                                            <label for="sub_county" class="form-label">Sub-County</label>
-                                            <div class="input-border"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group third">
-                                        <div class="input-wrapper">
-                                            <div class="input-icon">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
-                                                    <circle cx="12" cy="10" r="3"/>
-                                                </svg>
-                                            </div>
-                                            <input type="text" class="form-input" id="town" name="town" placeholder=" " required>
-                                            <label for="town" class="form-label">Town</label>
-                                            <div class="input-border"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-section-card">
-                                <h3 class="section-title">About You</h3>
-                                <div class="form-group">
-                                    <div class="input-wrapper">
-                                        <div class="input-icon">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <circle cx="12" cy="12" r="10"/>
-                                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                                                <path d="M12 17h.01"/>
-                                            </svg>
-                                        </div>
-                                        <textarea class="form-input form-textarea" id="about" name="about" placeholder=" " rows="3" required></textarea>
-                                        <label for="about" class="form-label">Tell us about your culinary experience and expertise</label>
-                                        <div class="input-border"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-section-card">
-                                <h3 class="section-title">Meals Offered <span class="meal-limit">(Maximum 5)</span></h3>
-                                <div id="meals-container" class="meals-grid">
-                                    <div class="meal-input-wrapper">
-                                        <input type="text" class="form-input meal-input" name="meals" placeholder="e.g., Beef Stew" required>
-                                        <div class="input-border"></div>
-                                    </div>
-                                    <div class="meal-input-wrapper">
-                                        <input type="text" class="form-input meal-input" name="meals" placeholder="e.g., Chicken Curry">
-                                        <div class="input-border"></div>
-                                    </div>
-                                    <div class="meal-input-wrapper">
-                                        <input type="text" class="form-input meal-input" name="meals" placeholder="e.g., Vegetable Pilau">
-                                        <div class="input-border"></div>
-                                    </div>
-                                    <div class="meal-input-wrapper">
-                                        <input type="text" class="form-input meal-input" name="meals" placeholder="e.g., Fish Stew">
-                                        <div class="input-border"></div>
-                                    </div>
-                                    <div class="meal-input-wrapper">
-                                        <input type="text" class="form-input meal-input" name="meals" placeholder="e.g., Ugali & Sukuma Wiki">
-                                        <div class="input-border"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="submit" class="chef-btn">
-                                    <span class="btn-text">Register as Chef</span>
-                                    <div class="btn-loader" style="display: none;">
-                                        <div class="spinner"></div>
-                                    </div>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
-                                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                                        <path d="M18.63 13A17.89 17.89 0 0 1 18 8"/>
-                                        <path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9a17.88 17.88 0 0 0 11.36-3.62"/>
-                                        <path d="M18 8a6 6 0 0 0-9.33-5"/>
-                                        <path d="m1 1 22 22"/>
+                                <input type="password" class="form-input" id="password" name="password" placeholder=" " required>
+                                <label class="form-label" for="password">Password</label>
+                                <button class="password-toggle" type="button" id="togglePassword">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" id="eyeIcon">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                        <line x1="1" y1="1" x2="23" y2="23"/>
                                     </svg>
                                 </button>
                             </div>
-                        </form>
+                            <div class="password-strength" id="passwordStrength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="strengthFill"></div>
+                                </div>
+                                <div class="strength-requirements">
+                                    <div class="requirement" id="lengthReq">
+                                        <div class="requirement-icon"></div>
+                                        At least 8 characters
+                                    </div>
+                                    <div class="requirement" id="uppercaseReq">
+                                        <div class="requirement-icon"></div>
+                                        One uppercase letter
+                                    </div>
+                                    <div class="requirement" id="lowercaseReq">
+                                        <div class="requirement-icon"></div>
+                                        One lowercase letter
+                                    </div>
+                                    <div class="requirement" id="numberReq">
+                                        <div class="requirement-icon"></div>
+                                        One number
+                                    </div>
+                                    <div class="requirement" id="specialReq">
+                                        <div class="requirement-icon"></div>
+                                        One special character
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                        <div class="auth-footer">
-                            <p class="auth-footer-text">Already have an account? <a href="{{ url_for('login') }}" class="auth-link">Sign In</a></p>
+                    <div class="remember-container">
+                        <input type="checkbox" id="remember_chef" name="remember_me" class="remember-checkbox">
+                        <label for="remember_chef" class="remember-label">Remember me on this device</label>
+                        <span class="remember-description">Stay logged in for 30 days</span>
+                    </div>
+                </div>
+
+                <!-- Step 2: Personal Information -->
+                <div class="form-step" data-step="2">
+                    <h2 class="step-title">Personal Information</h2>
+                    <p class="step-description">Tell us about yourself. This information will be visible to customers.</p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <div class="input-icon">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                </div>
+                                <input type="text" class="form-input" id="name" name="name" placeholder=" " required>
+                                <label class="form-label" for="name">Full Name</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <div class="input-icon">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                    </svg>
+                                </div>
+                                <input type="tel" class="form-input" id="phone" name="phone" placeholder=" " required>
+                                <label class="form-label" for="phone">Phone Number</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label static-label">Profile Photo</label>
+                        <div class="file-upload-wrapper">
+                            <label for="photo" class="file-upload-area" id="fileUploadArea">
+                                <div class="file-upload-icon">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="17 8 12 3 7 8"/>
+                                        <line x1="12" y1="3" x2="12" y2="15"/>
+                                    </svg>
+                                </div>
+                                <p class="file-upload-text">Click to upload or drag and drop</p>
+                                <p class="file-upload-hint">PNG, JPG or JPEG (MAX. 5MB)</p>
+                            </label>
+                            <input type="file" id="photo" name="photo" accept="image/*" required style="display: none;">
+                            <div class="file-upload-preview" id="filePreview">
+                                <img src="" alt="Preview" class="preview-image" id="previewImage">
+                                <p class="preview-name" id="previewName"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <div class="input-wrapper">
+                            <div class="input-icon">
+                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                            </div>
+                            <textarea class="form-input form-textarea" id="about" name="about" placeholder=" " rows="4" required></textarea>
+                            <label class="form-label" for="about">About You</label>
                         </div>
                     </div>
                 </div>
+
+                <!-- Step 3: Location -->
+                <div class="form-step" data-step="3">
+                    <h2 class="step-title">Where Are You Located?</h2>
+                    <p class="step-description">Help customers find you by providing your location details.</p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <div class="input-icon">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                        <circle cx="12" cy="10" r="3"/>
+                                    </svg>
+                                </div>
+                                <input type="text" class="form-input" id="county" name="county" placeholder=" " required>
+                                <label class="form-label" for="county">County</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <div class="input-icon">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                        <circle cx="12" cy="10" r="3"/>
+                                    </svg>
+                                </div>
+                                <input type="text" class="form-input" id="sub_county" name="sub_county" placeholder=" " required>
+                                <label class="form-label" for="sub_county">Sub-County</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <div class="input-icon">
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                        <circle cx="12" cy="10" r="3"/>
+                                    </svg>
+                                </div>
+                                <input type="text" class="form-input" id="town" name="town" placeholder=" " required>
+                                <label class="form-label" for="town">Town</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Expertise -->
+                <div class="form-step" data-step="4">
+                    <h2 class="step-title">Your Culinary Expertise</h2>
+                    <p class="step-description">List up to 5 meals you specialize in. These will be featured on your profile.</p>
+                    
+                    <div class="meals-grid" id="mealsContainer">
+                        <div class="meal-input-wrapper">
+                            <div class="meal-number">1</div>
+                            <input type="text" class="meal-input" name="meals" placeholder="e.g., Beef Stew with Ugali" required>
+                        </div>
+                        <div class="meal-input-wrapper">
+                            <div class="meal-number">2</div>
+                            <input type="text" class="meal-input" name="meals" placeholder="e.g., Chicken Curry">
+                        </div>
+                        <div class="meal-input-wrapper">
+                            <div class="meal-number">3</div>
+                            <input type="text" class="meal-input" name="meals" placeholder="e.g., Vegetable Pilau">
+                        </div>
+                        <div class="meal-input-wrapper">
+                            <div class="meal-number">4</div>
+                            <input type="text" class="meal-input" name="meals" placeholder="e.g., Fish Stew">
+                        </div>
+                        <div class="meal-input-wrapper">
+                            <div class="meal-number">5</div>
+                            <input type="text" class="meal-input" name="meals" placeholder="e.g., Ugali & Sukuma Wiki">
+                        </div>
+                    </div>
+                    
+                    <div class="meal-hint">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 16v-4"/>
+                            <path d="M12 8h.01"/>
+                        </svg>
+                        At least one meal is required. You can add more later from your dashboard.
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                        <span>Previous</span>
+                    </button>
+                    <button type="button" class="btn btn-primary" id="nextBtn">
+                        <span class="btn-text">Next Step</span>
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                        <div class="btn-loader">
+                            <div class="spinner"></div>
+                        </div>
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                <p class="auth-footer-text">Already have an account? <a href="{{ url_for('login') }}" class="auth-link">Sign In</a></p>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Notification -->
+<div class="notification" id="notification">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span id="notificationText">Success!</span>
+</div>
+
+<!-- Floating Verify Button -->
+<button type="button" id="floatingVerifyBtn" style="display: none; position: fixed; bottom: 2rem; right: 2rem; background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; border-radius: 50px; padding: 1rem 1.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4); z-index: 1000; transition: all 0.3s ease; animation: pulse 2s infinite;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 8px;">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+    Complete Verification
+</button>
+
 <!-- Verification Choice Modal -->
-<div class="modal-backdrop-custom" id="verificationChoiceBackdrop" style="display: none;">
+<div class="modal-backdrop-custom" id="verificationChoiceBackdrop" data-modal="verificationChoice">
     <div class="chef-modal" id="verificationChoiceModal">
         <div class="modal-content-custom">
             <div class="modal-body-custom">
@@ -890,17 +386,15 @@
 </div>
 
 <!-- Email Verification Modal -->
-<div class="modal-backdrop-custom" id="emailVerificationBackdrop">
+<div class="modal-backdrop-custom" id="emailVerificationBackdrop" data-modal="emailVerification">
     <div class="chef-modal" id="emailVerificationModal">
         <div class="modal-content-custom">
-            <div class="modal-header-custom">
-                <button class="modal-close-btn" id="closeEmailVerificationBtn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
+            <button type="button" class="modal-close-btn" id="closeEmailModal" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 1.5rem; line-height: 1; padding: 0.5rem; z-index: 10;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
             <div class="modal-body-custom">
                 <div class="chef-auth-section">
                     <div class="chef-brand-section">
@@ -915,22 +409,19 @@
                         <h1 class="brand-title">Email Verification</h1>
                         <p class="brand-subtitle">Enter the 4-digit code sent to your email</p>
                     </div>
-                    <form id="emailVerificationForm" class="chef-form">
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <input type="text" class="form-input" id="emailCode" placeholder="Enter 4-digit code" maxlength="4" required>
-                            </div>
-                            <div id="emailCodeError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
-                            <div id="emailCodeSuccess" style="color: #51cf66; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
+                    <div class="chef-form">
+                        <div class="input-wrapper">
+                            <input type="text" class="form-input" id="emailCode" placeholder="Enter 4-digit code" maxlength="4" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;">
                         </div>
-                        <button type="submit" class="chef-btn">
+                        <div class="email-code-error" id="emailCodeError" style="display: none; color: #ef4444; text-align: center; margin-top: 1rem;"></div>
+                        <button type="button" id="verifyEmailBtn" class="chef-btn" style="margin-top: 1.5rem;">
                             <span class="btn-text">Verify Email</span>
                         </button>
-                        <button type="button" id="resendEmailCodeBtn" class="chef-btn" style="margin-top: 1rem; background: linear-gradient(135deg, #667eea, #764ba2);">
-                            <span class="btn-text">Resend Code</span>
-                        </button>
-                        <div id="emailResendTimer" style="text-align: center; color: rgba(255, 255, 255, 0.7); margin-top: 0.5rem; font-size: 0.9rem;"></div>
-                    </form>
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <button type="button" id="resendEmailCodeBtn" class="auth-link" style="background: none; border: none; cursor: pointer;">Resend Code</button>
+                            <p id="emailResendTimer" style="color: #94a3b8; font-size: 0.875rem; margin-top: 0.5rem;"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -938,17 +429,15 @@
 </div>
 
 <!-- SMS Verification Modal -->
-<div class="modal-backdrop-custom" id="smsVerificationBackdrop">
+<div class="modal-backdrop-custom" id="smsVerificationBackdrop" data-modal="smsVerification">
     <div class="chef-modal" id="smsVerificationModal">
         <div class="modal-content-custom">
-            <div class="modal-header-custom">
-                <button class="modal-close-btn" id="closeSmsVerificationBtn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
+            <button type="button" class="modal-close-btn" id="closeSmsModal" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 1.5rem; line-height: 1; padding: 0.5rem; z-index: 10;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
             <div class="modal-body-custom">
                 <div class="chef-auth-section">
                     <div class="chef-brand-section">
@@ -962,630 +451,970 @@
                         <h1 class="brand-title">SMS Verification</h1>
                         <p class="brand-subtitle">Enter the 4-digit code sent to your phone</p>
                     </div>
-                    <form id="smsVerificationForm" class="chef-form">
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <input type="text" class="form-input" id="smsCode" placeholder="Enter 4-digit code" maxlength="4" required>
-                            </div>
-                            <div id="smsCodeError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
+                    <div class="chef-form">
+                        <div class="input-wrapper">
+                            <input type="text" class="form-input" id="smsCode" placeholder="Enter 4-digit code" maxlength="4" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;">
                         </div>
-                        <button type="submit" class="chef-btn">
-                            <span class="btn-text">Verify & Register</span>
+                        <div class="sms-code-error" id="smsCodeError" style="display: none; color: #ef4444; text-align: center; margin-top: 1rem;"></div>
+                        <button type="button" id="verifySmsBtn" class="chef-btn" style="margin-top: 1.5rem;">
+                            <span class="btn-text">Verify SMS</span>
                         </button>
-                        <button type="button" id="resendSmsCodeBtn" class="chef-btn" style="margin-top: 1rem; background: linear-gradient(135deg, #667eea, #764ba2);">
-                            <span class="btn-text">Resend Code</span>
-                        </button>
-                        <div id="smsResendTimer" style="text-align: center; color: rgba(255, 255, 255, 0.7); margin-top: 0.5rem; font-size: 0.9rem;"></div>
-                    </form>
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <button type="button" id="resendSmsCodeBtn" class="auth-link" style="background: none; border: none; cursor: pointer;">Resend Code</button>
+                            <p id="smsResendTimer" style="color: #94a3b8; font-size: 0.875rem; margin-top: 0.5rem;"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
+<style>
+/* Modal Styles - Override any external CSS */
+.modal-backdrop-custom {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(8px) !important;
+    z-index: 1050 !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.modal-backdrop-custom.active {
+    display: flex !important;
+    opacity: 1 !important;
+}
+
+.modal-backdrop-custom.closing {
+    display: flex !important;
+    opacity: 0 !important;
+}
+
+.modal-backdrop-custom .chef-modal {
+    width: 90% !important;
+    max-width: 450px !important;
+    background: white !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    transform: translateY(-30px) scale(0.95) !important;
+    opacity: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    display: block !important;
+}
+
+.modal-backdrop-custom.active .chef-modal {
+    transform: translateY(0) scale(1) !important;
+    opacity: 1 !important;
+}
+
+.modal-backdrop-custom.closing .chef-modal {
+    transform: translateY(30px) scale(0.95) !important;
+    opacity: 0 !important;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-backdrop-custom .modal-content-custom {
+    padding: 2.5rem !important;
+}
+
+.modal-backdrop-custom .modal-body-custom {
+    padding: 0 !important;
+}
+
+.modal-backdrop-custom .chef-auth-section {
+    display: block !important;
+    padding: 0 !important;
+    grid-template-columns: unset !important;
+    gap: 0 !important;
+    min-height: auto !important;
+}
+
+.modal-backdrop-custom .chef-brand-section {
+    text-align: center !important;
+    margin-bottom: 2rem !important;
+    padding: 0 !important;
+    position: static !important;
+}
+
+.modal-backdrop-custom .brand-icon {
+    margin-bottom: 1.5rem !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+.modal-backdrop-custom .icon-circle {
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #ff6b6b, #f97316) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+    box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3) !important;
+}
+
+.modal-backdrop-custom .brand-title {
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: #1a202c !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.modal-backdrop-custom .brand-subtitle {
+    color: #64748b !important;
+    font-size: 0.95rem !important;
+}
+
+.modal-backdrop-custom .chef-form {
+    max-width: 100% !important;
+}
+
+.modal-backdrop-custom .chef-btn {
+    width: 100% !important;
+    padding: 1rem 2rem !important;
+    background: linear-gradient(135deg, #ff6b6b, #f97316) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    color: white !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.modal-backdrop-custom .chef-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(255, 107, 107, 0.4) !important;
+}
+
+.modal-backdrop-custom .auth-link {
+    color: #ff6b6b !important;
+    font-weight: 600 !important;
+}
+
+.modal-backdrop-custom .auth-link:hover {
+    color: #f97316 !important;
+}
+
+/* Floating Verify Button Styles */
+#floatingVerifyBtn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(249, 115, 22, 0.5);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4);
+    }
+    50% {
+        box-shadow: 0 10px 35px rgba(249, 115, 22, 0.6);
+    }
+}
+
+.modal-close-btn:hover {
+    color: #ef4444 !important;
+    transform: scale(1.1);
+}
+</style>
+
 <script>
-    const smsVerificationEnabled = {{ 'true' if sms_verification_enabled else 'false' }};
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Modal functionality
-        const modal = document.getElementById('chefModal');
-        const backdrop = document.getElementById('chefModalBackdrop');
-        const closeBtn = document.getElementById('closeChefModalBtn');
-
-        // Show modal on page load
-        modal.style.display = 'flex';
-        backdrop.style.display = 'block';
-
-        // Close modal functionality
-        closeBtn.addEventListener('click', function() {
-            window.location.href = '/';
-        });
-
-        // Close modal when clicking outside
-        backdrop.addEventListener('click', function(e) {
-            if (e.target === backdrop) {
-                window.location.href = '/';
-            }
-        });
-
-        // Define verification modal elements early
-        const emailVerificationModal = document.getElementById('emailVerificationModal');
-        const emailVerificationBackdrop = document.getElementById('emailVerificationBackdrop');
-        const smsVerificationModal = document.getElementById('smsVerificationModal');
-        const smsVerificationBackdrop = document.getElementById('smsVerificationBackdrop');
-
-        // Close verification modals - redirect to login
-        const closeEmailVerificationBtn = document.getElementById('closeEmailVerificationBtn');
-        const closeSmsVerificationBtn = document.getElementById('closeSmsVerificationBtn');
-
-        if (closeEmailVerificationBtn) {
-            closeEmailVerificationBtn.addEventListener('click', function() {
-                emailVerificationModal.dataset.closeRequested = 'true';
-                window.location.href = '/login';
-            });
+document.addEventListener('DOMContentLoaded', function() {
+    // Modal Manager - Prevents modal overlaying
+    class ModalManager {
+        constructor() {
+            this.currentModal = null;
+            this.modals = {
+                verificationChoice: document.getElementById('verificationChoiceBackdrop'),
+                emailVerification: document.getElementById('emailVerificationBackdrop'),
+                smsVerification: document.getElementById('smsVerificationBackdrop')
+            };
         }
-
-        if (closeSmsVerificationBtn) {
-            closeSmsVerificationBtn.addEventListener('click', function() {
-                window.location.href = '/login';
-            });
-        }
-
-        // Close verification modals when clicking outside - redirect to login
-        if (emailVerificationBackdrop) {
-            emailVerificationBackdrop.addEventListener('click', function(e) {
-                if (e.target === emailVerificationBackdrop) {
-                    window.location.href = '/login';
-                }
-            });
-        }
-
-        if (smsVerificationBackdrop) {
-            smsVerificationBackdrop.addEventListener('click', function(e) {
-                if (e.target === smsVerificationBackdrop) {
-                    window.location.href = '/login';
-                }
-            });
-        }
-
-        // Password toggle functionality
-        document.getElementById('toggleChefPassword').addEventListener('click', function() {
-            const passwordField = document.getElementById('password');
-            const eyeIcon = document.getElementById('chefEyeIcon');
-
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-            } else {
-                passwordField.type = 'password';
-                eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
-            }
-        });
-
-        // Form elements for validation
-        const chefForm = document.getElementById('chefRegistrationForm');
         
-        // Debug: Check if form is found
-        if (!chefForm) {
-            console.error('ERROR: chefRegistrationForm not found!');
+        open(modalName, callback) {
+            // Close current modal first if exists
+            if (this.currentModal) {
+                this.close(this.currentModal, () => {
+                    this._openModal(modalName, callback);
+                });
+            } else {
+                this._openModal(modalName, callback);
+            }
+            
+            // Save to localStorage for persistence
+            localStorage.setItem('pendingVerification', modalName);
+        }
+        
+        _openModal(modalName, callback) {
+            const modal = this.modals[modalName];
+            if (!modal) {
+                console.error(`Modal ${modalName} not found`);
+                return;
+            }
+            
+            this.currentModal = modalName;
+            
+            // Use setTimeout to ensure smooth transition
+            setTimeout(() => {
+                modal.classList.add('active');
+                if (callback) callback();
+            }, 50);
+        }
+        
+        close(modalName, callback) {
+            const modal = this.modals[modalName];
+            if (!modal) return;
+            
+            modal.classList.add('closing');
+            modal.classList.remove('active');
+            
+            setTimeout(() => {
+                modal.classList.remove('closing');
+                if (this.currentModal === modalName) {
+                    this.currentModal = null;
+                }
+                if (callback) callback();
+            }, 300); // Match CSS transition duration
+        }
+        
+        closeAll() {
+            Object.keys(this.modals).forEach(modalName => {
+                const modal = this.modals[modalName];
+                modal.classList.remove('active', 'closing');
+            });
+            this.currentModal = null;
+        }
+        
+        clearVerificationState() {
+            localStorage.removeItem('pendingVerification');
+            localStorage.removeItem('verificationEmail');
+            localStorage.removeItem('verificationPhone');
+        }
+        
+        restoreVerificationState() {
+            const pendingModal = localStorage.getItem('pendingVerification');
+            const email = localStorage.getItem('verificationEmail');
+            const phone = localStorage.getItem('verificationPhone');
+            
+            if (pendingModal && (email || phone)) {
+                // Show floating button
+                const floatingBtn = document.getElementById('floatingVerifyBtn');
+                if (floatingBtn) {
+                    floatingBtn.style.display = 'block';
+                }
+                
+                // Restore modal
+                this.open(pendingModal);
+                
+                return true;
+            }
+            return false;
+        }
+    }
+    
+    // Initialize Modal Manager
+    const modalManager = new ModalManager();
+    
+    // Restore verification state on page load
+    setTimeout(() => {
+        modalManager.restoreVerificationState();
+    }, 500);
+    
+    // Close button handlers
+    const closeEmailModal = document.getElementById('closeEmailModal');
+    const closeSmsModal = document.getElementById('closeSmsModal');
+    const floatingVerifyBtn = document.getElementById('floatingVerifyBtn');
+    
+    if (closeEmailModal) {
+        closeEmailModal.addEventListener('click', function() {
+            modalManager.close('emailVerification');
+            floatingVerifyBtn.style.display = 'block';
+        });
+    }
+    
+    if (closeSmsModal) {
+        closeSmsModal.addEventListener('click', function() {
+            modalManager.close('smsVerification');
+            floatingVerifyBtn.style.display = 'block';
+        });
+    }
+    
+    // Floating verify button handler
+    if (floatingVerifyBtn) {
+        floatingVerifyBtn.addEventListener('click', function() {
+            const pendingModal = localStorage.getItem('pendingVerification');
+            if (pendingModal) {
+                modalManager.open(pendingModal);
+                floatingVerifyBtn.style.display = 'none';
+            }
+        });
+    }
+    
+    // Multi-step form logic
+    let currentStep = 1;
+    const totalSteps = 4;
+    const form = document.getElementById('chefRegistrationForm');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const progressFill = document.getElementById('progressFill');
+    
+    // Get all step elements
+    const formSteps = document.querySelectorAll('.form-step');
+    const stepIndicators = document.querySelectorAll('.step');
+    
+    // Password toggle
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    const eyeIcon = document.getElementById('eyeIcon');
+    
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        if (type === 'text') {
+            eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+        } else {
+            eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+        }
+    });
+    
+    // Email validation
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+    
+    emailInput.addEventListener('blur', function() {
+        if (this.value && !validateEmail(this.value)) {
+            emailError.classList.add('show');
+            this.classList.add('input-error');
+        } else {
+            emailError.classList.remove('show');
+            this.classList.remove('input-error');
+        }
+    });
+    
+    // Password strength checker
+    const passwordStrength = document.getElementById('passwordStrength');
+    const strengthFill = document.getElementById('strengthFill');
+    const lengthReq = document.getElementById('lengthReq');
+    const uppercaseReq = document.getElementById('uppercaseReq');
+    const lowercaseReq = document.getElementById('lowercaseReq');
+    const numberReq = document.getElementById('numberReq');
+    const specialReq = document.getElementById('specialReq');
+    
+    function checkPasswordStrength(password) {
+        const requirements = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /[0-9]/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+        
+        lengthReq.classList.toggle('met', requirements.length);
+        uppercaseReq.classList.toggle('met', requirements.uppercase);
+        lowercaseReq.classList.toggle('met', requirements.lowercase);
+        numberReq.classList.toggle('met', requirements.number);
+        specialReq.classList.toggle('met', requirements.special);
+        
+        const metCount = Object.values(requirements).filter(Boolean).length;
+        strengthFill.className = 'strength-fill';
+        
+        if (metCount <= 2) {
+            strengthFill.classList.add('weak');
+        } else if (metCount <= 4) {
+            strengthFill.classList.add('medium');
+        } else {
+            strengthFill.classList.add('strong');
+        }
+        
+        return metCount === 5;
+    }
+    
+    passwordInput.addEventListener('input', function() {
+        if (this.value) {
+            passwordStrength.classList.add('show');
+            checkPasswordStrength(this.value);
+        } else {
+            passwordStrength.classList.remove('show');
+        }
+    });
+    
+    // File upload handling
+    const photoInput = document.getElementById('photo');
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const filePreview = document.getElementById('filePreview');
+    const previewImage = document.getElementById('previewImage');
+    const previewName = document.getElementById('previewName');
+    
+    fileUploadArea.addEventListener('click', function() {
+        photoInput.click();
+    });
+    
+    photoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewName.textContent = file.name;
+                filePreview.classList.add('show');
+                fileUploadArea.classList.add('has-file');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Step navigation
+    function showStep(step) {
+        formSteps.forEach((formStep, index) => {
+            if (index + 1 === step) {
+                formStep.classList.add('active');
+            } else {
+                formStep.classList.remove('active');
+            }
+        });
+        
+        stepIndicators.forEach((indicator, index) => {
+            if (index + 1 < step) {
+                indicator.classList.add('completed');
+                indicator.classList.remove('active');
+            } else if (index + 1 === step) {
+                indicator.classList.add('active');
+                indicator.classList.remove('completed');
+            } else {
+                indicator.classList.remove('active', 'completed');
+            }
+        });
+        
+        // Update progress bar
+        const progress = (step / totalSteps) * 100;
+        progressFill.style.width = progress + '%';
+        
+        // Update buttons
+        if (step === 1) {
+            prevBtn.style.display = 'none';
+        } else {
+            prevBtn.style.display = 'flex';
+        }
+        
+        if (step === totalSteps) {
+            nextBtn.querySelector('.btn-text').textContent = 'Complete Registration';
+        } else {
+            nextBtn.querySelector('.btn-text').textContent = 'Next Step';
+        }
+    }
+    
+    function validateStep(step) {
+        const currentFormStep = document.querySelector(`.form-step[data-step="${step}"]`);
+        const inputs = currentFormStep.querySelectorAll('input[required], textarea[required]');
+        let isValid = true;
+        
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                input.classList.add('input-error');
+                isValid = false;
+            } else {
+                input.classList.remove('input-error');
+            }
+            
+            // Special validation for email
+            if (input.type === 'email' && input.value && !validateEmail(input.value)) {
+                input.classList.add('input-error');
+                emailError.classList.add('show');
+                isValid = false;
+            }
+            
+            // Special validation for password
+            if (input.type === 'password' && input.value && !checkPasswordStrength(input.value)) {
+                isValid = false;
+            }
+        });
+        
+        // Special validation for file upload in step 2
+        if (step === 2 && !photoInput.files.length) {
+            fileUploadArea.style.borderColor = '#ef4444';
+            isValid = false;
+        }
+        
+        return isValid;
+    }
+    
+    nextBtn.addEventListener('click', function() {
+        if (currentStep < totalSteps) {
+            if (validateStep(currentStep)) {
+                currentStep++;
+                showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                showNotification('Please fill in all required fields', 'error');
+            }
+        } else {
+            // Submit form
+            if (validateStep(currentStep)) {
+                submitForm();
+            } else {
+                showNotification('Please fill in all required fields', 'error');
+            }
+        }
+    });
+    
+    prevBtn.addEventListener('click', function() {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+    
+    // Allow clicking on step indicators
+    stepIndicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', function() {
+            const targetStep = index + 1;
+            if (targetStep < currentStep || (targetStep === currentStep + 1 && validateStep(currentStep))) {
+                currentStep = targetStep;
+                showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    });
+    
+    // Notification function
+    function showNotification(message, type = 'success') {
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        
+        notificationText.textContent = message;
+        notification.className = 'notification';
+        if (type === 'error') {
+            notification.classList.add('error');
+        }
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+    
+    // Form submission
+    function submitForm() {
+        nextBtn.classList.add('loading');
+        nextBtn.disabled = true;
+        
+        const formData = new FormData(form);
+        
+        fetch('/chef/register', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            nextBtn.classList.remove('loading');
+            nextBtn.disabled = false;
+            
+            if (data.success) {
+                // Store email and phone for verification
+                const userEmail = emailInput.value.trim();
+                const userPhone = document.getElementById('phone').value.trim();
+                
+                showNotification('Registration successful! Sending verification code...', 'success');
+                
+                // Automatically send email verification code
+                sendEmailVerificationCode(userEmail);
+            } else {
+                showNotification(data.message || 'Registration failed', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Registration Error:', error);
+            nextBtn.classList.remove('loading');
+            nextBtn.disabled = false;
+            showNotification('Error during registration: ' + error.message, 'error');
+        });
+    }
+    
+    // Function to send email verification code
+    function sendEmailVerificationCode(email) {
+        // Save email to localStorage for persistence
+        localStorage.setItem('verificationEmail', email);
+        
+        fetch('/send_email_code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show email verification modal using modal manager
+                modalManager.open('emailVerification', () => {
+                    startEmailResendTimer();
+                    showNotification('Verification code sent to your email!', 'success');
+                });
+            } else {
+                showNotification(data.message || 'Failed to send verification code', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error sending verification code', 'error');
+        });
+    }
+    
+    // Function to send SMS verification code
+    function sendSmsVerificationCode(phone) {
+        // Save phone to localStorage for persistence
+        localStorage.setItem('verificationPhone', phone);
+        
+        fetch('/send_sms_code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ phone: phone })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show SMS verification modal using modal manager
+                modalManager.open('smsVerification', () => {
+                    startSmsResendTimer();
+                    showNotification('Verification code sent to your phone!', 'success');
+                });
+            } else {
+                showNotification(data.message || 'Failed to send SMS code', 'error');
+                // If SMS fails, redirect to pending page
+                setTimeout(() => {
+                    window.location.href = '/chef/pending';
+                }, 2000);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error sending SMS code', 'error');
+            // If SMS fails, redirect to pending page
+            setTimeout(() => {
+                window.location.href = '/chef/pending';
+            }, 2000);
+        });
+    }
+    
+    // Verification modal handlers
+    const chooseEmailBtn = document.getElementById('chooseEmailBtn');
+    const chooseSmsBtn = document.getElementById('chooseSmsBtn');
+    const verificationChoiceBackdrop = document.getElementById('verificationChoiceBackdrop');
+    const emailVerificationBackdrop = document.getElementById('emailVerificationBackdrop');
+    const smsVerificationBackdrop = document.getElementById('smsVerificationBackdrop');
+    
+    chooseEmailBtn.addEventListener('click', function() {
+        const email = emailInput.value;
+        
+        fetch('/send_email_code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Close choice modal and open email verification modal
+                modalManager.close('verificationChoice', () => {
+                    modalManager.open('emailVerification', () => {
+                        startEmailResendTimer();
+                    });
+                });
+            } else {
+                showNotification(data.message || 'Failed to send verification code', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error sending verification code', 'error');
+        });
+    });
+    
+    chooseSmsBtn.addEventListener('click', function() {
+        const phone = document.getElementById('phone').value;
+        
+        fetch('/send_sms_code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ phone: phone })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Close choice modal and open SMS verification modal
+                modalManager.close('verificationChoice', () => {
+                    modalManager.open('smsVerification', () => {
+                        startSmsResendTimer();
+                    });
+                });
+            } else {
+                showNotification(data.message || 'Failed to send verification code', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error sending verification code', 'error');
+        });
+    });
+    
+    // Email verification
+    const verifyEmailBtn = document.getElementById('verifyEmailBtn');
+    const emailCodeInput = document.getElementById('emailCode');
+    const emailCodeError = document.getElementById('emailCodeError');
+    
+    verifyEmailBtn.addEventListener('click', function() {
+        const code = emailCodeInput.value;
+        const email = emailInput.value;
+        
+        if (!code || code.length !== 4) {
+            emailCodeError.textContent = 'Please enter a valid 4-digit code';
+            emailCodeError.style.display = 'block';
             return;
         }
-        console.log('✓ Chef registration form found');
         
-        const chefBtn = chefForm.querySelector('.chef-btn');
-        const btnText = chefBtn.querySelector('.btn-text');
-        const btnLoader = chefBtn.querySelector('.btn-loader');
-
-        // Email validation
-        const emailInput = document.getElementById('email');
-        const emailError = document.getElementById('emailError');
-
-        function validateEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-
-        emailInput.addEventListener('input', function() {
-            const email = this.value.trim();
-            if (email && !validateEmail(email)) {
-                emailError.style.display = 'block';
-                this.classList.add('input-error');
-            } else {
-                emailError.style.display = 'none';
-                this.classList.remove('input-error');
-            }
-        });
-
-        emailInput.addEventListener('blur', function() {
-            const email = this.value.trim();
-            if (email && !validateEmail(email)) {
-                emailError.style.display = 'block';
-                this.classList.add('input-error');
-            }
-        });
-
-        // Password strength validation
-        const passwordInput = document.getElementById('password');
-        const passwordStrength = document.getElementById('passwordStrength');
-        const strengthFill = document.getElementById('strengthFill');
-        const lengthReq = document.getElementById('lengthReq');
-        const uppercaseReq = document.getElementById('uppercaseReq');
-        const lowercaseReq = document.getElementById('lowercaseReq');
-        const numberReq = document.getElementById('numberReq');
-        const specialReq = document.getElementById('specialReq');
-
-        function checkPasswordStrength(password) {
-            const requirements = {
-                length: password.length >= 8,
-                uppercase: /[A-Z]/.test(password),
-                lowercase: /[a-z]/.test(password),
-                number: /\d/.test(password),
-                special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
-            };
-
-            // Update requirement indicators
-            lengthReq.classList.toggle('met', requirements.length);
-            uppercaseReq.classList.toggle('met', requirements.uppercase);
-            lowercaseReq.classList.toggle('met', requirements.lowercase);
-            numberReq.classList.toggle('met', requirements.number);
-            specialReq.classList.toggle('met', requirements.special);
-
-            // Calculate strength
-            const metCount = Object.values(requirements).filter(Boolean).length;
-            strengthFill.className = 'strength-fill';
-
-            if (metCount <= 2) {
-                strengthFill.classList.add('weak');
-            } else if (metCount <= 4) {
-                strengthFill.classList.add('medium');
-            } else {
-                strengthFill.classList.add('strong');
-            }
-
-            return metCount === 5;
-        }
-
-        passwordInput.addEventListener('input', function() {
-            const password = this.value;
-            if (password) {
-                passwordStrength.style.display = 'block';
-                checkPasswordStrength(password);
-            } else {
-                passwordStrength.style.display = 'none';
-            }
-        });
-
-        // Form validation on submit
-        chefForm.addEventListener('submit', function(e) {
-            console.log('✓ Form submit event triggered');
-            e.preventDefault(); // Prevent default form submission immediately
+        verifyEmailBtn.disabled = true;
+        verifyEmailBtn.innerHTML = '<span class="btn-text">Verifying...</span>';
+        
+        fetch('/verify_email_code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email, code: code })
+        })
+        .then(response => response.json())
+        .then(data => {
+            verifyEmailBtn.disabled = false;
+            verifyEmailBtn.innerHTML = '<span class="btn-text">Verify Email</span>';
             
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-
-            let hasErrors = false;
-
-            // Email validation
-            if (!validateEmail(email)) {
-                emailError.style.display = 'block';
-                emailInput.classList.add('input-error');
-                hasErrors = true;
+            if (data.success) {
+                emailCodeError.style.display = 'none';
+                showNotification('Email verified successfully! Sending SMS code...', 'success');
+                
+                // Close email modal and open SMS modal
+                modalManager.close('emailVerification', () => {
+                    // Automatically send SMS verification code
+                    const phone = document.getElementById('phone').value;
+                    sendSmsVerificationCode(phone);
+                });
+            } else {
+                emailCodeError.textContent = data.message || 'Invalid verification code';
+                emailCodeError.style.display = 'block';
             }
-
-            // Password strength validation
-            if (!checkPasswordStrength(password)) {
-                hasErrors = true;
-            }
-
-            if (hasErrors) {
-                alert('Please fix the validation errors before submitting.');
-                return false;
-            }
-
-            // If validation passes, proceed with new flow
-            console.log('✓ Validation passed, submitting form...');
-            btnText.style.opacity = '0';
-            btnLoader.style.display = 'block';
-            chefBtn.disabled = true;
-
-            // Submit registration form - account will be created immediately
-            const formData = new FormData(chefForm);
-            
-            console.log('✓ Sending registration request...');
-            fetch('/chef/register', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                console.log('✓ Got response from server, status:', response.status);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('✓ Response data:', data);
-                btnText.style.opacity = '1';
-                btnLoader.style.display = 'none';
-                chefBtn.disabled = false;
-
-                if (data.success) {
-                    // Account created! Now automatically send email verification code
-                    // Hide registration modal
-                    modal.style.display = 'none';
-                    backdrop.style.display = 'none';
-                    
-                    // Store email and phone for verification
-                    const userEmail = emailInput.value.trim();
-                    const userPhone = document.getElementById('phone').value.trim();
-                    
-                    // Automatically send email verification code
-                    fetch('/send_email_code', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ email: userEmail })
-                    })
-                    .then(response => response.json())
-                    .then(emailData => {
-                        console.log('Email code response:', emailData);
-                        
-                        // Show email verification modal regardless of email send success
-                        // (code is still generated and printed in terminal)
-                        console.log('Showing email verification modal...');
-                        console.log('emailVerificationBackdrop:', emailVerificationBackdrop);
-                        console.log('emailVerificationModal:', emailVerificationModal);
-                        
-                        emailVerificationBackdrop.style.display = 'block';
-                        emailVerificationModal.style.display = 'flex';
-                        
-                        // Show warning if email failed to send
-                        if (!emailData.success) {
-                            alert('Note: Email sending failed. Check the terminal for your verification code.\n\n' + emailData.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error sending email code:', error);
-                        alert('Error sending verification email: ' + error.message);
-                    });
-                } else {
-                    alert(data.message || 'Registration failed');
-                }
-            })
-            .catch(error => {
-                console.error('❌ Registration Error:', error);
-                console.error('Error details:', error.message, error.stack);
-                alert('Error during registration: ' + error.message);
-                btnText.style.opacity = '1';
-                btnLoader.style.display = 'none';
-                chefBtn.disabled = false;
-            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            verifyEmailBtn.disabled = false;
+            verifyEmailBtn.innerHTML = '<span class="btn-text">Verify Email</span>';
+            emailCodeError.textContent = 'Error verifying code';
+            emailCodeError.style.display = 'block';
         });
-
-        // Input focus effects
-        const inputs = document.querySelectorAll('.form-input');
-        inputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.classList.add('focused');
-            });
-
-            input.addEventListener('blur', function() {
-                if (!this.value && !this.placeholder) {
-                    this.parentElement.classList.remove('focused');
-                }
-            });
-        });
-
-        // Dynamic meal inputs (optional enhancement)
-        const mealsContainer = document.getElementById('meals-container');
-        const maxMeals = 5;
-
-        function updateMealInputs() {
-            const mealInputs = mealsContainer.querySelectorAll('.meal-input-wrapper');
-            mealInputs.forEach((wrapper, index) => {
-                const input = wrapper.querySelector('.meal-input');
-                if (index >= maxMeals) {
-                    wrapper.style.display = 'none';
-                } else {
-                    wrapper.style.display = 'block';
-                }
-            });
+    });
+    
+    // Add Enter key support for email code input
+    emailCodeInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            verifyEmailBtn.click();
         }
-
-        updateMealInputs();
-
-       // Verification Choice Modal Handlers
-       const chooseEmailBtn = document.getElementById('chooseEmailBtn');
-       const chooseSmsBtn = document.getElementById('chooseSmsBtn');
-       const verificationChoiceBackdrop = document.getElementById('verificationChoiceBackdrop');
-
-       // Handle "Verify Email" button click
-       chooseEmailBtn.addEventListener('click', function() {
-           const email = document.getElementById('email').value;
-           
-           // Send email verification code
-           fetch('/send_email_code', {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json',
-               },
-               body: JSON.stringify({ email: email })
-           })
-           .then(response => response.json())
-           .then(data => {
-               if (data.success) {
-                   // Hide choice modal and show email verification modal
-                   verificationChoiceBackdrop.style.display = 'none';
-                   emailVerificationBackdrop.style.display = 'block';
-                   emailVerificationModal.style.display = 'flex';
-                   startEmailResendTimer();
-               } else {
-                   alert(data.message || 'Failed to send verification code');
-               }
-           })
-           .catch(error => {
-               console.error('Error sending email:', error);
-               alert('Error sending verification code. Please try again.');
-           });
-       });
-
-       // Handle "Verify SMS" button click
-       chooseSmsBtn.addEventListener('click', function() {
-           const phone = document.getElementById('phone').value;
-           
-           // Send SMS verification code
-           fetch('/send_sms_code', {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json',
-               },
-               body: JSON.stringify({ phone: phone })
-           })
-           .then(response => response.json())
-           .then(data => {
-               if (data.success) {
-                   // Hide choice modal and show SMS verification modal
-                   verificationChoiceBackdrop.style.display = 'none';
-                   smsVerificationBackdrop.style.display = 'block';
-                   smsVerificationModal.style.display = 'flex';
-                   startSmsResendTimer();
-               } else {
-                   alert(data.message || 'Failed to send SMS code');
-               }
-           })
-           .catch(error => {
-               console.error('Error sending SMS:', error);
-               alert('Error sending SMS code. Please try again.');
-           });
-       });
-
-       // Email verification form
-       const emailVerificationForm = document.getElementById('emailVerificationForm');
-       const emailCodeError = document.getElementById('emailCodeError');
-       const emailCodeSuccess = document.getElementById('emailCodeSuccess');
-       
-       emailVerificationForm.addEventListener('submit', function(e) {
-           e.preventDefault();
-           emailCodeError.style.display = 'none';
-           emailCodeSuccess.style.display = 'none';
-           
-           const code = document.getElementById('emailCode').value;
-           const email = document.getElementById('email').value;
-           const payload = {
-               code: code,
-               email: email
-           };
-
-           console.log('Verifying email code:', payload);
-
-           fetch('/verify_email_code', {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json',
-               },
-               body: JSON.stringify(payload)
-           })
-           .then(response => response.json())
-           .then(data => {
-               console.log('Email verification response:', data);
-               if (data.success) {
-                   emailCodeError.style.display = 'none';
-                   emailCodeSuccess.textContent = data.message || 'Email verified successfully. Please continue.';
-                   emailCodeSuccess.style.display = 'block';
-
-                   const closeRequested = emailVerificationModal.dataset.closeRequested === 'true';
-                   const chefVerified = data.chef_verified === true;
-
-                   if (closeRequested && (chefVerified || !smsVerificationEnabled)) {
-                       emailVerificationModal.style.display = 'none';
-                       emailVerificationBackdrop.style.display = 'none';
-                       emailVerificationModal.dataset.closeRequested = 'false';
-                   }
-                   
-                   if (smsVerificationEnabled && data.require_sms) {
-                       // SMS still needs verification - show SMS modal directly
-                       console.log('Email verified, now showing SMS verification modal');
-                       smsVerificationBackdrop.style.display = 'block';
-                       smsVerificationModal.style.display = 'flex';
-                   } else if (data.redirect) {
-                       // All verifications complete - redirect to dashboard
-                       window.location.href = data.redirect;
-                   } else {
-                       alert(data.message || 'Email verified successfully');
-                   }
-               } else {
-                   emailCodeError.textContent = data.message || 'Invalid verification code';
-                   emailCodeError.style.display = 'block';
-               }
-           })
-           .catch(error => {
-               console.error('Error:', error);
-               emailCodeError.textContent = 'Error verifying email code';
-               emailCodeError.style.display = 'block';
-           });
-       });
-
-       // Resend email code functionality
-       const resendEmailCodeBtn = document.getElementById('resendEmailCodeBtn');
-       const emailResendTimer = document.getElementById('emailResendTimer');
-       let emailResendCountdown = 0;
-
-       function startEmailResendTimer() {
-           emailResendCountdown = 60;
-           resendEmailCodeBtn.disabled = true;
-           resendEmailCodeBtn.style.opacity = '0.5';
-           
-           const interval = setInterval(() => {
-               emailResendCountdown--;
-               emailResendTimer.textContent = `Resend available in ${emailResendCountdown}s`;
-               
-               if (emailResendCountdown <= 0) {
-                   clearInterval(interval);
-                   resendEmailCodeBtn.disabled = false;
-                   resendEmailCodeBtn.style.opacity = '1';
-                   emailResendTimer.textContent = '';
-               }
-           }, 1000);
-       }
-
-       resendEmailCodeBtn.addEventListener('click', function() {
-           emailCodeError.style.display = 'none';
-           const email = document.getElementById('email').value;
-           
-           console.log('Resending email code to:', email);
-           
-           fetch('/send_email_code', {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json',
-               },
-               body: JSON.stringify({ email: email })
-           })
-           .then(response => response.json())
-           .then(data => {
-               console.log('Resend email code response:', data);
-               if (data.success) {
-                   alert('New verification code sent to your email!');
-                   startEmailResendTimer();
-               } else {
-                   emailCodeError.textContent = data.message || 'Failed to resend code';
-                   emailCodeError.style.display = 'block';
-               }
-           })
-           .catch(error => {
-               console.error('Error:', error);
-               emailCodeError.textContent = 'Error resending code';
-               emailCodeError.style.display = 'block';
-           });
-       });
-
-       // SMS verification form
-       const smsVerificationForm = document.getElementById('smsVerificationForm');
-       const smsCodeError = document.getElementById('smsCodeError');
-       
-       smsVerificationForm.addEventListener('submit', function(e) {
-           e.preventDefault();
-           smsCodeError.style.display = 'none';
-
-           fetch('/verify_sms_code', {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json',
-               },
-               body: JSON.stringify({
-                   code: document.getElementById('smsCode').value,
-                   phone: document.getElementById('phone').value
-               })
-           })
-           .then(response => response.json())
-           .then(data => {
-               if (data.success) {
-                   // Hide SMS verification modal
-                   smsVerificationModal.style.display = 'none';
-                   smsVerificationBackdrop.style.display = 'none';
-                   
-                   if (data.require_email) {
-                       // Email still needs verification - show choice modal again
-                       // But disable the SMS button since it's already verified
-                       verificationChoiceBackdrop.style.display = 'block';
-                       chooseSmsBtn.disabled = true;
-                       chooseSmsBtn.style.opacity = '0.5';
-                       chooseSmsBtn.style.cursor = 'not-allowed';
-                       chooseSmsBtn.innerHTML = '<span class="btn-text">✓ SMS Verified</span>';
-                   } else if (data.redirect) {
-                       // All verifications complete - redirect to dashboard
-                       window.location.href = data.redirect;
-                   } else {
-                       alert(data.message || 'SMS verified successfully');
-                   }
-               } else {
-                   smsCodeError.textContent = data.message || 'Invalid verification code';
-                   smsCodeError.style.display = 'block';
-               }
-           })
-           .catch(error => {
-               console.error('Error:', error);
-               smsCodeError.textContent = 'Error verifying SMS code';
-               smsCodeError.style.display = 'block';
-           });
-       });
-
-       // Resend SMS code functionality
-       const resendSmsCodeBtn = document.getElementById('resendSmsCodeBtn');
-       const smsResendTimer = document.getElementById('smsResendTimer');
-       let smsResendCountdown = 0;
-
-       function startSmsResendTimer() {
-           smsResendCountdown = 60;
-           resendSmsCodeBtn.disabled = true;
-           resendSmsCodeBtn.style.opacity = '0.5';
-           
-           const interval = setInterval(() => {
-               smsResendCountdown--;
-               smsResendTimer.textContent = `Resend available in ${smsResendCountdown}s`;
-               
-               if (smsResendCountdown <= 0) {
-                   clearInterval(interval);
-                   resendSmsCodeBtn.disabled = false;
-                   resendSmsCodeBtn.style.opacity = '1';
-                   smsResendTimer.textContent = '';
-               }
-           }, 1000);
-       }
-
-       resendSmsCodeBtn.addEventListener('click', function() {
-           smsCodeError.style.display = 'none';
-           const phone = document.getElementById('phone').value;
-           
-           console.log('Resending SMS code to:', phone);
-           
-           fetch('/send_sms_code', {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json',
-               },
-               body: JSON.stringify({ phone: phone })
-           })
-           .then(response => response.json())
-           .then(data => {
-               console.log('Resend SMS code response:', data);
-               if (data.success) {
-                   alert('New verification code sent to your phone!');
-                   startSmsResendTimer();
-               } else {
-                   smsCodeError.textContent = data.message || 'Failed to resend code';
-                   smsCodeError.style.display = 'block';
-               }
-           })
-           .catch(error => {
-               console.error('Error:', error);
-               smsCodeError.textContent = 'Error resending code';
-               smsCodeError.style.display = 'block';
-           });
-       });
-    }); // End of DOMContentLoaded
+    });
+    
+    // SMS verification
+    const verifySmsBtn = document.getElementById('verifySmsBtn');
+    const smsCodeInput = document.getElementById('smsCode');
+    const smsCodeError = document.getElementById('smsCodeError');
+    
+    // Add Enter key support for SMS code input
+    smsCodeInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            verifySmsBtn.click();
+        }
+    });
+    
+    verifySmsBtn.addEventListener('click', function() {
+        const code = smsCodeInput.value;
+        const phone = document.getElementById('phone').value;
+        
+        if (!code || code.length !== 4) {
+            smsCodeError.textContent = 'Please enter a valid 4-digit code';
+            smsCodeError.style.display = 'block';
+            return;
+        }
+        
+        verifySmsBtn.disabled = true;
+        verifySmsBtn.innerHTML = '<span class="btn-text">Verifying...</span>';
+        
+        fetch('/verify_sms_code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ phone: phone, code: code })
+        })
+        .then(response => response.json())
+        .then(data => {
+            verifySmsBtn.disabled = false;
+            verifySmsBtn.innerHTML = '<span class="btn-text">Verify SMS</span>';
+            
+            if (data.success) {
+                smsCodeError.style.display = 'none';
+                showNotification('Phone verified successfully! Redirecting to pending...', 'success');
+                
+                // Clear verification state from localStorage
+                modalManager.clearVerificationState();
+                
+                // Close SMS modal and redirect
+                modalManager.close('smsVerification', () => {
+                    setTimeout(() => {
+                        window.location.href = data.redirect || '/chef/pending';
+                    }, 1000);
+                });
+            } else {
+                smsCodeError.textContent = data.message || 'Invalid verification code';
+                smsCodeError.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            verifySmsBtn.disabled = false;
+            verifySmsBtn.innerHTML = '<span class="btn-text">Verify SMS</span>';
+            smsCodeError.textContent = 'Error verifying code';
+            smsCodeError.style.display = 'block';
+        });
+    });
+    
+    // Resend timers
+    const resendEmailCodeBtn = document.getElementById('resendEmailCodeBtn');
+    const emailResendTimer = document.getElementById('emailResendTimer');
+    let emailResendCountdown = 0;
+    
+    function startEmailResendTimer() {
+        emailResendCountdown = 60;
+        resendEmailCodeBtn.disabled = true;
+        resendEmailCodeBtn.style.opacity = '0.5';
+        
+        const interval = setInterval(() => {
+            emailResendCountdown--;
+            emailResendTimer.textContent = `Resend available in ${emailResendCountdown}s`;
+            
+            if (emailResendCountdown <= 0) {
+                clearInterval(interval);
+                resendEmailCodeBtn.disabled = false;
+                resendEmailCodeBtn.style.opacity = '1';
+                emailResendTimer.textContent = '';
+            }
+        }, 1000);
+    }
+    
+    resendEmailCodeBtn.addEventListener('click', function() {
+        const email = emailInput.value;
+        
+        fetch('/send_email_code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('New verification code sent!', 'success');
+                startEmailResendTimer();
+            } else {
+                showNotification(data.message || 'Failed to resend code', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error resending code', 'error');
+        });
+    });
+    
+    const resendSmsCodeBtn = document.getElementById('resendSmsCodeBtn');
+    const smsResendTimer = document.getElementById('smsResendTimer');
+    let smsResendCountdown = 0;
+    
+    function startSmsResendTimer() {
+        smsResendCountdown = 60;
+        resendSmsCodeBtn.disabled = true;
+        resendSmsCodeBtn.style.opacity = '0.5';
+        
+        const interval = setInterval(() => {
+            smsResendCountdown--;
+            smsResendTimer.textContent = `Resend available in ${smsResendCountdown}s`;
+            
+            if (smsResendCountdown <= 0) {
+                clearInterval(interval);
+                resendSmsCodeBtn.disabled = false;
+                resendSmsCodeBtn.style.opacity = '1';
+                smsResendTimer.textContent = '';
+            }
+        }, 1000);
+    }
+    
+    resendSmsCodeBtn.addEventListener('click', function() {
+        const phone = document.getElementById('phone').value;
+        
+        fetch('/send_sms_code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ phone: phone })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('New verification code sent!', 'success');
+                startSmsResendTimer();
+            } else {
+                showNotification(data.message || 'Failed to resend code', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error resending code', 'error');
+        });
+    });
+    
+    // Initialize
+    showStep(1);
+});
 </script>
 {% endblock %}

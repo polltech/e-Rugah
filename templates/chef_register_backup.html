@@ -1,0 +1,1661 @@
+{% extends "base.html" %}
+
+{% block title %}Chef Registration - e-Rugah{% endblock %}
+
+{% block content %}
+<style>
+    /* Box sizing for all elements */
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Hide footer on chef register page */
+    footer {
+        display: none !important;
+    }
+
+    /* Full page background with modern gradient */
+    body {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        background-attachment: fixed;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* Animated background pattern */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(circle at 20% 50%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 20%, rgba(251, 146, 60, 0.08) 0%, transparent 50%);
+        animation: backgroundMove 20s ease infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @keyframes backgroundMove {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.1); }
+    }
+
+    .chef-page-container {
+        width: 100%;
+        padding: 2rem 3rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .chef-page-content {
+        width: 100%;
+        max-width: 1600px;
+        margin: 0 auto 2rem;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        position: relative;
+        animation: fadeInUp 0.6s ease-out forwards;
+        overflow: visible;
+        max-height: none;
+        height: auto;
+    }
+
+    @keyframes fadeInUp {
+        from { 
+            opacity: 0; 
+            transform: translateY(30px);
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0);
+        }
+    }
+
+    /* Top gradient border */
+    .chef-page-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ff6b6b, #f97316, #fb923c, #fdba74);
+        background-size: 200% 100%;
+        animation: gradientSlide 3s ease infinite;
+        border-radius: 20px 20px 0 0;
+    }
+
+    @keyframes gradientSlide {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .chef-page-header {
+        padding: 2rem 1.5rem 1.5rem;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: linear-gradient(180deg, rgba(255, 107, 107, 0.05) 0%, transparent 100%);
+    }
+
+    .page-title {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #ff6b6b, #f97316);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.5px;
+    }
+
+    .page-subtitle {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        max-width: 550px;
+        margin: 0 auto;
+    }
+
+    .chef-page-body {
+        padding: 2.5rem 4.5rem 3rem;
+        overflow: visible;
+    }
+
+    .chef-auth-section {
+        width: 100%;
+        overflow: visible;
+        max-height: none;
+        height: auto;
+    }
+
+    .chef-form-section {
+        width: 100%;
+        overflow: visible;
+        max-height: none;
+        height: auto;
+    }
+
+    .chef-form {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 1fr;
+        gap: 3rem;
+        overflow: visible;
+        max-height: none;
+        height: auto;
+    }
+
+    .form-section-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 4rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: visible;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+    }
+
+    .form-section-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #ff6b6b, transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .form-section-card:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 107, 107, 0.2);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(255, 107, 107, 0.12);
+    }
+
+    .form-section-card:hover::before {
+        opacity: 1;
+    }
+
+    .form-section-card.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .section-title {
+        color: #ff6b6b;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 2.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        letter-spacing: -0.3px;
+    }
+
+    .meal-limit {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.75rem;
+        font-weight: 400;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1.75rem;
+        margin-bottom: 2rem;
+        width: 100%;
+    }
+
+    .form-group {
+        width: 100%;
+    }
+
+    .form-group.half {
+        flex: 1;
+    }
+
+    .form-group.third {
+        flex: 1;
+    }
+
+    .input-wrapper {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.6);
+        z-index: 2;
+        transition: color 0.3s ease;
+    }
+
+    .input-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1.5px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        color: white;
+        font-size: 1.05rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #ff6b6b;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+    }
+
+    .form-input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 220px;
+        padding-top: 1.2rem;
+        line-height: 1.6;
+    }
+
+    .form-label {
+        position: absolute;
+        left: 3.5rem;
+        top: 1.2rem;
+        color: rgba(255, 255, 255, 0.6);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        background: transparent;
+        padding: 0 0.3rem;
+        font-size: 1.05rem;
+    }
+
+    .form-input:focus + .form-label,
+    .form-input:not(:placeholder-shown) + .form-label {
+        top: -0.6rem;
+        left: 2.25rem;
+        font-size: 0.75rem;
+        color: #ff6b6b;
+        background: #1e293b;
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .password-toggle svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .password-toggle:hover {
+        color: #ff6b6b;
+    }
+
+    .meals-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .meal-input-wrapper {
+        position: relative;
+    }
+
+    .meal-input {
+        width: 100%;
+        padding: 1.1rem 1.2rem;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1.5px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .meal-input:focus {
+        outline: none;
+        border-color: #ff6b6b;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+    }
+
+    .meal-input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .remember-chef-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.5rem;
+        gap: 1rem;
+    }
+
+    .remember-checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .remember-checkbox {
+        width: 18px;
+        height: 18px;
+        accent-color: #ff6b6b;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .remember-description {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+    }
+
+    .remember-error {
+        color: #ff6b6b;
+        font-size: 0.9rem;
+    }
+
+    .remember-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1rem;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .remember-label:hover {
+        color: #ff6b6b;
+    }
+
+    .chef-btn {
+        width: 100%;
+        padding: 1.4rem 2.5rem;
+        background: linear-gradient(135deg, #ff6b6b, #f97316);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
+        letter-spacing: 0.3px;
+    }
+
+    .chef-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .chef-btn:hover::before {
+        left: 100%;
+    }
+
+    .chef-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
+    }
+
+    .chef-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 15px rgba(255, 107, 107, 0.3);
+    }
+
+    .form-actions {
+        grid-column: 1 / -1;
+        margin-top: 2.5rem;
+    }
+
+    .btn-text {
+        transition: opacity 0.3s ease;
+    }
+
+    .btn-loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        grid-column: 1 / -1;
+    }
+
+    .auth-footer-text {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1rem;
+    }
+
+    .auth-link {
+        color: #ff6b6b;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .auth-link:hover {
+        color: #e53e3e;
+        text-decoration: underline;
+    }
+
+    /* Notification Styles */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        z-index: 1060;
+        transform: translateX(100%);
+        transition: transform 0.5s ease;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .notification.show {
+        transform: translateX(0);
+    }
+
+    .notification.error {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Password Strength Indicator */
+    .password-strength {
+        margin-top: 0.75rem;
+        display: none;
+    }
+
+    .strength-bar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 0.75rem;
+    }
+
+    .strength-fill {
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s ease, background-color 0.3s ease;
+        border-radius: 4px;
+    }
+
+    .strength-fill.weak { background-color: #ef4444; width: 33%; }
+    .strength-fill.medium { background-color: #f59e0b; width: 66%; }
+    .strength-fill.strong { background-color: #10b981; width: 100%; }
+
+    .strength-text {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 0.5rem;
+    }
+
+    .strength-requirements {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .requirement {
+        display: flex;
+        align-items: center;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+        transition: color 0.3s ease;
+    }
+
+    .requirement.met {
+        color: #10b981;
+    }
+
+    .requirement-icon {
+        width: 14px;
+        height: 14px;
+        margin-right: 0.4rem;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .requirement.met .requirement-icon {
+        background: #10b981;
+    }
+
+    .requirement-icon::before {
+        content: '×';
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+    .requirement.met .requirement-icon::before {
+        content: '✓';
+    }
+
+    /* Email validation styles */
+    .email-error {
+        display: none;
+        color: #ef4444;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    .input-error {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.3) !important;
+    }
+
+    @media (max-width: 1024px) {
+        .chef-page-container {
+            padding: 1.5rem 1rem;
+        }
+
+        .chef-page-content {
+            max-width: 95%;
+        }
+
+        .chef-page-body {
+            padding: 2rem 1.5rem 2rem;
+        }
+
+        .form-section-card {
+            padding: 1.75rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .chef-page-container {
+            padding: 1.25rem 0.625rem;
+        }
+
+        .chef-page-content {
+            border-radius: 14px;
+        }
+
+        .chef-page-header {
+            padding: 1.5rem 1.25rem 1.25rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+        }
+
+        .page-subtitle {
+            font-size: 0.875rem;
+        }
+
+        .chef-page-body {
+            padding: 1.25rem 1rem;
+        }
+
+        .chef-form {
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
+
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .form-section-card {
+            padding: 1.25rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+        }
+
+        .notification {
+            left: 10px;
+            right: 10px;
+            top: 10px;
+        }
+
+        .strength-requirements {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+</style>
+<div class="chef-page-container">
+    <div class="chef-page-content">
+        <div class="chef-page-header">
+            <h1 class="page-title">Join as Chef</h1>
+            <p class="page-subtitle">Become part of our professional chef network and start creating amazing culinary experiences</p>
+        </div>
+
+        <div class="chef-page-body">
+            <div class="chef-auth-section">
+                <div class="chef-form-section">
+                        <form method="POST" class="chef-form" id="chefRegistrationForm" enctype="multipart/form-data">
+                            <div class="form-section-card">
+                                <h3 class="section-title">Account Information</h3>
+                                <div class="form-row">
+                                    <div class="form-group half">
+                                        <div class="input-wrapper">
+                                            <div class="input-icon">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                                    <polyline points="22,6 12,13 2,6"/>
+                                                </svg>
+                                            </div>
+                                            <input type="email" class="form-input" id="email" name="email" placeholder=" " required>
+                                            <label for="email" class="form-label">Email Address</label>
+                                            <div class="input-border"></div>
+                                        </div>
+                                        <div class="email-error" id="emailError">Please enter a valid email address</div>
+                                    </div>
+
+                                    <div class="form-group half">
+                                        <div class="input-wrapper">
+                                            <div class="input-icon">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                                    <circle cx="12" cy="16" r="1"/>
+                                                    <path d="m7 11 1.5-1.5L12 11l3.5-1.5L17 11"/>
+                                                </svg>
+                                            </div>
+                                            <input type="password" class="form-input" id="password" name="password" placeholder=" " required>
+                                            <label for="password" class="form-label">Password</label>
+                                            <button class="password-toggle" type="button" id="toggleChefPassword">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon" id="chefEyeIcon">
+                                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                                    <line x1="1" y1="1" x2="23" y2="23"/>
+                                                </svg>
+                                            </button>
+                                            <div class="input-border"></div>
+                                        </div>
+                                        <div class="password-strength" id="passwordStrength">
+                                            <div class="strength-bar">
+                                                <div class="strength-fill" id="strengthFill"></div>
+                                            </div>
+                                            <div class="strength-requirements">
+                                                <div class="requirement" id="lengthReq">
+                                                    <div class="requirement-icon"></div>
+                                                    At least 8 characters
+                                                </div>
+                                                <div class="requirement" id="uppercaseReq">
+                                                    <div class="requirement-icon"></div>
+                                                    One uppercase letter
+                                                </div>
+                                                <div class="requirement" id="lowercaseReq">
+                                                    <div class="requirement-icon"></div>
+                                                    One lowercase letter
+                                                </div>
+                                                <div class="requirement" id="numberReq">
+                                                    <div class="requirement-icon"></div>
+                                                    One number
+                                                </div>
+                                                <div class="requirement" id="specialReq">
+                                                    <div class="requirement-icon"></div>
+                                                    One special character
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group remember-chef-container">
+                                    <div class="remember-checkbox-wrapper">
+                                        <input type="checkbox" id="remember_chef" name="remember_me" class="remember-checkbox">
+                                        <label for="remember_chef" class="remember-label">Remember Me</label>
+                                    </div>
+                                    <span class="remember-description">Keep me logged in on this device</span>
+                                    <div class="remember-error" id="rememberError" style="display: none;">Cannot enable remember me without password</div>
+                                </div>
+                            </div>
+
+                            <div class="form-section-card">
+                                <h3 class="section-title">Personal Information</h3>
+                                <div class="form-row">
+                                    <div class="form-group half">
+                                        <div class="input-wrapper">
+                                            <div class="input-icon">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                                    <circle cx="12" cy="7" r="4"/>
+                                                </svg>
+                                            </div>
+                                            <input type="text" class="form-input" id="name" name="name" placeholder=" " required>
+                                            <label for="name" class="form-label">Full Name</label>
+                                            <div class="input-border"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group half">
+                                        <div class="input-wrapper">
+                                            <div class="input-icon">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                                </svg>
+                                            </div>
+                                            <input type="text" class="form-input" id="phone" name="phone" placeholder="254712345678" required>
+                                            <label for="phone" class="form-label">Phone Number</label>
+                                            <div class="input-border"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-wrapper">
+                                        <label for="photo" class="form-label" style="position: static; margin-bottom: 1.5rem; display: block; color: rgba(255, 255, 255, 0.6); font-size: 1.05rem;">Upload Profile Photo</label>
+                                        <input type="file" id="photo" name="photo" accept="image/*" required style="width: 100%; padding: 1.5rem 1.5rem; background: rgba(255, 255, 255, 0.06); border: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 12px; color: white; font-size: 1.05rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; margin-bottom: 2rem;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section-card">
+                                <h3 class="section-title">Location</h3>
+                                <div class="form-row">
+                                    <div class="form-group third">
+                                        <div class="input-wrapper">
+                                            <div class="input-icon">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                                                    <circle cx="12" cy="10" r="3"/>
+                                                </svg>
+                                            </div>
+                                            <input type="text" class="form-input" id="county" name="county" placeholder=" " required>
+                                            <label for="county" class="form-label">County</label>
+                                            <div class="input-border"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group third">
+                                        <div class="input-wrapper">
+                                            <div class="input-icon">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                                                    <circle cx="12" cy="10" r="3"/>
+                                                </svg>
+                                            </div>
+                                            <input type="text" class="form-input" id="sub_county" name="sub_county" placeholder=" " required>
+                                            <label for="sub_county" class="form-label">Sub-County</label>
+                                            <div class="input-border"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group third">
+                                        <div class="input-wrapper">
+                                            <div class="input-icon">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                                                    <circle cx="12" cy="10" r="3"/>
+                                                </svg>
+                                            </div>
+                                            <input type="text" class="form-input" id="town" name="town" placeholder=" " required>
+                                            <label for="town" class="form-label">Town</label>
+                                            <div class="input-border"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section-card">
+                                <h3 class="section-title">About You</h3>
+                                <div class="form-group">
+                                    <div class="input-wrapper">
+                                        <div class="input-icon">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="10"/>
+                                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                                <path d="M12 17h.01"/>
+                                            </svg>
+                                        </div>
+                                        <textarea class="form-input form-textarea" id="about" name="about" placeholder=" " rows="4" required></textarea>
+                                        <label for="about" class="form-label">Tell us about your culinary experience and expertise</label>
+                                        <div class="input-border"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section-card">
+                                <h3 class="section-title">Meals Offered <span class="meal-limit">(Maximum 5)</span></h3>
+                                <div id="meals-container" class="meals-grid">
+                                    <div class="meal-input-wrapper">
+                                        <input type="text" class="form-input meal-input" name="meals" placeholder="e.g., Beef Stew" required>
+                                        <div class="input-border"></div>
+                                    </div>
+                                    <div class="meal-input-wrapper">
+                                        <input type="text" class="form-input meal-input" name="meals" placeholder="e.g., Chicken Curry">
+                                        <div class="input-border"></div>
+                                    </div>
+                                    <div class="meal-input-wrapper">
+                                        <input type="text" class="form-input meal-input" name="meals" placeholder="e.g., Vegetable Pilau">
+                                        <div class="input-border"></div>
+                                    </div>
+                                    <div class="meal-input-wrapper">
+                                        <input type="text" class="form-input meal-input" name="meals" placeholder="e.g., Fish Stew">
+                                        <div class="input-border"></div>
+                                    </div>
+                                    <div class="meal-input-wrapper">
+                                        <input type="text" class="form-input meal-input" name="meals" placeholder="e.g., Ugali & Sukuma Wiki">
+                                        <div class="input-border"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="chef-btn">
+                                    <span class="btn-text">Register as Chef</span>
+                                    <div class="btn-loader" style="display: none;">
+                                        <div class="spinner"></div>
+                                    </div>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                                        <path d="M18.63 13A17.89 17.89 0 0 1 18 8"/>
+                                        <path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9a17.88 17.88 0 0 0 11.36-3.62"/>
+                                        <path d="M18 8a6 6 0 0 0-9.33-5"/>
+                                        <path d="m1 1 22 22"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="auth-footer">
+                            <p class="auth-footer-text">Already have an account? <a href="{{ url_for('login') }}" class="auth-link">Sign In</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Verification Choice Modal -->
+<div class="modal-backdrop-custom" id="verificationChoiceBackdrop" style="display: none;">
+    <div class="chef-modal" id="verificationChoiceModal">
+        <div class="modal-content-custom">
+            <div class="modal-body-custom">
+                <div class="chef-auth-section">
+                    <div class="chef-brand-section">
+                        <div class="brand-icon">
+                            <div class="icon-circle">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h1 class="brand-title">Verify Your Account</h1>
+                        <p class="brand-subtitle">Choose a verification method to get started</p>
+                    </div>
+                    <div class="chef-form">
+                        <button type="button" id="chooseEmailBtn" class="chef-btn" style="margin-bottom: 1rem;">
+                            <span class="btn-text">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 8px;">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                                Verify Email
+                            </span>
+                        </button>
+                        <button type="button" id="chooseSmsBtn" class="chef-btn" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                            <span class="btn-text">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 8px;">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                </svg>
+                                Verify SMS
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Email Verification Modal -->
+<div class="modal-backdrop-custom" id="emailVerificationBackdrop">
+    <div class="chef-modal" id="emailVerificationModal">
+        <div class="modal-content-custom">
+            <div class="modal-header-custom">
+                <button class="modal-close-btn" id="closeEmailVerificationBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body-custom">
+                <div class="chef-auth-section">
+                    <div class="chef-brand-section">
+                        <div class="brand-icon">
+                            <div class="icon-circle">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h1 class="brand-title">Email Verification</h1>
+                        <p class="brand-subtitle">Enter the 4-digit code sent to your email</p>
+                    </div>
+                    <form id="emailVerificationForm" class="chef-form">
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input type="text" class="form-input" id="emailCode" placeholder="Enter 4-digit code" maxlength="4" required>
+                            </div>
+                            <div id="emailCodeError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
+                            <div id="emailCodeSuccess" style="color: #51cf66; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
+                        </div>
+                        <button type="submit" class="chef-btn">
+                            <span class="btn-text">Verify Email</span>
+                        </button>
+                        <button type="button" id="resendEmailCodeBtn" class="chef-btn" style="margin-top: 1rem; background: linear-gradient(135deg, #667eea, #764ba2);">
+                            <span class="btn-text">Resend Code</span>
+                        </button>
+                        <div id="emailResendTimer" style="text-align: center; color: rgba(255, 255, 255, 0.7); margin-top: 0.5rem; font-size: 0.9rem;"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SMS Verification Modal -->
+<div class="modal-backdrop-custom" id="smsVerificationBackdrop">
+    <div class="chef-modal" id="smsVerificationModal">
+        <div class="modal-content-custom">
+            <div class="modal-header-custom">
+                <button class="modal-close-btn" id="closeSmsVerificationBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body-custom">
+                <div class="chef-auth-section">
+                    <div class="chef-brand-section">
+                        <div class="brand-icon">
+                            <div class="icon-circle">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h1 class="brand-title">SMS Verification</h1>
+                        <p class="brand-subtitle">Enter the 4-digit code sent to your phone</p>
+                    </div>
+                    <form id="smsVerificationForm" class="chef-form">
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input type="text" class="form-input" id="smsCode" placeholder="Enter 4-digit code" maxlength="4" required>
+                            </div>
+                            <div id="smsCodeError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
+                        </div>
+                        <button type="submit" class="chef-btn">
+                            <span class="btn-text">Verify & Register</span>
+                        </button>
+                        <button type="button" id="resendSmsCodeBtn" class="chef-btn" style="margin-top: 1rem; background: linear-gradient(135deg, #667eea, #764ba2);">
+                            <span class="btn-text">Resend Code</span>
+                        </button>
+                        <div id="smsResendTimer" style="text-align: center; color: rgba(255, 255, 255, 0.7); margin-top: 0.5rem; font-size: 0.9rem;"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const smsVerificationEnabled = {{ 'true' if sms_verification_enabled else 'false' }};
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Define verification modal elements early
+        const emailVerificationModal = document.getElementById('emailVerificationModal');
+        const emailVerificationBackdrop = document.getElementById('emailVerificationBackdrop');
+        const smsVerificationModal = document.getElementById('smsVerificationModal');
+        const smsVerificationBackdrop = document.getElementById('smsVerificationBackdrop');
+
+        // Close verification modals - redirect to login
+        const closeEmailVerificationBtn = document.getElementById('closeEmailVerificationBtn');
+        const closeSmsVerificationBtn = document.getElementById('closeSmsVerificationBtn');
+
+        if (closeEmailVerificationBtn) {
+            closeEmailVerificationBtn.addEventListener('click', function() {
+                emailVerificationModal.dataset.closeRequested = 'true';
+                window.location.href = '/login';
+            });
+        }
+
+        if (closeSmsVerificationBtn) {
+            closeSmsVerificationBtn.addEventListener('click', function() {
+                window.location.href = '/login';
+            });
+        }
+
+        // Close verification modals when clicking outside - redirect to login
+        if (emailVerificationBackdrop) {
+            emailVerificationBackdrop.addEventListener('click', function(e) {
+                if (e.target === emailVerificationBackdrop) {
+                    window.location.href = '/login';
+                }
+            });
+        }
+
+        if (smsVerificationBackdrop) {
+            smsVerificationBackdrop.addEventListener('click', function(e) {
+                if (e.target === smsVerificationBackdrop) {
+                    window.location.href = '/login';
+                }
+            });
+        }
+
+        // Password toggle functionality
+        document.getElementById('toggleChefPassword').addEventListener('click', function() {
+            const passwordField = document.getElementById('password');
+            const eyeIcon = document.getElementById('chefEyeIcon');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+            } else {
+                passwordField.type = 'password';
+                eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+            }
+        });
+
+        // Form elements for validation
+        const chefForm = document.getElementById('chefRegistrationForm');
+        
+        // Debug: Check if form is found
+        if (!chefForm) {
+            console.error('ERROR: chefRegistrationForm not found!');
+            return;
+        }
+        console.log('✓ Chef registration form found');
+        
+        const chefBtn = chefForm.querySelector('.chef-btn');
+        const btnText = chefBtn.querySelector('.btn-text');
+        const btnLoader = chefBtn.querySelector('.btn-loader');
+
+        // Email validation
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('emailError');
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        emailInput.addEventListener('input', function() {
+            const email = this.value.trim();
+            if (email && !validateEmail(email)) {
+                emailError.style.display = 'block';
+                this.classList.add('input-error');
+            } else {
+                emailError.style.display = 'none';
+                this.classList.remove('input-error');
+            }
+        });
+
+        emailInput.addEventListener('blur', function() {
+            const email = this.value.trim();
+            if (email && !validateEmail(email)) {
+                emailError.style.display = 'block';
+                this.classList.add('input-error');
+            }
+        });
+
+        // Password strength validation
+        const passwordInput = document.getElementById('password');
+        const passwordStrength = document.getElementById('passwordStrength');
+        const strengthFill = document.getElementById('strengthFill');
+        const lengthReq = document.getElementById('lengthReq');
+        const uppercaseReq = document.getElementById('uppercaseReq');
+        const lowercaseReq = document.getElementById('lowercaseReq');
+        const numberReq = document.getElementById('numberReq');
+        const specialReq = document.getElementById('specialReq');
+
+        function checkPasswordStrength(password) {
+            const requirements = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /\d/.test(password),
+                special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+            };
+
+            // Update requirement indicators
+            lengthReq.classList.toggle('met', requirements.length);
+            uppercaseReq.classList.toggle('met', requirements.uppercase);
+            lowercaseReq.classList.toggle('met', requirements.lowercase);
+            numberReq.classList.toggle('met', requirements.number);
+            specialReq.classList.toggle('met', requirements.special);
+
+            // Calculate strength
+            const metCount = Object.values(requirements).filter(Boolean).length;
+            strengthFill.className = 'strength-fill';
+
+            if (metCount <= 2) {
+                strengthFill.classList.add('weak');
+            } else if (metCount <= 4) {
+                strengthFill.classList.add('medium');
+            } else {
+                strengthFill.classList.add('strong');
+            }
+
+            return metCount === 5;
+        }
+
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            if (password) {
+                passwordStrength.style.display = 'block';
+                checkPasswordStrength(password);
+            } else {
+                passwordStrength.style.display = 'none';
+            }
+        });
+
+        // Form validation on submit
+        chefForm.addEventListener('submit', function(e) {
+            console.log('✓ Form submit event triggered');
+            e.preventDefault(); // Prevent default form submission immediately
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            let hasErrors = false;
+
+            // Email validation
+            if (!validateEmail(email)) {
+                emailError.style.display = 'block';
+                emailInput.classList.add('input-error');
+                hasErrors = true;
+            }
+
+            // Password strength validation
+            if (!checkPasswordStrength(password)) {
+                hasErrors = true;
+            }
+
+            if (hasErrors) {
+                alert('Please fix the validation errors before submitting.');
+                return false;
+            }
+
+            // If validation passes, proceed with new flow
+            console.log('✓ Validation passed, submitting form...');
+            btnText.style.opacity = '0';
+            btnLoader.style.display = 'block';
+            chefBtn.disabled = true;
+
+            // Submit registration form - account will be created immediately
+            const formData = new FormData(chefForm);
+            
+            console.log('✓ Sending registration request...');
+            fetch('/chef/register', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('✓ Got response from server, status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('✓ Response data:', data);
+                btnText.style.opacity = '1';
+                btnLoader.style.display = 'none';
+                chefBtn.disabled = false;
+
+                if (data.success) {
+                    // Account created! Now automatically send email verification code
+                    // Hide registration modal
+                    modal.style.display = 'none';
+                    backdrop.style.display = 'none';
+                    
+                    // Store email and phone for verification
+                    const userEmail = emailInput.value.trim();
+                    const userPhone = document.getElementById('phone').value.trim();
+                    
+                    // Automatically send email verification code
+                    fetch('/send_email_code', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email: userEmail })
+                    })
+                    .then(response => response.json())
+                    .then(emailData => {
+                        console.log('Email code response:', emailData);
+                        
+                        // Show email verification modal regardless of email send success
+                        // (code is still generated and printed in terminal)
+                        console.log('Showing email verification modal...');
+                        console.log('emailVerificationBackdrop:', emailVerificationBackdrop);
+                        console.log('emailVerificationModal:', emailVerificationModal);
+                        
+                        emailVerificationBackdrop.style.display = 'block';
+                        emailVerificationModal.style.display = 'flex';
+                        
+                        // Show warning if email failed to send
+                        if (!emailData.success) {
+                            alert('Note: Email sending failed. Check the terminal for your verification code.\n\n' + emailData.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error sending email code:', error);
+                        alert('Error sending verification email: ' + error.message);
+                    });
+                } else {
+                    alert(data.message || 'Registration failed');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Registration Error:', error);
+                console.error('Error details:', error.message, error.stack);
+                alert('Error during registration: ' + error.message);
+                btnText.style.opacity = '1';
+                btnLoader.style.display = 'none';
+                chefBtn.disabled = false;
+            });
+        });
+
+        // Input focus effects
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+
+            input.addEventListener('blur', function() {
+                if (!this.value && !this.placeholder) {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+        });
+
+        // Dynamic meal inputs (optional enhancement)
+        const mealsContainer = document.getElementById('meals-container');
+        const maxMeals = 5;
+
+        function updateMealInputs() {
+            const mealInputs = mealsContainer.querySelectorAll('.meal-input-wrapper');
+            mealInputs.forEach((wrapper, index) => {
+                const input = wrapper.querySelector('.meal-input');
+                if (index >= maxMeals) {
+                    wrapper.style.display = 'none';
+                } else {
+                    wrapper.style.display = 'block';
+                }
+            });
+        }
+
+        updateMealInputs();
+
+       // Verification Choice Modal Handlers
+       const chooseEmailBtn = document.getElementById('chooseEmailBtn');
+       const chooseSmsBtn = document.getElementById('chooseSmsBtn');
+       const verificationChoiceBackdrop = document.getElementById('verificationChoiceBackdrop');
+
+       // Handle "Verify Email" button click
+       chooseEmailBtn.addEventListener('click', function() {
+           const email = document.getElementById('email').value;
+           
+           // Send email verification code
+           fetch('/send_email_code', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json',
+               },
+               body: JSON.stringify({ email: email })
+           })
+           .then(response => response.json())
+           .then(data => {
+               if (data.success) {
+                   // Hide choice modal and show email verification modal
+                   verificationChoiceBackdrop.style.display = 'none';
+                   emailVerificationBackdrop.style.display = 'block';
+                   emailVerificationModal.style.display = 'flex';
+                   startEmailResendTimer();
+               } else {
+                   alert(data.message || 'Failed to send verification code');
+               }
+           })
+           .catch(error => {
+               console.error('Error sending email:', error);
+               alert('Error sending verification code. Please try again.');
+           });
+       });
+
+       // Handle "Verify SMS" button click
+       chooseSmsBtn.addEventListener('click', function() {
+           const phone = document.getElementById('phone').value;
+           
+           // Send SMS verification code
+           fetch('/send_sms_code', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json',
+               },
+               body: JSON.stringify({ phone: phone })
+           })
+           .then(response => response.json())
+           .then(data => {
+               if (data.success) {
+                   // Hide choice modal and show SMS verification modal
+                   verificationChoiceBackdrop.style.display = 'none';
+                   smsVerificationBackdrop.style.display = 'block';
+                   smsVerificationModal.style.display = 'flex';
+                   startSmsResendTimer();
+               } else {
+                   alert(data.message || 'Failed to send SMS code');
+               }
+           })
+           .catch(error => {
+               console.error('Error sending SMS:', error);
+               alert('Error sending SMS code. Please try again.');
+           });
+       });
+
+       // Email verification form
+       const emailVerificationForm = document.getElementById('emailVerificationForm');
+       const emailCodeError = document.getElementById('emailCodeError');
+       const emailCodeSuccess = document.getElementById('emailCodeSuccess');
+       
+       emailVerificationForm.addEventListener('submit', function(e) {
+           e.preventDefault();
+           emailCodeError.style.display = 'none';
+           emailCodeSuccess.style.display = 'none';
+           
+           const code = document.getElementById('emailCode').value;
+           const email = document.getElementById('email').value;
+           const payload = {
+               code: code,
+               email: email
+           };
+
+           console.log('Verifying email code:', payload);
+
+           fetch('/verify_email_code', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json',
+               },
+               body: JSON.stringify(payload)
+           })
+           .then(response => response.json())
+           .then(data => {
+               console.log('Email verification response:', data);
+               if (data.success) {
+                   emailCodeError.style.display = 'none';
+                   emailCodeSuccess.textContent = data.message || 'Email verified successfully. Please continue.';
+                   emailCodeSuccess.style.display = 'block';
+
+                   const closeRequested = emailVerificationModal.dataset.closeRequested === 'true';
+                   const chefVerified = data.chef_verified === true;
+
+                   if (closeRequested && (chefVerified || !smsVerificationEnabled)) {
+                       emailVerificationModal.style.display = 'none';
+                       emailVerificationBackdrop.style.display = 'none';
+                       emailVerificationModal.dataset.closeRequested = 'false';
+                   }
+                   
+                   if (smsVerificationEnabled && data.require_sms) {
+                       // SMS still needs verification - show SMS modal directly
+                       console.log('Email verified, now showing SMS verification modal');
+                       smsVerificationBackdrop.style.display = 'block';
+                       smsVerificationModal.style.display = 'flex';
+                   } else if (data.redirect) {
+                       // All verifications complete - redirect to dashboard
+                       window.location.href = data.redirect;
+                   } else {
+                       alert(data.message || 'Email verified successfully');
+                   }
+               } else {
+                   emailCodeError.textContent = data.message || 'Invalid verification code';
+                   emailCodeError.style.display = 'block';
+               }
+           })
+           .catch(error => {
+               console.error('Error:', error);
+               emailCodeError.textContent = 'Error verifying email code';
+               emailCodeError.style.display = 'block';
+           });
+       });
+
+       // Resend email code functionality
+       const resendEmailCodeBtn = document.getElementById('resendEmailCodeBtn');
+       const emailResendTimer = document.getElementById('emailResendTimer');
+       let emailResendCountdown = 0;
+
+       function startEmailResendTimer() {
+           emailResendCountdown = 60;
+           resendEmailCodeBtn.disabled = true;
+           resendEmailCodeBtn.style.opacity = '0.5';
+           
+           const interval = setInterval(() => {
+               emailResendCountdown--;
+               emailResendTimer.textContent = `Resend available in ${emailResendCountdown}s`;
+               
+               if (emailResendCountdown <= 0) {
+                   clearInterval(interval);
+                   resendEmailCodeBtn.disabled = false;
+                   resendEmailCodeBtn.style.opacity = '1';
+                   emailResendTimer.textContent = '';
+               }
+           }, 1000);
+       }
+
+       resendEmailCodeBtn.addEventListener('click', function() {
+           emailCodeError.style.display = 'none';
+           const email = document.getElementById('email').value;
+           
+           console.log('Resending email code to:', email);
+           
+           fetch('/send_email_code', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json',
+               },
+               body: JSON.stringify({ email: email })
+           })
+           .then(response => response.json())
+           .then(data => {
+               console.log('Resend email code response:', data);
+               if (data.success) {
+                   alert('New verification code sent to your email!');
+                   startEmailResendTimer();
+               } else {
+                   emailCodeError.textContent = data.message || 'Failed to resend code';
+                   emailCodeError.style.display = 'block';
+               }
+           })
+           .catch(error => {
+               console.error('Error:', error);
+               emailCodeError.textContent = 'Error resending code';
+               emailCodeError.style.display = 'block';
+           });
+       });
+
+       // SMS verification form
+       const smsVerificationForm = document.getElementById('smsVerificationForm');
+       const smsCodeError = document.getElementById('smsCodeError');
+       
+       smsVerificationForm.addEventListener('submit', function(e) {
+           e.preventDefault();
+           smsCodeError.style.display = 'none';
+
+           fetch('/verify_sms_code', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json',
+               },
+               body: JSON.stringify({
+                   code: document.getElementById('smsCode').value,
+                   phone: document.getElementById('phone').value
+               })
+           })
+           .then(response => response.json())
+           .then(data => {
+               if (data.success) {
+                   // Hide SMS verification modal
+                   smsVerificationModal.style.display = 'none';
+                   smsVerificationBackdrop.style.display = 'none';
+                   
+                   if (data.require_email) {
+                       // Email still needs verification - show choice modal again
+                       // But disable the SMS button since it's already verified
+                       verificationChoiceBackdrop.style.display = 'block';
+                       chooseSmsBtn.disabled = true;
+                       chooseSmsBtn.style.opacity = '0.5';
+                       chooseSmsBtn.style.cursor = 'not-allowed';
+                       chooseSmsBtn.innerHTML = '<span class="btn-text">✓ SMS Verified</span>';
+                   } else if (data.redirect) {
+                       // All verifications complete - redirect to dashboard
+                       window.location.href = data.redirect;
+                   } else {
+                       alert(data.message || 'SMS verified successfully');
+                   }
+               } else {
+                   smsCodeError.textContent = data.message || 'Invalid verification code';
+                   smsCodeError.style.display = 'block';
+               }
+           })
+           .catch(error => {
+               console.error('Error:', error);
+               smsCodeError.textContent = 'Error verifying SMS code';
+               smsCodeError.style.display = 'block';
+           });
+       });
+
+       // Resend SMS code functionality
+       const resendSmsCodeBtn = document.getElementById('resendSmsCodeBtn');
+       const smsResendTimer = document.getElementById('smsResendTimer');
+       let smsResendCountdown = 0;
+
+       function startSmsResendTimer() {
+           smsResendCountdown = 60;
+           resendSmsCodeBtn.disabled = true;
+           resendSmsCodeBtn.style.opacity = '0.5';
+           
+           const interval = setInterval(() => {
+               smsResendCountdown--;
+               smsResendTimer.textContent = `Resend available in ${smsResendCountdown}s`;
+               
+               if (smsResendCountdown <= 0) {
+                   clearInterval(interval);
+                   resendSmsCodeBtn.disabled = false;
+                   resendSmsCodeBtn.style.opacity = '1';
+                   smsResendTimer.textContent = '';
+               }
+           }, 1000);
+       }
+
+       resendSmsCodeBtn.addEventListener('click', function() {
+           smsCodeError.style.display = 'none';
+           const phone = document.getElementById('phone').value;
+           
+           console.log('Resending SMS code to:', phone);
+           
+           fetch('/send_sms_code', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json',
+               },
+               body: JSON.stringify({ phone: phone })
+           })
+           .then(response => response.json())
+           .then(data => {
+               console.log('Resend SMS code response:', data);
+               if (data.success) {
+                   alert('New verification code sent to your phone!');
+                   startSmsResendTimer();
+               } else {
+                   smsCodeError.textContent = data.message || 'Failed to resend code';
+                   smsCodeError.style.display = 'block';
+               }
+           })
+           .catch(error => {
+               console.error('Error:', error);
+               smsCodeError.textContent = 'Error resending code';
+               smsCodeError.style.display = 'block';
+           });
+       });
+    }); // End of DOMContentLoaded
+</script>
+{% endblock %}

@@ -641,12 +641,13 @@ def chef_register():
             if 'photo' in request.files:
                 photo = request.files['photo']
                 if photo and photo.filename:
-                    # Save photo
-                    filename = f"chef_{email}_{photo.filename}"
+                    # Save photo with secure filename
+                    filename = secure_filename(f"chef_{email}_{photo.filename}")
                     photo_path = os.path.join('static', 'images', 'chefs', filename)
                     os.makedirs(os.path.dirname(photo_path), exist_ok=True)
                     photo.save(photo_path)
-                    photo_url = f"images/chefs/{filename}"
+                    # Store with /static/ prefix for consistency
+                    photo_url = f"/static/images/chefs/{filename}"
 
             # Create user account immediately
             user = User(email=email, role='chef')
@@ -894,13 +895,163 @@ def admin_dashboard():
                          total_bookings=total_bookings,
                          confirmed_bookings=confirmed_bookings)
 
+def send_chef_approval_email(chef):
+    """Send approval email to chef with login credentials"""
+    try:
+        # Get email configuration from database
+        email_configs = SystemConfig.query.filter(SystemConfig.key.in_([
+            'gmail_user', 'gmail_password', 'smtp_host', 'smtp_port', 
+            'smtp_encryption', 'sender_name', 'email_timeout'
+        ])).all()
+        
+        config_dict = {config.key: config.value for config in email_configs}
+        
+        gmail_user = config_dict.get('gmail_user')
+        gmail_password = config_dict.get('gmail_password')
+        smtp_host = config_dict.get('smtp_host', 'smtp.gmail.com')
+        smtp_port = int(config_dict.get('smtp_port', 587))
+        smtp_encryption = config_dict.get('smtp_encryption', 'tls')
+        sender_name = config_dict.get('sender_name', 'e-Rugah')
+        email_timeout = int(config_dict.get('email_timeout', 30))
+        
+        if not gmail_user or not gmail_password:
+            print("[ERROR] Email system not configured")
+            return False
+        
+        # Send email using SMTP
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        import smtplib
+        
+        msg = MIMEMultipart('alternative')
+        msg['From'] = f'{sender_name} <{gmail_user}>'
+        msg['To'] = chef.user.email
+        msg['Subject'] = '🎉 Congratulations! Your e-Rugah Chef Account is Approved'
+        
+        # Plain text version
+        text_body = f"""
+Dear {chef.name},
+
+Congratulations! We are thrilled to inform you that your chef application has been approved!
+
+Your Login Credentials:
+Email: {chef.user.email}
+Password: [The password you created during registration]
+
+You can now log in to your chef dashboard and start:
+- Managing your profile
+- Accepting booking requests
+- Showcasing your culinary expertise
+- Connecting with food lovers
+
+Login here: {request.url_root}login
+
+Welcome to the e-Rugah family! We're excited to have you on board.
+
+Best regards,
+The e-Rugah Team
+
+---
+This is an automated message from e-Rugah
+Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        """
+        
+        # HTML version
+        html_body = f"""
+        <html>
+            <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="color: #ff6b35; margin: 0; font-size: 28px;">🎉 Congratulations!</h1>
+                    </div>
+                    
+                    <p style="font-size: 16px; color: #333; line-height: 1.6;">Dear <strong>{chef.name}</strong>,</p>
+                    
+                    <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                        We are thrilled to inform you that your chef application has been <strong style="color: #10b981;">approved</strong>!
+                    </p>
+                    
+                    <div style="background: linear-gradient(135deg, #fff8f5 0%, #ffe8dc 100%); padding: 25px; border-radius: 10px; margin: 25px 0; border-left: 4px solid #ff6b35;">
+                        <h3 style="color: #ff6b35; margin-top: 0; margin-bottom: 15px;">Your Login Credentials</h3>
+                        <p style="margin: 10px 0; color: #333;"><strong>Email:</strong> <span style="color: #ff6b35;">{chef.user.email}</span></p>
+                        <p style="margin: 10px 0; color: #333;"><strong>Password:</strong> [The password you created during registration]</p>
+                    </div>
+                    
+                    <div style="margin: 25px 0;">
+                        <h3 style="color: #333; margin-bottom: 15px;">You can now:</h3>
+                        <ul style="color: #666; line-height: 1.8;">
+                            <li>✅ Manage your profile</li>
+                            <li>✅ Accept booking requests</li>
+                            <li>✅ Showcase your culinary expertise</li>
+                            <li>✅ Connect with food lovers</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="{request.url_root}login" style="display: inline-block; background: linear-gradient(135deg, #ff6b35, #ff8c42); color: white; padding: 15px 40px; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);">
+                            Login to Dashboard
+                        </a>
+                    </div>
+                    
+                    <p style="font-size: 16px; color: #333; line-height: 1.6; margin-top: 30px;">
+                        Welcome to the e-Rugah family! We're excited to have you on board.
+                    </p>
+                    
+                    <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                        Best regards,<br>
+                        <strong style="color: #ff6b35;">The e-Rugah Team</strong>
+                    </p>
+                    
+                    <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+                    
+                    <p style="color: #999; font-size: 12px; text-align: center; margin: 10px 0;">
+                        This is an automated message from e-Rugah<br>
+                        Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+                    </p>
+                </div>
+            </body>
+        </html>
+        """
+        
+        msg.attach(MIMEText(text_body, 'plain'))
+        msg.attach(MIMEText(html_body, 'html'))
+        
+        # Send email with configured settings
+        if smtp_encryption == 'ssl':
+            server = smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=email_timeout)
+        else:
+            server = smtplib.SMTP(smtp_host, smtp_port, timeout=email_timeout)
+            if smtp_encryption == 'tls':
+                server.starttls()
+        
+        server.login(gmail_user, gmail_password)
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"[SUCCESS] Approval email sent to {chef.user.email}")
+        return True
+        
+    except Exception as e:
+        print(f"[ERROR] Failed to send approval email: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
 @app.route('/admin/chef/<int:chef_id>/approve')
 @role_required('admin')
 def approve_chef(chef_id):
     chef = Chef.query.get_or_404(chef_id)
     chef.is_approved = True
     db.session.commit()
-    flash(f'Chef {chef.name} approved successfully!', 'success')
+    
+    # Send approval email to chef
+    email_sent = send_chef_approval_email(chef)
+    
+    if email_sent:
+        flash(f'Chef {chef.name} approved successfully! Approval email sent.', 'success')
+    else:
+        flash(f'Chef {chef.name} approved successfully! (Email notification failed)', 'warning')
+    
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/chef/<int:chef_id>/reject')

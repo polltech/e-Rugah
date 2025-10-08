@@ -11,21 +11,22 @@
     }
 
     body {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        background: linear-gradient(-45deg, #fff5f0, #ffe8dc, #ffd4c0, #ffebe0);
+        background-size: 400% 400%;
+        animation: gradientShift 30s ease infinite;
         min-height: 100vh;
-        color: white;
     }
 
     /* Modern orange card styling with glassmorphism */
     .card {
-        background: rgba(255, 107, 107, 0.1) !important;
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.9) 0%, rgba(255, 140, 66, 0.9) 100%) !important;
         backdrop-filter: blur(20px) saturate(180%);
-        border: 2px solid rgba(255, 107, 107, 0.3) !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
         border-radius: 24px !important;
-        box-shadow:
+        box-shadow: 
             0 8px 32px rgba(255, 107, 53, 0.2),
             0 2px 8px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 107, 107, 0.2) !important;
+            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
         overflow: hidden;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -60,7 +61,7 @@
     }
 
     .card-body {
-        background: rgba(255, 107, 107, 0.05);
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.85) 0%, rgba(255, 140, 66, 0.85) 100%);
         padding: 2rem;
     }
 
@@ -73,15 +74,15 @@
     .form-control,
     .form-select,
     textarea.form-control {
-        border: 2px solid rgba(255, 107, 107, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.5);
         border-radius: 16px;
         padding: 0.75rem 1rem;
-        background: rgba(255, 107, 107, 0.1) !important;
-        color: white !important;
+        background: white !important;
+        color: #333 !important;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         font-size: 0.95rem;
         font-weight: 500;
-        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         margin-top: 0;
         display: block;
         width: 100%;
@@ -90,17 +91,17 @@
     .form-control:focus,
     .form-select:focus,
     textarea.form-control:focus {
-        border-color: rgba(255, 107, 107, 0.5);
-        box-shadow:
+        border-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 
             0 0 0 4px rgba(255, 140, 66, 0.4),
             0 4px 16px rgba(255, 107, 53, 0.3);
         transform: translateY(-2px);
-        background: rgba(255, 107, 107, 0.1) !important;
+        background: white !important;
         outline: none;
     }
 
     .form-control::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(0, 0, 0, 0.5);
         font-weight: 400;
     }
 
@@ -122,20 +123,20 @@
 
     /* Ingredient rows with modern styling */
     .ingredient-row {
-        background: rgba(255, 107, 107, 0.1) !important;
-        border: 2px solid rgba(255, 107, 107, 0.3) !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+        border: 2px solid rgba(255, 255, 255, 0.4) !important;
         border-radius: 20px !important;
         padding: 1.5rem !important;
         backdrop-filter: blur(10px);
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         animation: fadeIn 0.4s ease-out;
-        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .ingredient-row:hover {
-        background: rgba(255, 107, 107, 0.15) !important;
+        background: rgba(255, 255, 255, 0.25) !important;
         transform: translateX(5px);
-        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.15);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     }
 
     /* Ingredient row labels - hidden */
@@ -228,20 +229,20 @@
 
     /* List group items */
     .list-group-item {
-        background: rgba(255, 107, 107, 0.1) !important;
-        border: 2px solid rgba(255, 107, 107, 0.3) !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
         border-radius: 12px !important;
         margin-bottom: 0.5rem;
         padding: 1rem;
         transition: all 0.3s ease;
         backdrop-filter: blur(5px);
-        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     .list-group-item:hover {
-        background: rgba(255, 107, 107, 0.15) !important;
+        background: rgba(255, 255, 255, 0.3) !important;
         transform: translateX(5px);
-        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     }
 
     .list-group-item strong {
@@ -404,8 +405,8 @@
 
     /* Help text styling */
     .help-text {
-        background: rgba(255, 107, 107, 0.1);
-        border: 2px solid rgba(255, 107, 107, 0.3);
+        background: rgba(255, 255, 255, 0.25);
+        border: 2px solid rgba(255, 255, 255, 0.4);
         border-radius: 16px;
         padding: 1rem 1.25rem;
         margin-bottom: 1.5rem;
@@ -413,7 +414,7 @@
         font-size: 0.9rem;
         line-height: 1.6;
         backdrop-filter: blur(5px);
-        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .help-text strong {
@@ -529,7 +530,22 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">📏 Unit *</label>
-                                    <input type="text" class="form-control" name="unit[]" placeholder="📏 Unit (kg, g, pcs, L) *" required>
+                                    <select class="form-select" name="unit[]" required>
+                                        <option value="" disabled selected>Select Unit</option>
+                                        <option value="kg">kg</option>
+                                        <option value="g">g</option>
+                                        <option value="L">L</option>
+                                        <option value="ml">ml</option>
+                                        <option value="pcs">pcs</option>
+                                        <option value="tbsp">tbsp</option>
+                                        <option value="tsp">tsp</option>
+                                        <option value="cup">cup</option>
+                                        <option value="oz">oz</option>
+                                        <option value="lb">lb</option>
+                                        <option value="bunch">bunch</option>
+                                        <option value="clove">clove</option>
+                                        <option value="pinch">pinch</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">💵 Unit Price *</label>
@@ -541,7 +557,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">🗑️ Remove</label>
-                                    <button type="button" class="btn btn-danger w-100 remove-ingredient"><i class="bi bi-trash"></i> Delete</button>
+                                    <button type="button" class="btn btn-danger btn-sm remove-ingredient" style="padding: 0.5rem 0.75rem;"><i class="bi bi-trash"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -610,15 +626,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('ingredients-container');
     const addButton = document.getElementById('add-ingredient');
 
-    // Add ingredient functionality
     addButton.addEventListener('click', function() {
         const newRow = container.querySelector('.ingredient-row').cloneNode(true);
         // Clear inputs
         newRow.querySelectorAll('input').forEach(input => input.value = '');
+        // Reset select dropdown to default
+        newRow.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
         container.appendChild(newRow);
     });
 
-    // Remove ingredient functionality
     container.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-ingredient') || e.target.closest('.remove-ingredient')) {
             const rows = container.querySelectorAll('.ingredient-row');
@@ -628,23 +644,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('At least one ingredient is required.');
             }
         }
-    });
-
-    // Delete dish functionality
-    document.querySelectorAll('.delete-dish-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const dishId = this.getAttribute('data-dish-id');
-            const dishName = this.getAttribute('data-dish-name');
-            
-            if (confirm(`Are you sure you want to delete "${dishName}"?\n\nThis action cannot be undone and will remove all associated ingredients.`)) {
-                // Create a form and submit it
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/admin/delete-dish/${dishId}`;
-                document.body.appendChild(form);
-                form.submit();
-            }
-        });
     });
 });
 </script>

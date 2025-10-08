@@ -1324,10 +1324,24 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">Unit *</label>
-                                    <input type="text" class="form-control" name="unit[]" required
-                                           placeholder="kg, L, pcs"
-                                           data-bs-toggle="tooltip" data-bs-placement="top"
-                                           title="Unit of measurement (kg, L, pieces, etc.)">
+                                    <select class="form-select" name="unit[]" required
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="Unit of measurement">
+                                        <option value="" disabled selected>Select Unit</option>
+                                        <option value="kg">kg</option>
+                                        <option value="g">g</option>
+                                        <option value="L">L</option>
+                                        <option value="ml">ml</option>
+                                        <option value="pcs">pcs</option>
+                                        <option value="tbsp">tbsp</option>
+                                        <option value="tsp">tsp</option>
+                                        <option value="cup">cup</option>
+                                        <option value="oz">oz</option>
+                                        <option value="lb">lb</option>
+                                        <option value="bunch">bunch</option>
+                                        <option value="clove">clove</option>
+                                        <option value="pinch">pinch</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Unit Price (KES) *</label>
@@ -1345,10 +1359,11 @@
                                 </div>
                                 <div class="col-md-1">
                                     <label class="form-label">&nbsp;</label>
-                                    <button type="button" class="btn btn-danger w-100 remove-ingredient"
+                                    <button type="button" class="btn btn-danger btn-sm remove-ingredient"
                                             onclick="removeIngredient(this)"
                                             data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="Remove this ingredient">
+                                            title="Remove this ingredient"
+                                            style="padding: 0.5rem 0.75rem;">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
@@ -1527,10 +1542,24 @@
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">Unit *</label>
-                        <input type="text" class="form-control" name="unit[]" required
-                               placeholder="kg, L, pcs"
-                               data-bs-toggle="tooltip" data-bs-placement="top"
-                               title="Unit of measurement (kg, L, pieces, etc.)">
+                        <select class="form-select" name="unit[]" required
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                title="Unit of measurement">
+                            <option value="" disabled selected>Select Unit</option>
+                            <option value="kg">kg</option>
+                            <option value="g">g</option>
+                            <option value="L">L</option>
+                            <option value="ml">ml</option>
+                            <option value="pcs">pcs</option>
+                            <option value="tbsp">tbsp</option>
+                            <option value="tsp">tsp</option>
+                            <option value="cup">cup</option>
+                            <option value="oz">oz</option>
+                            <option value="lb">lb</option>
+                            <option value="bunch">bunch</option>
+                            <option value="clove">clove</option>
+                            <option value="pinch">pinch</option>
+                        </select>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Unit Price (KES) *</label>
@@ -1548,10 +1577,11 @@
                     </div>
                     <div class="col-md-1">
                         <label class="form-label">&nbsp;</label>
-                        <button type="button" class="btn btn-danger w-100 remove-ingredient"
+                        <button type="button" class="btn btn-danger btn-sm remove-ingredient"
                                 onclick="removeIngredient(this)"
                                 data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Remove this ingredient">
+                                title="Remove this ingredient"
+                                style="padding: 0.5rem 0.75rem;">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
